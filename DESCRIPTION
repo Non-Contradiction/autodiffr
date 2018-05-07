@@ -16,4 +16,5 @@ LazyData: true
 SystemRequirements: Julia >= 0.6.0
 Suggests: testthat
 Imports: JuliaCall
+Remotes: Non-Contradiction/JuliaCall
 RoxygenNote: 6.0.1
