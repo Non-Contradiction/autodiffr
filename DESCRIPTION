@@ -15,3 +15,4 @@ Encoding: UTF-8
 LazyData: true
 SystemRequirements: Julia >= 0.6.0
 Suggests: testthat
+Imports: JuliaCall
