@@ -19,3 +19,26 @@ ad_setup <- function(...) {
     .AD$julia$library("ForwardDiff")
     .AD$julia$library("ReverseDiff")
 }
+
+#' Calculate the gradient of a function.
+#'
+#' \code{grad} calculates the gradient of a function.
+#'
+#' @param func the function you want to caculate the gradient,
+#'   it should be a function with a scalar result.
+#' @param x the point where the gradient is calculated.
+#'   If not given (or NULL), return will be the gradient function.
+#'
+#' @export
+grad <- function(func, x = NULL){
+    if (!is.null(x)) {
+        JuliaCall::julia_call("ForwardDiff.gradient", func, x)
+    }
+    else {
+        force(func)
+        function(x) JuliaCall::julia_call("ForwardDiff.gradient", func, x)
+    }
+}
+
+
+
