@@ -1,10 +1,17 @@
 Package: autodiffr
-Title: What the Package Does (one line, title case)
+Type: Package
+Title: Automatic Differentiation in R through 'Julia'
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-Depends: R (>= 3.5.0)
-License: What license is it under?
+Date: 2018-5-7
+Authors@R: person("Changcheng", "Li", email = "cxl508@psu.edu", role = c("aut", "cre"))
+Description: provides a wrapper for 'Julia' packages 'ForwardDiff.jl' and 'ReverseDiff.jl'
+  to do automatic differentiation
+  for native R functions and some Rcpp functions.
+Depends: R (>= 3.4.0)
+License: MIT + file LICENSE
+URL: https://github.com/Non-Contradiction/autodiffr
+BugReports: https://github.com/Non-Contradiction/autodiffr/issues
 Encoding: UTF-8
 LazyData: true
+SystemRequirements: Julia >= 0.6.0
 Suggests: testthat
