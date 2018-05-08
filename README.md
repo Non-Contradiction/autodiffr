@@ -12,14 +12,9 @@ Status](https://travis-ci.org/Non-Contradiction/autodiffr.svg?branch=master)](ht
 [![](https://cranlogs.r-pkg.org/badges/grand-total/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
 -->
 
-Package `autodiffr` provides an R interface to `Julia`, which is a
-high-level, high-performance dynamic programming language for numerical
-computing, see <https://julialang.org/> for more information. Below is
-an image for [Mandelbrot
-set](https://en.wikipedia.org/wiki/Mandelbrot_set). JuliaCall brings
-**more than 100 times speedup** of the calculation\! See
-<https://github.com/Non-Contradiction/JuliaCall/tree/master/example/mandelbrot>
-for more information.
+Package `autodiffr` provides an `R` wrapper for `Julia` packages
+`ForwardDiff.jl` and `ReverseDiff.jl` to do automatic differentiation
+for native `R` functions and some `Rcpp` functions.
 
 ## Installation
 
@@ -93,3 +88,8 @@ find `Julia` on PATH, and there are three ways for `autodiffr` to find
 reporting is welcome\! You may report it using the link:
 <https://github.com/Non-Contradiction/autodiffr/issues/new>. Or email me
 at <lch34677@gmail.com> or <cxl508@psu.edu>.
+
+## Coding Plan
+
+For coding plan of `autodiffr`, see [Coding
+Plan](https://github.com/Non-Contradiction/autodiffr/blob/master/Coding%20Plan.md).
