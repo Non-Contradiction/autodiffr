@@ -5,8 +5,9 @@
 
 [![Travis-CI Build
 Status](https://travis-ci.org/Non-Contradiction/autodiffr.svg?branch=master)](https://travis-ci.org/Non-Contradiction/autodiffr)
+[![AppVeyor Build
+Status](https://ci.appveyor.com/api/projects/status/github/Non-Contradiction/autodiffr?branch=master&svg=true)](https://ci.appveyor.com/project/Non-Contradiction/autodiffr)
 <!--
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/Non-Contradiction/JuliaCall?branch=master&svg=true)](https://ci.appveyor.com/project/Non-Contradiction/JuliaCall)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
 [![](https://cranlogs.r-pkg.org/badges/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
