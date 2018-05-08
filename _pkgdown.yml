@@ -1,0 +1,5 @@
+url: https://non-contradiction.github.io/JuliaCall/
+
+template:
+  params:
+    bootswatch: cerulean

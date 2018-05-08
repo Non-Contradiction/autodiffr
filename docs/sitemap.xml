@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//index.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/ad_setup.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/autodiffr.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/grad.html</loc>
+  </url>
+</urlset>
