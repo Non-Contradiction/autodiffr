@@ -4,6 +4,10 @@ os:
   - linux
   - osx
 
+matrix:
+  allow_failures:
+    - os: linux
+
 addons:
   apt:
     sources: [ 'ubuntu-toolchain-r-test']
