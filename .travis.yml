@@ -12,6 +12,9 @@ addons:
 notifications:
   email: false
 
+r_github_packages:
+  - Non-Contradiction/JuliaCall
+
 before_install:
   - mkdir -p ~/Downloads
 
