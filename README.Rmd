@@ -14,7 +14,7 @@ output: github_document
 [![](https://cranlogs.r-pkg.org/badges/grand-total/JuliaCall)](https://cran.r-project.org/package=JuliaCall)
 -->
 
-Package `autodiffr` provides an `R` wrapper for `Julia` packages `ForwardDiff.jl` and `ReverseDiff.jl` to do automatic differentiation for native `R` functions
+Package `autodiffr` provides an `R` wrapper for `Julia` packages [`ForwardDiff.jl`](https://github.com/JuliaDiff/ForwardDiff.jl) and [`ReverseDiff.jl`](https://github.com/JuliaDiff/ReverseDiff.jl) through [`JuliaCall`](https://github.com/Non-Contradiction/JuliaCall) to do **automatic differentiation** for native `R` functions
 and some `Rcpp` functions.
 
 ```{r, echo = FALSE}

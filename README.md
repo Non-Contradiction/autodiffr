@@ -14,8 +14,11 @@ Status](https://ci.appveyor.com/api/projects/status/github/Non-Contradiction/aut
 -->
 
 Package `autodiffr` provides an `R` wrapper for `Julia` packages
-`ForwardDiff.jl` and `ReverseDiff.jl` to do automatic differentiation
-for native `R` functions and some `Rcpp` functions.
+[`ForwardDiff.jl`](https://github.com/JuliaDiff/ForwardDiff.jl) and
+[`ReverseDiff.jl`](https://github.com/JuliaDiff/ReverseDiff.jl) through
+[`JuliaCall`](https://github.com/Non-Contradiction/JuliaCall) to do
+**automatic differentiation** for native `R` functions and some `Rcpp`
+functions.
 
 ## Installation
 
