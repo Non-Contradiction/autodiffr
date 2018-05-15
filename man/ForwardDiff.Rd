@@ -38,20 +38,20 @@ and could be either a scalar or a vector for \code{deriv}.}
 Note that it should be a scalar for \code{deriv} and a vector of length greater than 1 for
 \code{grad}, \code{jacobian} and \code{hessian}.}
 
-\item{cfg}{objects of ForwardDiff.AbstractConfig types, which have
+\item{cfg}{Config object which have
 information useful to do automatic differentiation for \code{f}.
-These types allow the user to easily feed several different parameters to ForwardDiff's API,
+It allows the user to easily feed several different parameters to \code{ForwardDiff}'s API,
 such as chunk size, work buffers, and perturbation seed configurations.
-ForwardDiff's basic API methods will allocate these types automatically by default,
+\code{ForwardDiff}'s basic API methods will allocate these types automatically by default,
 but you can drastically reduce memory usage if you preallocate them yourself.}
 
 \item{check}{whether to allow tag checking.
-Set check to \code{JuliaCall::julia_call("Val{false}")} to disable tag checking for ForwardDiff.
+Set check to \code{JuliaCall::julia_call("Val{false}")} to disable tag checking for \code{ForwardDiff}.
 This can lead to perturbation confusion, so should be used with care.}
 
-\item{chunk}{the chunk to construct the Config objects for ForwardDiff.
+\item{chunk}{the chunk to construct the Config objects for \code{ForwardDiff}.
 Its size may be explicitly provided, or omitted,
-in which case ForwardDiff will automatically select a chunk size for you.
+in which case \code{ForwardDiff} will automatically select a chunk size for you.
 However, it is highly recommended to specify the chunk size manually when possible.
 See
 \url{http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1}
@@ -62,7 +62,7 @@ for more details.}
 the derivative, gradient, jacobian and hessian of \code{f} correspondingly evaluated at \code{x}.
 \code{forward.grad.config}, \code{forward.jacobian.config} and \code{forward.hessian.config}
 return Config instances based on \code{f`` and}x`,
-which contain all the work buffers required to carry out the automatic differentiation.
+which contain all the work buffers required to carry out the forward mode automatic differentiation.
 }
 \description{
 Wrapper functions for API of \code{ForwardDiff.jl} at

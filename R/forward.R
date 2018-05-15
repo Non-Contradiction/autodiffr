@@ -13,18 +13,18 @@
 #' @param x the point where you take the derivative, gradient and etc.
 #'   Note that it should be a scalar for `deriv` and a vector of length greater than 1 for
 #'   `grad`, `jacobian` and `hessian`.
-#' @param cfg objects of ForwardDiff.AbstractConfig types, which have
+#' @param cfg Config object which have
 #'   information useful to do automatic differentiation for `f`.
-#'   These types allow the user to easily feed several different parameters to ForwardDiff's API,
+#'   It allows the user to easily feed several different parameters to `ForwardDiff`'s API,
 #'   such as chunk size, work buffers, and perturbation seed configurations.
-#'   ForwardDiff's basic API methods will allocate these types automatically by default,
+#'   `ForwardDiff`'s basic API methods will allocate these types automatically by default,
 #'   but you can drastically reduce memory usage if you preallocate them yourself.
 #' @param check whether to allow tag checking.
-#'   Set check to `JuliaCall::julia_call("Val{false}")` to disable tag checking for ForwardDiff.
+#'   Set check to `JuliaCall::julia_call("Val{false}")` to disable tag checking for `ForwardDiff`.
 #'   This can lead to perturbation confusion, so should be used with care.
-#' @param chunk the chunk to construct the Config objects for ForwardDiff.
+#' @param chunk the chunk to construct the Config objects for `ForwardDiff`.
 #'   Its size may be explicitly provided, or omitted,
-#'   in which case ForwardDiff will automatically select a chunk size for you.
+#'   in which case `ForwardDiff` will automatically select a chunk size for you.
 #'   However, it is highly recommended to specify the chunk size manually when possible.
 #'   See
 #'   <http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1>
@@ -33,7 +33,7 @@
 #'   the derivative, gradient, jacobian and hessian of `f` correspondingly evaluated at `x`.
 #'   `forward.grad.config`, `forward.jacobian.config` and `forward.hessian.config`
 #'   return Config instances based on `f`` and `x`,
-#'   which contain all the work buffers required to carry out the automatic differentiation.
+#'   which contain all the work buffers required to carry out the forward mode automatic differentiation.
 #' @md
 #'
 #' @name ForwardDiff
