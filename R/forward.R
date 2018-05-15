@@ -34,6 +34,7 @@
 #'   `forward.grad.config`, `forward.jacobian.config` and `forward.hessian.config`
 #'   return Config instances based on `f`` and `x`,
 #'   which contain all the work buffers required to carry out the automatic differentiation.
+#' @md
 #'
 #' @name ForwardDiff
 NULL
