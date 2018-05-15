@@ -34,21 +34,21 @@ NULL
 #' @rdname ReverseDiff
 #' @export
 reverse.grad <- function(f, input,
-                         cfg = JuliaCall::julia_call("GradientConfig", input)){
+                         cfg = JuliaCall::julia_call("ReverseDiff.GradientConfig", input)){
     JuliaCall::julia_call("ReverseDiff.gradient", f, input, cfg)
 }
 
 #' @rdname ReverseDiff
 #' @export
 reverse.jacobian <- function(f, input,
-                             cfg = JuliaCall::julia_call("JacobianConfig", input)){
+                             cfg = JuliaCall::julia_call("ReverseDiff.JacobianConfig", input)){
     JuliaCall::julia_call("ReverseDiff.jacobian", f, input, cfg)
 }
 
 #' @rdname ReverseDiff
 #' @export
 reverse.hessian <- function(f, input,
-                            cfg = JuliaCall::julia_call("HessianConfig", input)){
+                            cfg = JuliaCall::julia_call("ReverseDiff.HessianConfig", input)){
     JuliaCall::julia_call("ReverseDiff.hessian", f, input, cfg)
 }
 
