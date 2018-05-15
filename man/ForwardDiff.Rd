@@ -13,20 +13,24 @@
 \usage{
 forward.deriv(f, x)
 
-forward.grad(f, x, cfg = JuliaCall::julia_call("GradientConfig", f, x),
+forward.grad(f, x, cfg = JuliaCall::julia_call("ForwardDiff.GradientConfig",
+  f, x), check = JuliaCall::julia_call("Val{true}"))
+
+forward.jacobian(f, x,
+  cfg = JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x),
   check = JuliaCall::julia_call("Val{true}"))
 
-forward.jacobian(f, x, cfg = JuliaCall::julia_call("JacobianConfig", f, x),
-  check = JuliaCall::julia_call("Val{true}"))
+forward.hessian(f, x, cfg = JuliaCall::julia_call("ForwardDiff.HessianConfig",
+  f, x), check = JuliaCall::julia_call("Val{true}"))
 
-forward.hessian(f, x, cfg = JuliaCall::julia_call("HessianConfig", f, x),
-  check = JuliaCall::julia_call("Val{true}"))
+forward.grad.config(f, x, chunk = JuliaCall::julia_call("ForwardDiff.Chunk",
+  x))
 
-forward.grad.config(f, x, chunk = JuliaCall::julia_call("Chunk", x))
+forward.jacobian.config(f, x,
+  chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x))
 
-forward.jacobian.config(f, x, chunk = JuliaCall::julia_call("Chunk", x))
-
-forward.hessian.config(f, x, chunk = JuliaCall::julia_call("Chunk", x))
+forward.hessian.config(f, x,
+  chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x))
 }
 \arguments{
 \item{f}{the function you want to calulate the derivative, gradient and etc.

@@ -10,19 +10,24 @@
 \alias{reverse.hessian.config}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
-reverse.grad(f, input, cfg = JuliaCall::julia_call("GradientConfig", input))
+reverse.grad(f, input,
+  cfg = JuliaCall::julia_call("ReverseDiff.GradientConfig", input))
 
-reverse.jacobian(f, input, cfg = JuliaCall::julia_call("JacobianConfig",
-  input))
+reverse.jacobian(f, input,
+  cfg = JuliaCall::julia_call("ReverseDiff.JacobianConfig", input))
 
-reverse.hessian(f, input, cfg = JuliaCall::julia_call("HessianConfig", input))
+reverse.hessian(f, input,
+  cfg = JuliaCall::julia_call("ReverseDiff.HessianConfig", input))
 
-reverse.grad.config(input, tp = JuliaCall::julia_call("Rawtape"))
+reverse.grad.config(input,
+  tp = JuliaCall::julia_call("ReverseDiff.InstructionTape"))
 
-reverse.jacobian.config(input, tp = JuliaCall::julia_call("Rawtape"))
+reverse.jacobian.config(input,
+  tp = JuliaCall::julia_call("ReverseDiff.InstructionTape"))
 
-reverse.hessian.config(input, gtp = JuliaCall::julia_call("Rawtape"),
-  jtp = JuliaCall::julia_call("Rawtape"))
+reverse.hessian.config(input,
+  gtp = JuliaCall::julia_call("ReverseDiff.InstructionTape"),
+  jtp = JuliaCall::julia_call("ReverseDiff.InstructionTape"))
 }
 \arguments{
 \item{f}{the function you want to calulate the gradient, jacobian and hessian.
