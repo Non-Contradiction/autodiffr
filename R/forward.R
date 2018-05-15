@@ -19,3 +19,20 @@ forward.hessian <- function(f, x,
                             check = JuliaCall::julia_call("Val{true}")){
     JuliaCall::julia_call("ForwardDiff.hessian", f, x, cfg, check)
 }
+
+## Constructing Config objects for ForwardDiff
+
+forward.grad.config <- function(f, x,
+                                chunk = JuliaCall::julia_call("Chunk", x)){
+    JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x, chunk)
+}
+
+forward.jacobian.config <- function(f, x,
+                                    chunk = JuliaCall::julia_call("Chunk", x)){
+    JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x, chunk)
+}
+
+forward.hessian.config <- function(f, x,
+                                   chunk = JuliaCall::julia_call("Chunk", x)){
+    JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x, chunk)
+}
