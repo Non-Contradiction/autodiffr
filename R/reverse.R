@@ -57,21 +57,21 @@ reverse.hessian <- function(f, input,
 #' @rdname ReverseDiff
 #' @export
 reverse.grad.config <- function(input,
-                                tp = JuliaCall::julia_call("Rawtape")){
+                                tp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
     JuliaCall::julia_call("ReverseDiff.GradientConfig", input, tp)
 }
 
 #' @rdname ReverseDiff
 #' @export
 reverse.jacobian.config <- function(input,
-                                    tp = JuliaCall::julia_call("Rawtape")){
+                                    tp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
     JuliaCall::julia_call("ReverseDiff.JacobianConfig", input, tp)
 }
 
 #' @rdname ReverseDiff
 #' @export
 reverse.hessian.config <- function(input,
-                                   gtp = JuliaCall::julia_call("Rawtape"),
-                                   jtp = JuliaCall::julia_call("Rawtape")){
+                                   gtp = JuliaCall::julia_call("ReverseDiff.InstructionTape"),
+                                   jtp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
     JuliaCall::julia_call("ReverseDiff.HessianConfig", input, gtp, jtp)
 }
