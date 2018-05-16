@@ -1,6 +1,6 @@
-context("More Tests for Wrapper Functions")
+context("LambertW Test for Wrapper Functions")
 
-test_that("Deriv test for lambertW function", {
+test_that("Deriv for lambertW function", {
     skip_on_cran()
     ad_setup()
 
