@@ -1,4 +1,4 @@
-expect_deriv <- function(f, x, result = NULL){
+expect_deriv <- function(f, x, result){
     testthat::expect_equal(forward.deriv(f, x), result)
 }
 
