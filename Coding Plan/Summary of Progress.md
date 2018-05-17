@@ -23,3 +23,8 @@
 * Add tests of rosenbrock function and lambertW function.
 
 ## May 17
+
+* Study about the tests of `ForwardDiff.jl` and `ReverseDiff.jl`, prepare to adopt some of the tests for `autodiffr`. Related resources are
+  * <https://github.com/JuliaDiff/DiffTests.jl/blob/master/src/DiffTests.jl>
+  * <https://github.com/JuliaDiff/ForwardDiff.jl/tree/master/test>
+  * <https://github.com/JuliaDiff/ReverseDiff.jl/tree/master/test>
