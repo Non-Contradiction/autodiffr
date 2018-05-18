@@ -5,6 +5,7 @@
 * Basic functions, documentations and tests.
 * Setting up Travis and Appveyor.
 * Write README and build github pages.
+* Fix an important bug in `JuliaCall` which breaks `autodiffr` and is caused by changes in `Julia` upstream.
 
 ## May 14
 
@@ -28,3 +29,12 @@
   * <https://github.com/JuliaDiff/DiffTests.jl/blob/master/src/DiffTests.jl>
   * <https://github.com/JuliaDiff/ForwardDiff.jl/tree/master/test>
   * <https://github.com/JuliaDiff/ReverseDiff.jl/tree/master/test>
+
+* Start to adapting functions in `DiffTests.jl`.
+
+## May 18
+
+* Finish adapting functions in `DiffTests.jl` currently. Note that the mutating related functions in `DiffTests.jl` are not adapted.
+* Add test utility functions to check the results from R wrappers with the results from `Julia`. Apply the change in testing of automatic differentiation of rosenbrock function.
+* Considering adapting tests from `ForwardDiff.jl` and `ReverseDiff.jl`.
+* Make changes in `JuliaCall` to facilitate the development of `autodiffr`.
