@@ -17,12 +17,19 @@
 # f(x::Number)::Number #
 ########################
 
+# num2num_1(x) = sin(x)^2 / cos(x)^2
 num2num_1 <- function(x) sin(x)^2 / cos(x)^2
+# num2num_2(x) = 2*x + sqrt(x*x*x)
 num2num_2 <- function(x) 2*x + sqrt(x*x*x)
+# num2num_3(x) = 10.31^(x + x) - x
 num2num_3 <- function(x) 10.31^(x + x) - x
+# num2num_4(x) = 1
 num2num_4 <- function(x) 1
+# num2num_5(x) = 1. / (1. + exp(-x))
 num2num_5 <- function(x) 1. / (1. + exp(-x))
 
+# const NUMBER_TO_NUMBER_FUNCS = (num2num_1, num2num_2, num2num_3,
+#                                 num2num_4, num2num_5, identity)
 NUMBER_TO_NUMBER_FUNCS <- list(num2num_1, num2num_2, num2num_3,
                                num2num_4, num2num_5, identity)
 
@@ -30,6 +37,16 @@ NUMBER_TO_NUMBER_FUNCS <- list(num2num_1, num2num_2, num2num_3,
 # f(x::Number)::Array #
 #######################
 
+# function num2arr_1(x)
+# return reshape([num2num_1(x),
+#                 num2num_2(x),
+#                 num2num_3(x),
+#                 num2num_1(x) - num2num_2(x),
+#                 num2num_2(x),
+#                 num2num_3(x),
+#                 num2num_2(x),
+#                 num2num_3(x)], 2, 2, 2)
+# end
 num2arr_1 <- function(x){
     array(c(num2num_1(x),
             num2num_2(x),
@@ -41,6 +58,7 @@ num2arr_1 <- function(x){
             num2num_3(x)), rep(2, 3))
 }
 
+# const NUMBER_TO_ARRAY_FUNCS = (num2arr_1,)
 NUMBER_TO_ARRAY_FUNCS <- list(num2arr_1)
 
 #################################
