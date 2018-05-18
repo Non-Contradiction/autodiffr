@@ -3,7 +3,7 @@ expect_deriv <- function(f, x, result, jf_str = NULL){
 
     if (!is.null(jf_str)) {
         JuliaCall::julia_assign("x", x)
-        command <- paste0("ForwardDiff.derivative(", jf_str, "x)")
+        command <- paste0("ForwardDiff.derivative(", jf_str, ", x)")
         testthat::expect_equal(forward.deriv(f, x),
                                JuliaCall::julia_eval(command))
     }
@@ -22,7 +22,7 @@ expect_grad <- function(f, x, result = NULL, julia_version = NULL, jf_str = NULL
 
     if (!is.null(jf_str)) {
         JuliaCall::julia_assign("x", x)
-        command <- paste0("ForwardDiff.gradient(", jf_str, "x)")
+        command <- paste0("ForwardDiff.gradient(", jf_str, ", x)")
         testthat::expect_equal(forward.grad(f, x),
                                JuliaCall::julia_eval(command))
     }
@@ -41,7 +41,7 @@ expect_hessian <- function(f, x, result = NULL, jf_str = NULL){
 
     if (!is.null(jf_str)) {
         JuliaCall::julia_assign("x", x)
-        command <- paste0("ForwardDiff.hessian(", jf_str, "x)")
+        command <- paste0("ForwardDiff.hessian(", jf_str, ", x)")
         testthat::expect_equal(forward.hessian(f, x),
                                JuliaCall::julia_eval(command))
     }
@@ -60,7 +60,7 @@ expect_jacobian <- function(f, x, result = NULL, jf_str = NULL){
 
     if (!is.null(jf_str)) {
         JuliaCall::julia_assign("x", x)
-        command <- paste0("ForwardDiff.jacobian(", jf_str, "x)")
+        command <- paste0("ForwardDiff.jacobian(", jf_str, ", x)")
         testthat::expect_equal(forward.jacobian(f, x),
                                JuliaCall::julia_eval(command))
     }
