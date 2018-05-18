@@ -188,165 +188,186 @@ VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2,  vec2num_3, vec2num_4, vec2
                                vec2num_6, vec2num_7, rosenbrock_1, rosenbrock_2,
                                rosenbrock_3, rosenbrock_4, ackley, self_weighted_logit,
                                function(x) x[1])
-                       #
-                       # ########################
-                       # # f(x::Matrix)::Number #
-                       # ########################
-                       #
-                       # mat2num_1(x) = det(first(x) * inv(x * x) + x)
-                       #
-                       # function mat2num_2(x)
-                       # a = reshape(x, length(x), 1)
-                       # b = reshape(copy(x), 1, length(x))
-                       # return trace(log.((1 .+ (a * b)) .+ a .- b))
-                       # end
-                       #
-                       # function mat2num_3(x)
-                       # k = length(x)
-                       # N = isqrt(k)
-                       # A = reshape(x, N, N)
-                       # return sum(map(n -> sqrt(abs(n) + n^2) * 0.5, A))
-                       # end
-                       #
-                       # mat2num_4(x) = mean(sum(sin.(x) * x, 2))
-                       #
-                       # softmax(x) = sum(exp.(x) ./ sum(exp.(x), 2))
-                       #
-                       # const MATRIX_TO_NUMBER_FUNCS = (det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
-                       #
-                       # ####################
-                       # # binary broadcast #
-                       # ####################
-                       #
-                       # if VERSION >= v"0.6.0-dev.1614"
-                       # const BINARY_BROADCAST_OPS = ((a, b) -> broadcast(+, a, b),
-                       # (a, b) -> broadcast(-, a, b),
-                       # (a, b) -> broadcast(*, a, b),
-                       # (a, b) -> broadcast(/, a, b),
-                       # (a, b) -> broadcast(\, a, b),
-                       # (a, b) -> broadcast(^, a, b))
-                       # else
-                       # const BINARY_BROADCAST_OPS = (.+, .-, .*, ./, .\, .^)
-                       # end
-                       #
-                       # #################################
-                       # # f(::Matrix, ::Matrix)::Number #
-                       # #################################
-                       #
-                       # const BINARY_MATRIX_TO_MATRIX_FUNCS = (+, -, *, /, \,
-                       # BINARY_BROADCAST_OPS...,
-                       # A_mul_Bt, At_mul_B, At_mul_Bt,
-                       # A_mul_Bc, Ac_mul_B, Ac_mul_Bc)
-                       #
-                       # ###########################################
-                       # # f(::Matrix, ::Matrix, ::Matrix)::Number #
-                       # ###########################################
-                       #
-                       # relu(x) = log.(1.0 .+ exp.(x))
-                       # sigmoid(n) = 1. / (1. + exp.(-n))
-                       # neural_step(x1, w1, w2) = sigmoid(dot(w2[1:size(w1, 2)], relu(w1 * x1[1:size(w1, 2)])))
-                       #
-                       # const TERNARY_MATRIX_TO_NUMBER_FUNCS = (neural_step,)
-                       #
-                       # ################################
-                       # # f!(y::Array, x::Array)::Void #
-                       # ################################
-                       # # Credit for `chebyquad!`, `brown_almost_linear!`, and `trigonometric!` goes to
-                       # # Kristoffer Carlsson (@KristofferC).
-                       #
-                       # function chebyquad!(y, x)
-                       # tk = 1/length(x)
-                       # for j = 1:length(x)
-                       # temp1 = 1.0
-                       # temp2 = 2x[j]-1
-                       # temp = 2temp2
-                       # for i = 1:length(y)
-                       # y[i] += temp2
-                       # ti = temp*temp2 - temp1
-                       # temp1 = temp2
-                       # temp2 = ti
-                       # end
-                       # end
-                       # iev = -1.0
-                       # for k = 1:length(y)
-                       # y[k] *= tk
-                       # if iev > 0
-                       # y[k] += 1/(k^2-1)
-                       # end
-                       # iev = -iev
-                       # end
-                       # return nothing
-                       # end
-                       #
-                       # function brown_almost_linear!(y, x)
-                       # c = sum(x) - (length(x) + 1)
-                       # for i = 1:(length(x)-1), j = 1:(length(y)-1)
-                       # y[j] += x[i] + c
-                       # end
-                       # y[length(y)] = prod(x) - 1
-                       # return nothing
-                       # end
-                       #
-                       # function trigonometric!(y, x)
-                       # for i in x
-                       # for j in eachindex(y)
-                       # y[j] = cos(i)
-                       # end
-                       # end
-                       # c = sum(y)
-                       # n = length(x)
-                       # for i in x
-                       # for j in eachindex(y)
-                       # y[j] = sin(i) * y[j] + n - c
-                       # end
-                       # end
-                       # return nothing
-                       # end
-                       #
-                       # function mutation_test_1!(y, x)
-                       # y[1] = x[1]
-                       # y[1] = y[1] * x[2]
-                       # y[2] = y[2] * x[3]
-                       # y[3] = sum(y)
-                       # return nothing
-                       # end
-                       #
-                       # function mutation_test_2!(y, x)
-                       # y[1] *= x[1]
-                       # y[2] *= x[1]
-                       # y[1] *= x[2]
-                       # y[2] *= x[2]
-                       # return nothing
-                       # end
-                       #
-                       # const INPLACE_ARRAY_TO_ARRAY_FUNCS = (chebyquad!, brown_almost_linear!, trigonometric!,
-                       # mutation_test_1!, mutation_test_2!)
-                       #
-                       # ######################
-                       # # f(x::Array)::Array #
-                       # ######################
-                       #
-                       # chebyquad(x) = (y = fill(zero(eltype(x)), size(x)); chebyquad!(y, x); return y)
-                       #
-                       # brown_almost_linear(x) = (y = fill(zero(eltype(x)), size(x)); brown_almost_linear!(y, x); return y)
-                       #
-                       # trigonometric(x) = (y = fill(one(eltype(x)), size(x)); trigonometric!(y, x); return y)
-                       #
-                       # mutation_test_1(x) = (y = fill(zero(eltype(x)), size(x)); mutation_test_1!(y, x); return y)
-                       #
-                       # mutation_test_2(x) = (y = fill(one(eltype(x)), size(x)); mutation_test_2!(y, x); return y)
-                       #
-                       # arr2arr_1(x) = (sum(x .* x); fill(zero(eltype(x)), size(x)))
-                       #
-                       # arr2arr_2(x) = x[1, :] .+ x[1, :] .+ first(x)
-                       #
-                       # const ARRAY_TO_ARRAY_FUNCS = (-, chebyquad, brown_almost_linear, trigonometric, arr2arr_1,
-                       # arr2arr_2, mutation_test_1, mutation_test_2, identity)
-                       #
-                       # #######################
-                       # # f(::Matrix)::Matrix #
-                       # #######################
-                       #
-                       # const MATRIX_TO_MATRIX_FUNCS = (inv,)
-                       #
-                       # end # module
+
+########################
+# f(x::Matrix)::Number #
+########################
+
+# mat2num_1(x) = det(first(x) * inv(x * x) + x)
+mat2num_1 <- function(x) det(x[1,1] * solve(x %*% x) + x)
+
+# function mat2num_2(x)
+# a = reshape(x, length(x), 1)
+# b = reshape(copy(x), 1, length(x))
+# return trace(log.((1 .+ (a * b)) .+ a .- b))
+# end
+
+mat2num_2 <- function(x){
+    a <- matrix(x, length(x), 1)
+    b <- matrix(x, 1, length(x))
+    sum(log((1 + (a %*% b)) + a - b))
+}
+
+# function mat2num_3(x)
+# k = length(x)
+# N = isqrt(k)
+# A = reshape(x, N, N)
+# return sum(map(n -> sqrt(abs(n) + n^2) * 0.5, A))
+# end
+
+mat2num_3 <- function(x){
+    k <- length(x)
+    N <- as.integer(sqrt(k))
+    A <- matrix(x, N, N)
+    sum(sapply(A, function(n) sqrt(abs(n) + n^2) * 0.5))
+}
+
+# mat2num_4(x) = mean(sum(sin.(x) * x, 2))
+mat2num_4 <- function(x) mean(rowSums(sin(x) %*% x))
+# softmax(x) = sum(exp.(x) ./ sum(exp.(x), 2))
+softmax <- function(x) sum(exp(x) / rowSums(exp(x)))
+
+# const MATRIX_TO_NUMBER_FUNCS = (det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
+MATRIX_TO_NUMBER_FUNCS <- list(det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
+
+####################
+# binary broadcast #
+####################
+
+# if VERSION >= v"0.6.0-dev.1614"
+# const BINARY_BROADCAST_OPS = ((a, b) -> broadcast(+, a, b),
+#                               (a, b) -> broadcast(-, a, b),
+#                               (a, b) -> broadcast(*, a, b),
+#                               (a, b) -> broadcast(/, a, b),
+#                               (a, b) -> broadcast(\, a, b),
+#                               (a, b) -> broadcast(^, a, b))
+# else
+#     const BINARY_BROADCAST_OPS = (.+, .-, .*, ./, .\, .^)
+# end
+
+#################################
+# f(::Matrix, ::Matrix)::Number #
+#################################
+
+# const BINARY_MATRIX_TO_MATRIX_FUNCS = (+, -, *, /, \,
+#                                        BINARY_BROADCAST_OPS...,
+#                                        A_mul_Bt, At_mul_B, At_mul_Bt,
+#                                        A_mul_Bc, Ac_mul_B, Ac_mul_Bc)
+
+###########################################
+# f(::Matrix, ::Matrix, ::Matrix)::Number #
+###########################################
+
+# relu(x) = log.(1.0 .+ exp.(x))
+relu <- function(x) log(1.0 + exp(x))
+# sigmoid(n) = 1. / (1. + exp.(-n))
+sigmoid <- function(n) 1 / (1 + exp(-n))
+# neural_step(x1, w1, w2) = sigmoid(dot(w2[1:size(w1, 2)], relu(w1 * x1[1:size(w1, 2)])))
+## additional function dot in R
+dot <- function(x, y) sum(x * y)
+neural_step <- function(x1, w1, w2) sigmoid(dot(w2[1:ncol(w1)], relu(w1 %*% x1[1:ncol(w1)])))
+
+# const TERNARY_MATRIX_TO_NUMBER_FUNCS = (neural_step,)
+TERNARY_MATRIX_TO_NUMBER_FUNCS <- list(neural_step)
+
+################################
+# f!(y::Array, x::Array)::Void #
+################################
+# Credit for `chebyquad!`, `brown_almost_linear!`, and `trigonometric!` goes to
+# Kristoffer Carlsson (@KristofferC).
+
+# function chebyquad!(y, x)
+# tk = 1/length(x)
+# for j = 1:length(x)
+# temp1 = 1.0
+# temp2 = 2x[j]-1
+# temp = 2temp2
+# for i = 1:length(y)
+# y[i] += temp2
+# ti = temp*temp2 - temp1
+# temp1 = temp2
+# temp2 = ti
+# end
+# end
+# iev = -1.0
+# for k = 1:length(y)
+# y[k] *= tk
+# if iev > 0
+# y[k] += 1/(k^2-1)
+# end
+# iev = -iev
+# end
+# return nothing
+# end
+#
+# function brown_almost_linear!(y, x)
+# c = sum(x) - (length(x) + 1)
+# for i = 1:(length(x)-1), j = 1:(length(y)-1)
+# y[j] += x[i] + c
+# end
+# y[length(y)] = prod(x) - 1
+# return nothing
+# end
+#
+# function trigonometric!(y, x)
+# for i in x
+# for j in eachindex(y)
+# y[j] = cos(i)
+# end
+# end
+# c = sum(y)
+# n = length(x)
+# for i in x
+# for j in eachindex(y)
+# y[j] = sin(i) * y[j] + n - c
+# end
+# end
+# return nothing
+# end
+#
+# function mutation_test_1!(y, x)
+# y[1] = x[1]
+# y[1] = y[1] * x[2]
+# y[2] = y[2] * x[3]
+# y[3] = sum(y)
+# return nothing
+# end
+#
+# function mutation_test_2!(y, x)
+# y[1] *= x[1]
+# y[2] *= x[1]
+# y[1] *= x[2]
+# y[2] *= x[2]
+# return nothing
+# end
+#
+# const INPLACE_ARRAY_TO_ARRAY_FUNCS = (chebyquad!, brown_almost_linear!, trigonometric!,
+#                                       mutation_test_1!, mutation_test_2!)
+
+######################
+# f(x::Array)::Array #
+######################
+
+# chebyquad(x) = (y = fill(zero(eltype(x)), size(x)); chebyquad!(y, x); return y)
+#
+# brown_almost_linear(x) = (y = fill(zero(eltype(x)), size(x)); brown_almost_linear!(y, x); return y)
+#
+# trigonometric(x) = (y = fill(one(eltype(x)), size(x)); trigonometric!(y, x); return y)
+#
+# mutation_test_1(x) = (y = fill(zero(eltype(x)), size(x)); mutation_test_1!(y, x); return y)
+#
+# mutation_test_2(x) = (y = fill(one(eltype(x)), size(x)); mutation_test_2!(y, x); return y)
+#
+# arr2arr_1(x) = (sum(x .* x); fill(zero(eltype(x)), size(x)))
+#
+# arr2arr_2(x) = x[1, :] .+ x[1, :] .+ first(x)
+#
+# const ARRAY_TO_ARRAY_FUNCS = (-, chebyquad, brown_almost_linear, trigonometric, arr2arr_1,
+#                               arr2arr_2, mutation_test_1, mutation_test_2, identity)
+
+#######################
+# f(::Matrix)::Matrix #
+#######################
+
+# const MATRIX_TO_MATRIX_FUNCS = (inv,)
+MATRIX_TO_MATRIX_FUNCS <- list(solve)
