@@ -82,60 +82,112 @@ NUMBER_TO_ARRAY_FUNCS <- list(num2arr_1)
 ## additional functions to define vecnorm in R
 vecnorm <- function(x) sqrt(sum(x ^ 2))
 
+# vec2num_1(x) = (exp(x[1]) + log(x[3]) * x[4]) / x[5]
 vec2num_1 <- function(x) (exp(x[1]) + log(x[3]) * x[4]) / x[5]
+# vec2num_2(x) = x[1]*x[2] + sin(x[1])
 vec2num_2 <- function(x) x[1]*x[2] + sin(x[1])
 # vec2num_3(x) = vecnorm(x' .* x)
-vec2num_3 <- function(x) vecnorm(x)
+vec2num_3 <- function(x) vecnorm(sum(x^2))
 # vec2num_4(x) = ((sum(x) + prod(x)); 1)
-vec2num_4 <- function(x) sum(x) + prod(x)
+vec2num_4 <- function(x){sum(x) + prod(x); 1}
+# vec2num_5(x) = sum((-x).^3)
 vec2num_5 <- function(x) sum((-x) ^ 3)
+# vec2num_6(x) = sum([ifelse(i > 0, i, 0) for i in x])
 vec2num_6 <- function(x) sum(ifelse(x > 0, x, 0))
+# vec2num_7(x) = sum(map(y -> x[1] * y, x))
 vec2num_7 <- function(x) sum(sapply(function(y) x[1] * y, x))
 
-                       # rosenbrock_1 function(x)
-                       # a = one(eltype(x))
-                       # b = 100 * a
-                       # result = zero(eltype(x))
-                       # for i in 1:length(x)-1
-                       # result += (a - x[i])^2 + b*(x[i+1] - x[i]^2)^2
-                       # end
-                       # return result
-                       # end
-                       #
-                       # function rosenbrock_2(x)
-                       # a = x[1]
-                       # b = 100 * a
-                       # v = map((i, j) -> (a - j)^2 + b*(i - j^2)^2, x[2:end], x[1:end-1])
-                       # return sum(v)
-                       # end
-                       #
-                       # rosenbrock_3(x) = sum(map((i, j) -> (1 - j)^2 + 100*(i - j^2)^2, x[2:end], x[1:end-1]))
-                       #
-                       # function rosenbrock_4(x)
-                       # t1 = (1 .+ x[1:end-1]).^2
-                       # t2 = x[2:end] .+ (x[1:end-1]).^2
-                       # return sum(t1 .+ 100 .* (abs.(t2)).^2)
-                       # end
-                       #
-                       # function ackley(x)
-                       # a, b, c = 20.0, -0.2, 2.0*π
-                       # len_recip = inv(length(x))
-                       # sum_sqrs = zero(eltype(x))
-                       # sum_cos = sum_sqrs
-                       # for i in x
-                       # sum_cos += cos(c*i)
-                       # sum_sqrs += i^2
-                       # end
-                       # return (-a * exp(b * sqrt(len_recip*sum_sqrs)) -
-                       # exp(len_recip*sum_cos) + a + exp(1))
-                       # end
-                       #
-                       # self_weighted_logit(x) = inv(1.0 + exp(-dot(x, x)))
-                       #
-                       # const VECTOR_TO_NUMBER_FUNCS = (vec2num_1, vec2num_2,  vec2num_3, vec2num_4, vec2num_5,
-                       # vec2num_6, vec2num_7, rosenbrock_1, rosenbrock_2,
-                       # rosenbrock_3, rosenbrock_4, ackley, self_weighted_logit,
-                       # first)
+# function rosenbrock_1(x)
+# a = one(eltype(x))
+# b = 100 * a
+# result = zero(eltype(x))
+# for i in 1:length(x)-1
+# result += (a - x[i])^2 + b*(x[i+1] - x[i]^2)^2
+# end
+# return result
+# end
+
+rosenbrock_1 <- function(x){
+    a <- 1
+    b <- 100 * a
+    result <- 0
+    for (i in 1:(length(x) - 1)) {
+        result <- result + (a - x[i])^2 + b*(x[i + 1] - x[i]^2)^2
+    }
+    result
+}
+
+# function rosenbrock_2(x)
+# a = x[1]
+# b = 100 * a
+# v = map((i, j) -> (a - j)^2 + b*(i - j^2)^2, x[2:end], x[1:end-1])
+# return sum(v)
+# end
+
+rosenbrock_2 <- function(x){
+    a <- x[1]
+    b <- 100 * a
+    v <- mapply(function(i, j) (a - j)^2 + b * (i - j ^ 2) ^ 2, x[2:length(x)], x[1:(length(x) - 1)])
+    sum(v)
+}
+
+# rosenbrock_3(x) = sum(map((i, j) -> (1 - j)^2 + 100*(i - j^2)^2, x[2:end], x[1:end-1]))
+
+rosenbrock_3 <- function(x) sum(mapply(function(i, j) (1 - j)^2 + 100 * (i - j ^ 2) ^ 2,
+                                       x[2:length(x)],
+                                       x[1:(length(x) - 1)]))
+
+# function rosenbrock_4(x)
+# t1 = (1 .+ x[1:end-1]).^2
+# t2 = x[2:end] .+ (x[1:end-1]).^2
+# return sum(t1 .+ 100 .* (abs.(t2)).^2)
+# end
+
+rosenbrock_4 <- function(x){
+    t1 <- (1 + x[1:(length(x) - 1)]) ^ 2
+    t2 <- x[2:length(x)] + (x[1:(length(x) - 1)]) ^ 2
+    sum(t1 + 100 * (abs(t2)) ^ 2)
+}
+
+# function ackley(x)
+# a, b, c = 20.0, -0.2, 2.0*π
+# len_recip = inv(length(x))
+# sum_sqrs = zero(eltype(x))
+# sum_cos = sum_sqrs
+# for i in x
+# sum_cos += cos(c*i)
+# sum_sqrs += i^2
+# end
+# return (-a * exp(b * sqrt(len_recip*sum_sqrs)) -
+#             exp(len_recip*sum_cos) + a + exp(1))
+# end
+
+ackley <- function(x){
+    a <- 20.0; b <- -0.2; c <- 2.0 * pi
+    len_recip <- 1 / length(x)
+    sum_sqrs <- 0
+    sum_cos <- sum_sqrs
+    for (i in x) {
+        sum_cos <- sum_cos + cos(c * i)
+        sum_sqrs <- sum_sqrs + i ^ 2
+    }
+    - a * exp(b * sqrt(len_recip * sum_sqrs)) -
+        exp(len_recip * sum_cos) + a + exp(1)
+}
+
+# self_weighted_logit(x) = inv(1.0 + exp(-dot(x, x)))
+
+self_weighted_logit <- function(x){1 / (1.0 + exp(-sum(x ^ 2)))}
+
+# const VECTOR_TO_NUMBER_FUNCS = (vec2num_1, vec2num_2,  vec2num_3, vec2num_4, vec2num_5,
+#                                 vec2num_6, vec2num_7, rosenbrock_1, rosenbrock_2,
+#                                 rosenbrock_3, rosenbrock_4, ackley, self_weighted_logit,
+#                                 first)
+
+VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2,  vec2num_3, vec2num_4, vec2num_5,
+                               vec2num_6, vec2num_7, rosenbrock_1, rosenbrock_2,
+                               rosenbrock_3, rosenbrock_4, ackley, self_weighted_logit,
+                               function(x) x[1])
                        #
                        # ########################
                        # # f(x::Matrix)::Number #
