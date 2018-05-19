@@ -38,3 +38,5 @@
 * Add test utility functions to check the results from R wrappers with the results from `Julia`. Apply the change in testing of automatic differentiation of rosenbrock function.
 * Considering adapting tests from `ForwardDiff.jl` and `ReverseDiff.jl`.
 * Make changes in `JuliaCall` to facilitate the development of `autodiffr`.
+* Tests for `forward.deriv` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/DerivativeTest.jl>. Found an issue caused by `JuliaCall`. The problematic test will be commented out until the issue is fixed in `JuliaCall`.
+* Some tests for `forward.grad` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>. 
