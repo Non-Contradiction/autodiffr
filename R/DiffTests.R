@@ -98,7 +98,7 @@ vec2num_5 <- function(x) sum((-x) ^ 3)
 # vec2num_6(x) = sum([ifelse(i > 0, i, 0) for i in x])
 vec2num_6 <- function(x) sum(ifelse(x > 0, x, 0))
 # vec2num_7(x) = sum(map(y -> x[1] * y, x))
-vec2num_7 <- function(x) sum(sapply(function(y) x[1] * y, x))
+vec2num_7 <- function(x) sum(sapply(x, function(y) x[1] * y))
 
 # function rosenbrock_1(x)
 # a = one(eltype(x))
