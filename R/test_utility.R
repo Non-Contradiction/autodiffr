@@ -84,7 +84,9 @@ test_setup <- function(){
         YLEN <- div(DEFAULT_CHUNK_THRESHOLD, 2) + 1
         X <- runif(XLEN)
         Y <- runif(YLEN)
-        CHUNK_SIZES <- c(1, div(DEFAULT_CHUNK_THRESHOLD, 3), div(DEFAULT_CHUNK_THRESHOLD, 2), DEFAULT_CHUNK_THRESHOLD, DEFAULT_CHUNK_THRESHOLD + 1)
+        CHUNK_SIZES <- as.integer(c(1, div(DEFAULT_CHUNK_THRESHOLD, 3),
+                                    div(DEFAULT_CHUNK_THRESHOLD, 2), DEFAULT_CHUNK_THRESHOLD,
+                                    DEFAULT_CHUNK_THRESHOLD + 1))
         FINITEDIFF_ERROR = 3e-5
     }))
 }
