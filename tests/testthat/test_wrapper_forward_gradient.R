@@ -21,6 +21,9 @@ test_that("test on rosenbrock function", {
         for (tag in list(JuliaCall::julia_eval("nothing", need_return = "Julia"),
                          JuliaCall::julia_call("ForwardDiff.Tag",
                                                f, JuliaCall::julia_eval("Float64")))) {
+
+            print(paste0("  ...running hardcoded test with chunk size = ", c, " and tag = ", tag))
+
             JuliaCall::julia_assign("c", c)
             cfg <- JuliaCall::julia_call("ForwardDiff.GradientConfig",
                                          f, x,
