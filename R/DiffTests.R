@@ -32,6 +32,8 @@ num2num_4 <- function(x) 1
 #                                 num2num_4, num2num_5, identity)
 NUMBER_TO_NUMBER_FUNCS <- list(num2num_1, num2num_2, num2num_3,
                                num2num_4, identity) # num2num_5, identity)
+names(NUMBER_TO_NUMBER_FUNCS) <- c("num2num_1", "num2num_2", "num2num_3",
+                                   "num2num_4", "identity")
 
 #######################
 # f(x::Number)::Array #
@@ -60,6 +62,7 @@ num2arr_1 <- function(x){
 
 # const NUMBER_TO_ARRAY_FUNCS = (num2arr_1,)
 NUMBER_TO_ARRAY_FUNCS <- list(num2arr_1)
+names(NUMBER_TO_ARRAY_FUNCS) <- c("num2arr_1")
 
 #################################
 # f!(y::Array, x::Number)::Void #
@@ -184,10 +187,14 @@ self_weighted_logit <- function(x){1 / (1.0 + exp(-sum(x ^ 2)))}
 #                                 rosenbrock_3, rosenbrock_4, ackley, self_weighted_logit,
 #                                 first)
 
-VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2,  vec2num_3, vec2num_4, vec2num_5,
+VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2, vec2num_3, vec2num_4, vec2num_5,
                                vec2num_6, vec2num_7, rosenbrock_1, rosenbrock_2,
                                rosenbrock_3, rosenbrock_4, ackley, self_weighted_logit,
                                function(x) x[1])
+names(VECTOR_TO_NUMBER_FUNCS) <- c("vec2num_1", "vec2num_2", "vec2num_3", "vec2num_4", "vec2num_5",
+                                   "vec2num_6", "vec2num_7", "rosenbrock_1", "rosenbrock_2",
+                                   "rosenbrock_3", "rosenbrock_4", "ackley", "self_weighted_logit",
+                                   "first")
 
 ########################
 # f(x::Matrix)::Number #
@@ -229,6 +236,7 @@ softmax <- function(x) sum(exp(x) / rowSums(exp(x)))
 
 # const MATRIX_TO_NUMBER_FUNCS = (det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
 MATRIX_TO_NUMBER_FUNCS <- list(det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
+names(MATRIX_TO_NUMBER_FUNCS) <- c("det", "mat2num_1", "mat2num_2", "mat2num_3", "mat2num_4", "softmax")
 
 ####################
 # binary broadcast #
@@ -269,6 +277,7 @@ neural_step <- function(x1, w1, w2) sigmoid(dot(w2[1:ncol(w1)], relu(w1 %*% x1[1
 
 # const TERNARY_MATRIX_TO_NUMBER_FUNCS = (neural_step,)
 TERNARY_MATRIX_TO_NUMBER_FUNCS <- list(neural_step)
+names(TERNARY_MATRIX_TO_NUMBER_FUNCS) <- c("neural_step")
 
 ################################
 # f!(y::Array, x::Array)::Void #
@@ -371,3 +380,4 @@ TERNARY_MATRIX_TO_NUMBER_FUNCS <- list(neural_step)
 
 # const MATRIX_TO_MATRIX_FUNCS = (inv,)
 MATRIX_TO_MATRIX_FUNCS <- list(solve)
+names(MATRIX_TO_MATRIX_FUNCS) <- c("solve")
