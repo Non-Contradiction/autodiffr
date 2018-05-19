@@ -188,10 +188,10 @@ self_weighted_logit <- function(x){1 / (1.0 + exp(-sum(x ^ 2)))}
 #                                 first)
 
 VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2, vec2num_3, vec2num_4, vec2num_5,
-                               rosenbrock_1, rosenbrock_4, ackley, self_weighted_logit,
+                               rosenbrock_1, rosenbrock_4, self_weighted_logit,
                                function(x) x[1])
 names(VECTOR_TO_NUMBER_FUNCS) <- c("vec2num_1", "vec2num_2", "vec2num_3", "vec2num_4", "vec2num_5",
-                                   "rosenbrock_1", "rosenbrock_4", "ackley", "self_weighted_logit",
+                                   "rosenbrock_1", "rosenbrock_4", "self_weighted_logit",
                                    "first")
 
 ########################
