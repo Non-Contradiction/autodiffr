@@ -51,7 +51,9 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     # test vs. Calculus.jl #
     ########################
 
-    for (f in autodiffr:::VECTOR_TO_NUMBER_FUNCS) {
+    for (i in 1:length(autodiffr:::VECTOR_TO_NUMBER_FUNCS)) {
+        f <- autodiffr:::VECTOR_TO_NUMBER_FUNCS[[i]]
+        n <- names(autodiffr:::VECTOR_TO_NUMBER_FUNCS)[i]
         v <- f(X)
         g <- forward.grad(f, X)
         expect_equal(g, JuliaCall::julia_call("Calculus.derivative", f, X))
@@ -60,6 +62,9 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
             for (tag in list(JuliaCall::julia_eval("nothing", need_return = "Julia"),
                              JuliaCall::julia_call("ForwardDiff.Tag",
                                                    f, JuliaCall::julia_eval("Float64")))) {
+
+                print(paste0("  ...testing ", n, " with chunk size = ", c, " and tag = ", tag))
+
                 JuliaCall::julia_assign("c", c)
                 cfg <- JuliaCall::julia_call("ForwardDiff.GradientConfig",
                                              f, x,
