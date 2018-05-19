@@ -26,14 +26,14 @@ num2num_3 <- function(x) 10.31^(x + x) - x
 # num2num_4(x) = 1
 num2num_4 <- function(x) 1
 # num2num_5(x) = 1. / (1. + exp(-x))
-# num2num_5 <- function(x) 1 / (1 + exp(-x))
+num2num_5 <- function(x) 1 / (1 + exp(-x))
 
 # const NUMBER_TO_NUMBER_FUNCS = (num2num_1, num2num_2, num2num_3,
 #                                 num2num_4, num2num_5, identity)
 NUMBER_TO_NUMBER_FUNCS <- list(num2num_1, num2num_2, num2num_3,
-                               num2num_4, identity) # num2num_5, identity)
+                               num2num_4, num2num_5, identity)
 names(NUMBER_TO_NUMBER_FUNCS) <- c("num2num_1", "num2num_2", "num2num_3",
-                                   "num2num_4", "identity")
+                                   "num2num_4", "num2num_5", "identity")
 
 #######################
 # f(x::Number)::Array #
