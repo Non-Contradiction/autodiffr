@@ -65,3 +65,10 @@ expect_jacobian <- function(f, x, result = NULL, jf_str = NULL){
                                JuliaCall::julia_eval(command))
     }
 }
+
+test_setup <- function(){
+    JuliaCall::julia_install_package_if_needed("Calculus")
+    JuliaCall::julia_library("Calculus")
+    JuliaCall::julia_install_package_if_needed("DiffTests")
+    JuliaCall::julia_library("DiffTests")
+}
