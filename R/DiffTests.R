@@ -98,7 +98,8 @@ vec2num_5 <- function(x) sum((-x) ^ 3)
 # vec2num_6(x) = sum([ifelse(i > 0, i, 0) for i in x])
 vec2num_6 <- function(x) sum(ifelse(x > 0, x, 0))
 # vec2num_7(x) = sum(map(y -> x[1] * y, x))
-vec2num_7 <- function(x) sum(sapply(x, function(y) x[1] * y))
+# vec2num_7 <- function(x) sum(sapply(x, function(y) x[1] * y))
+vec2num_7 <- function(x) sum(map(function(y) x[1] * y, x))
 
 # function rosenbrock_1(x)
 # a = one(eltype(x))
@@ -130,15 +131,20 @@ rosenbrock_1 <- function(x){
 rosenbrock_2 <- function(x){
     a <- x[1]
     b <- 100 * a
-    v <- mapply(function(i, j) (a - j)^2 + b * (i - j ^ 2) ^ 2, x[2:length(x)], x[1:(length(x) - 1)])
+    # v <- mapply(function(i, j) (a - j)^2 + b * (i - j ^ 2) ^ 2, x[2:length(x)], x[1:(length(x) - 1)])
+    v <- map(function(i, j) (a - j)^2 + b * (i - j ^ 2) ^ 2, x[2:length(x)], x[1:(length(x) - 1)])
     sum(v)
 }
 
 # rosenbrock_3(x) = sum(map((i, j) -> (1 - j)^2 + 100*(i - j^2)^2, x[2:end], x[1:end-1]))
 
-rosenbrock_3 <- function(x) sum(mapply(function(i, j) (1 - j)^2 + 100 * (i - j ^ 2) ^ 2,
-                                       x[2:length(x)],
-                                       x[1:(length(x) - 1)]))
+# rosenbrock_3 <- function(x) sum(mapply(function(i, j) (1 - j)^2 + 100 * (i - j ^ 2) ^ 2,
+#                                        x[2:length(x)],
+#                                        x[1:(length(x) - 1)]))
+
+rosenbrock_3 <- function(x) sum(map(function(i, j) (1 - j)^2 + 100 * (i - j ^ 2) ^ 2,
+                                    x[2:length(x)],
+                                    x[1:(length(x) - 1)]))
 
 # function rosenbrock_4(x)
 # t1 = (1 .+ x[1:end-1]).^2
@@ -187,11 +193,12 @@ self_weighted_logit <- function(x){1 / (1.0 + exp(-sum(x ^ 2)))}
 #                                 rosenbrock_3, rosenbrock_4, ackley, self_weighted_logit,
 #                                 first)
 
-VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2, vec2num_3, vec2num_4, vec2num_5,
-                               rosenbrock_1, rosenbrock_4, self_weighted_logit,
+VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2, vec2num_3, vec2num_4, vec2num_5, vec2num_7,
+                               rosenbrock_1, rosenbrock_2, rosenbrock_3, rosenbrock_4, self_weighted_logit,
                                function(x) x[1])
 names(VECTOR_TO_NUMBER_FUNCS) <- c("vec2num_1", "vec2num_2", "vec2num_3", "vec2num_4", "vec2num_5",
-                                   "rosenbrock_1", "rosenbrock_4", "self_weighted_logit",
+                                   "vec2num_7", "rosenbrock_1", "rosenbrock_2", "rosenbrock_3",
+                                   "rosenbrock_4", "self_weighted_logit",
                                    "first")
 
 ########################
