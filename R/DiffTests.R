@@ -171,12 +171,25 @@ rosenbrock_4 <- function(x){
 #             exp(len_recip*sum_cos) + a + exp(1))
 # end
 
+# ackley <- function(x){
+#     a <- 20.0; b <- -0.2; c <- 2.0 * pi
+#     len_recip <- 1 / length(x)
+#     sum_sqrs <- 0
+#     sum_cos <- sum_sqrs
+#     for (i in x) {
+#         sum_cos <- sum_cos + cos(c * i)
+#         sum_sqrs <- sum_sqrs + i ^ 2
+#     }
+#     - a * exp(b * sqrt(len_recip * sum_sqrs)) -
+#         exp(len_recip * sum_cos) + a + exp(1)
+# }
+
 ackley <- function(x){
     a <- 20.0; b <- -0.2; c <- 2.0 * pi
     len_recip <- 1 / length(x)
     sum_sqrs <- 0
     sum_cos <- sum_sqrs
-    for (i in x) {
+    for (i in as.list(x)) {
         sum_cos <- sum_cos + cos(c * i)
         sum_sqrs <- sum_sqrs + i ^ 2
     }
@@ -194,12 +207,11 @@ self_weighted_logit <- function(x){1 / (1.0 + exp(-sum(x ^ 2)))}
 #                                 first)
 
 VECTOR_TO_NUMBER_FUNCS <- list(vec2num_1, vec2num_2, vec2num_3, vec2num_4, vec2num_5, vec2num_7,
-                               rosenbrock_1, rosenbrock_2, rosenbrock_3, rosenbrock_4, self_weighted_logit,
-                               function(x) x[1])
+                               rosenbrock_1, rosenbrock_2, rosenbrock_3, rosenbrock_4,
+                               ackley, self_weighted_logit, function(x) x[1])
 names(VECTOR_TO_NUMBER_FUNCS) <- c("vec2num_1", "vec2num_2", "vec2num_3", "vec2num_4", "vec2num_5",
                                    "vec2num_7", "rosenbrock_1", "rosenbrock_2", "rosenbrock_3",
-                                   "rosenbrock_4", "self_weighted_logit",
-                                   "first")
+                                   "rosenbrock_4", "ackley", "self_weighted_logit", "first")
 
 ########################
 # f(x::Matrix)::Number #
