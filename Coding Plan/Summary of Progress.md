@@ -39,4 +39,19 @@
 * Considering adapting tests from `ForwardDiff.jl` and `ReverseDiff.jl`.
 * Make changes in `JuliaCall` to facilitate the development of `autodiffr`.
 * Tests for `forward.deriv` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/DerivativeTest.jl>. Found an issue caused by `JuliaCall`. The problematic test will be commented out until the issue is fixed in `JuliaCall`.
-* Some tests for `forward.grad` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>. 
+* Some tests for `forward.grad` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>.
+
+## May 19
+
+* Adapt more tests in <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>.
+* Fix some small bugs and improve the debugging of the package.
+* Identify three new issues using the new tests and debugging facility,
+    - issue related to `ifelse`
+    - issue related to `sapply`, `mapply` and etc.
+    - issue related to things like `for (i in x)` when `x` is the input vector.
+* Fix the issue found yesterday in `JuliaCall`, add the commented test back.
+* Thinking and experimenting about ways to solve the three issues found today. Investigate deeply into the `sapply` and `mapply` issue and have tried many methods to solve it. Since every main function involved in `sapply` and `mapply` is either non-generic or internal-generic, and there seems no way to overload any needed method, the only viable method seems to define our own method, and there are advantages and disadvantages:
+    - disadvantage: it is a new method and the users need to use it instead of `sapply` and `mapply` to make automatic differentiation working for their functions;
+    - advantage: the new method is more clear, robust and not fragile;
+    - advantage: the new method is quite efficient;
+    - advantage: the new method is easy to use assume that the user is already familiar with `mapply`, in fact, the usage is the same to `mapply`.
