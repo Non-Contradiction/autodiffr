@@ -24,9 +24,7 @@ test_that("test on rosenbrock function", {
 
         print(paste0("  ...running hardcoded test with chunk size = ", c))
 
-        JuliaCall::julia_assign("c", c)
-
-        cfg <- forward.hessian.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+        cfg <- forward.hessian.config(f, x, chunk_size = c)
 
         expect_equal(h, forward.hessian(f, x, cfg))
 
@@ -64,9 +62,7 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
 
             print(paste0("  ...testing ", n, " with chunk size = ", c))
 
-            JuliaCall::julia_assign("c", c)
-
-            cfg <- forward.hessian.config(f, X, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+            cfg <- forward.hessian.config(f, X, chunk_size = c)
 
             out <- forward.hessian(f, X, cfg)
 
