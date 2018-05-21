@@ -54,7 +54,7 @@ forward.deriv <- function(f, x){
 #' @rdname ForwardDiff
 #' @export
 forward.grad <- function(f, x,
-                         cfg = forward.grad.config(f, x),
+                         cfg = JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x),
                          check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
@@ -72,7 +72,7 @@ forward.grad <- function(f, x,
 #' @rdname ForwardDiff
 #' @export
 forward.jacobian <- function(f, x,
-                             cfg = forward.jacobian.config(f, x),
+                             cfg = JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x),
                              check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
@@ -90,7 +90,7 @@ forward.jacobian <- function(f, x,
 #' @rdname ForwardDiff
 #' @export
 forward.hessian <- function(f, x,
-                            cfg = forward.hessian.config(f, x),
+                            cfg = JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x),
                             check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
