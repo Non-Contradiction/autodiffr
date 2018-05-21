@@ -13,13 +13,15 @@
 #'
 #' @export
 ad_setup <- function(...) {
-    .AD$julia <- JuliaCall::julia_setup(...)
-    .AD$julia$install_package_if_needed("ForwardDiff")
-    .AD$julia$install_package_if_needed("ReverseDiff")
-    .AD$julia$library("ForwardDiff")
-    .AD$julia$library("ReverseDiff")
+    if (!isTRUE(.AD$initialized)) {
+        .AD$julia <- JuliaCall::julia_setup(...)
+        .AD$julia$install_package_if_needed("ForwardDiff")
+        .AD$julia$install_package_if_needed("ReverseDiff")
+        .AD$julia$library("ForwardDiff")
+        .AD$julia$library("ReverseDiff")
 
-    .AD$initialized <- TRUE
+        .AD$initialized <- TRUE
+    }
 }
 
 #' Calculate the gradient of a function.
@@ -35,7 +37,7 @@ ad_setup <- function(...) {
 grad <- function(func, x = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 

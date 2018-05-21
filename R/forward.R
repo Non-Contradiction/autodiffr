@@ -44,7 +44,7 @@ NULL
 forward.deriv <- function(f, x){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 
@@ -58,7 +58,7 @@ forward.grad <- function(f, x,
                          check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 
@@ -76,7 +76,7 @@ forward.jacobian <- function(f, x,
                              check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 
@@ -94,7 +94,7 @@ forward.hessian <- function(f, x,
                             check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 
@@ -112,7 +112,7 @@ forward.hessian <- function(f, x,
 forward.grad.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 
@@ -129,7 +129,7 @@ forward.grad.config <- function(f, x, chunk_size = NULL){
 forward.jacobian.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 
@@ -146,7 +146,7 @@ forward.jacobian.config <- function(f, x, chunk_size = NULL){
 forward.hessian.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
+    if (!isTRUE(.AD$initialized)) {
         ad_setup()
     }
 
