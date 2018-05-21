@@ -55,3 +55,13 @@
     - advantage: the new method is more clear, robust and not fragile;
     - advantage: the new method is quite efficient;
     - advantage: the new method is easy to use assume that the user is already familiar with `mapply`, in fact, the usage is the same to `mapply`.
+* Use the aforementioned method to deal with the problem caused by `sapply` and `mapply` and add the related tests back.
+
+## May 20
+
+* After investigation, we can get around the issue caused by `for (i in x)` by using `for (i in as.list(x))` instead in the function that we want to apply automatic differentiation. Although there is some performance issue with the approach and is a little inconvenience, it should work.
+* Use the aforementioned method to deal with the problem caused by `for (i in x)` and add the related test back.
+* `ad_setup()` is not necessary any more, which is more convenient.
+* Progress in adapting tests for Hessian for `ForwardDiff.jl` at <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/HessianTest.jl>.
+* Thinking about wrapping the mutating methods in `ForwardDiff.jl` and `ReverseDiff.jl` and doing some experiments about this.
+* Thinking about adding `tag` argument for the Config methods to match the signature in `ForwardDiff.jl` and `ReverseDiff.jl`.
