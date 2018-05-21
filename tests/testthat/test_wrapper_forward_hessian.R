@@ -51,27 +51,21 @@ test_that("test on rosenbrock function", {
                   0.0, -80.0, 200.0), 3, 3)
 
     for (c in 1:3) {
-        for (tag in list(JuliaCall::julia_eval("nothing", need_return = "Julia"),
-                         JuliaCall::julia_call("ForwardDiff.Tag",
-                                               f, JuliaCall::julia_eval("Float64")))) {
 
-            print(paste0("  ...running hardcoded test with chunk size = ", c, " and tag = ", tag))
+            print(paste0("  ...running hardcoded test with chunk size = ", c)
 
             JuliaCall::julia_assign("c", c)
-            cfg <- JuliaCall::julia_call("ForwardDiff.GradientConfig",
-                                         f, x,
-                                         JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"),
-                                         tag)
+            cfg <- forward.hessian.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
 
-            expect_equal(g, forward.grad(f, x, cfg))
-            expect_equal(g, forward.grad(f, x))
+            expect_equal(h, forward.hessian(f, x, cfg))
+            expect_equal(h, forward.hessian(f, x))
         }
     }
 
-    cfgx <- forward.grad.config(sin, x)
-    expect_error(forward.grad(f, x, cfg = cfgx))
-    expect_identical(forward.grad(f, x, cfg = cfgx, check = JuliaCall::julia_call("Val{false}")),
-                     forward.grad(f,x))
+    cfgx <- forward.hessian.config(sin, x)
+    expect_error(forward.hessian(f, x, cfg = cfgx))
+    expect_identical(forward.hessian(f, x, cfg = cfgx, check = JuliaCall::julia_call("Val{false}")),
+                     forward.hessian(f,x))
 
 })
 
@@ -89,23 +83,23 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
         n <- names(autodiffr:::VECTOR_TO_NUMBER_FUNCS)[i]
         v <- f(X)
         g <- forward.grad(f, X)
-        expect_equal(g, JuliaCall::julia_call("Calculus.derivative", f, X))
+        h <- forward.hessian(f, X)
+        expect_equal(h, JuliaCall::julia_call("Calculus.hessian", f, X))
+
+        cfg0 <- forward.hessian.config(f, X)
+        expect_equal(h, forward.hessian(f, X, cfg0))
 
         for (c in CHUNK_SIZES) {
-            for (tag in list(JuliaCall::julia_eval("nothing", need_return = "Julia"),
-                             JuliaCall::julia_call("ForwardDiff.Tag",
-                                                   f, JuliaCall::julia_eval("Float64")))) {
 
-                print(paste0("  ...testing ", n, " with chunk size = ", c, " and tag = ", tag))
+            print(paste0("  ...testing ", n, " with chunk size = ", c))
 
-                JuliaCall::julia_assign("c", c)
-                cfg <- JuliaCall::julia_call("ForwardDiff.GradientConfig",
-                                             f, X,
-                                             JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"),
-                                             tag)
+            JuliaCall::julia_assign("c", c)
 
-                expect_equal(g, forward.grad(f, X, cfg))
-            }
+            cfg <- forward.hessian.config(f, X, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+
+            out <- forward.hessian(f, X, cfg)
+
+            expect_equal(out, h)
         }
     }
 })
