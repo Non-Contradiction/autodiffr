@@ -30,7 +30,12 @@ test_that("test on rosenbrock function", {
                                          JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"),
                                          tag)
 
+            cfg0 <- forward.grad.config(f, x)
+            cfg1 <- forward.grad.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+
             expect_equal(g, forward.grad(f, x, cfg))
+            expect_equal(g, forward.grad(f, x, cfg0))
+            expect_equal(g, forward.grad(f, x, cfg1))
             expect_equal(g, forward.grad(f, x))
         }
     }
@@ -58,6 +63,9 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
         g <- forward.grad(f, X)
         expect_equal(g, JuliaCall::julia_call("Calculus.derivative", f, X))
 
+        cfg0 <- forward.grad.config(f, X)
+        expect_equal(g, forward.grad(f, X, cfg = cfg0))
+
         for (c in CHUNK_SIZES) {
             for (tag in list(JuliaCall::julia_eval("nothing", need_return = "Julia"),
                              JuliaCall::julia_call("ForwardDiff.Tag",
@@ -71,7 +79,10 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
                                              JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"),
                                              tag)
 
+                cfg1 <- forward.grad.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+
                 expect_equal(g, forward.grad(f, X, cfg))
+                expect_equal(g, forward.grad(f, X, cfg1))
             }
         }
     }
