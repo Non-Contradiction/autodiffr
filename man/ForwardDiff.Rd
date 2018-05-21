@@ -14,14 +14,14 @@
 forward.deriv(f, x)
 
 forward.grad(f, x, cfg = JuliaCall::julia_call("ForwardDiff.GradientConfig",
-  f, x), check = JuliaCall::julia_call("Val{true}"))
+  f, x), check = TRUE)
 
 forward.jacobian(f, x,
   cfg = JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x),
-  check = JuliaCall::julia_call("Val{true}"))
+  check = TRUE)
 
 forward.hessian(f, x, cfg = JuliaCall::julia_call("ForwardDiff.HessianConfig",
-  f, x), check = JuliaCall::julia_call("Val{true}"))
+  f, x), check = TRUE)
 
 forward.grad.config(f, x, chunk_size = NULL)
 
@@ -47,7 +47,7 @@ such as chunk size, work buffers, and perturbation seed configurations.
 but you can drastically reduce memory usage if you preallocate them yourself.}
 
 \item{check}{whether to allow tag checking.
-Set check to \code{JuliaCall::julia_call("Val{false}")} to disable tag checking for \code{ForwardDiff}.
+Set check to \code{FALSE} to disable tag checking for \code{ForwardDiff}.
 This can lead to perturbation confusion, so should be used with care.}
 
 \item{chunk_size}{the size of the chunk to construct the Config objects for \code{ForwardDiff}.

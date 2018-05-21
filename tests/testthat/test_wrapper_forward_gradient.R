@@ -32,7 +32,7 @@ test_that("test on rosenbrock function", {
 
     cfgx <- forward.grad.config(sin, x)
     expect_error(forward.grad(f, x, cfg = cfgx))
-    expect_identical(forward.grad(f, x, cfg = cfgx, check = JuliaCall::julia_call("Val{false}")),
+    expect_identical(forward.grad(f, x, cfg = cfgx, check = FALSE),
                      forward.grad(f,x))
 
 })

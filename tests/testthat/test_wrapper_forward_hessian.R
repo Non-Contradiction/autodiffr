@@ -33,7 +33,7 @@ test_that("test on rosenbrock function", {
 
     cfgx <- forward.hessian.config(sin, x)
     expect_error(forward.hessian(f, x, cfg = cfgx))
-    expect_identical(forward.hessian(f, x, cfg = cfgx, check = JuliaCall::julia_call("Val{false}")),
+    expect_identical(forward.hessian(f, x, cfg = cfgx, check = FALSE),
                      forward.hessian(f,x))
 
 })
