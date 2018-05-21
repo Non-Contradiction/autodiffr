@@ -13,15 +13,11 @@
 \usage{
 forward.deriv(f, x)
 
-forward.grad(f, x, cfg = JuliaCall::julia_call("ForwardDiff.GradientConfig",
-  f, x), check = TRUE)
+forward.grad(f, x, cfg = forward.grad.config(f, x), check = TRUE)
 
-forward.jacobian(f, x,
-  cfg = JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x),
-  check = TRUE)
+forward.jacobian(f, x, cfg = forward.jacobian.config(f, x), check = TRUE)
 
-forward.hessian(f, x, cfg = JuliaCall::julia_call("ForwardDiff.HessianConfig",
-  f, x), check = TRUE)
+forward.hessian(f, x, cfg = forward.hessian.config(f, x), check = TRUE)
 
 forward.grad.config(f, x, chunk_size = NULL)
 
