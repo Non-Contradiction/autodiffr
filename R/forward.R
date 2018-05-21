@@ -42,6 +42,12 @@ NULL
 #' @rdname ForwardDiff
 #' @export
 forward.deriv <- function(f, x){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ForwardDiff.derivative", f, x)
 }
 
@@ -50,6 +56,12 @@ forward.deriv <- function(f, x){
 forward.grad <- function(f, x,
                          cfg = JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x),
                          check = JuliaCall::julia_call("Val{true}")){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ForwardDiff.gradient", f, x, cfg, check)
 }
 
@@ -58,6 +70,12 @@ forward.grad <- function(f, x,
 forward.jacobian <- function(f, x,
                              cfg = JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x),
                              check = JuliaCall::julia_call("Val{true}")){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ForwardDiff.jacobian", f, x, cfg, check)
 }
 
@@ -66,6 +84,12 @@ forward.jacobian <- function(f, x,
 forward.hessian <- function(f, x,
                             cfg = JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x),
                             check = JuliaCall::julia_call("Val{true}")){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ForwardDiff.hessian", f, x, cfg, check)
 }
 
@@ -75,6 +99,12 @@ forward.hessian <- function(f, x,
 #' @export
 forward.grad.config <- function(f, x,
                                 chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x, chunk)
 }
 
@@ -82,6 +112,12 @@ forward.grad.config <- function(f, x,
 #' @export
 forward.jacobian.config <- function(f, x,
                                     chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x, chunk)
 }
 
@@ -89,5 +125,11 @@ forward.jacobian.config <- function(f, x,
 #' @export
 forward.hessian.config <- function(f, x,
                                    chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x, chunk)
 }

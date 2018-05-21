@@ -35,6 +35,12 @@ NULL
 #' @export
 reverse.grad <- function(f, input,
                          cfg = JuliaCall::julia_call("ReverseDiff.GradientConfig", input)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ReverseDiff.gradient", f, input, cfg)
 }
 
@@ -42,6 +48,12 @@ reverse.grad <- function(f, input,
 #' @export
 reverse.jacobian <- function(f, input,
                              cfg = JuliaCall::julia_call("ReverseDiff.JacobianConfig", input)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ReverseDiff.jacobian", f, input, cfg)
 }
 
@@ -49,6 +61,12 @@ reverse.jacobian <- function(f, input,
 #' @export
 reverse.hessian <- function(f, input,
                             cfg = JuliaCall::julia_call("ReverseDiff.HessianConfig", input)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ReverseDiff.hessian", f, input, cfg)
 }
 
@@ -58,6 +76,12 @@ reverse.hessian <- function(f, input,
 #' @export
 reverse.grad.config <- function(input,
                                 tp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ReverseDiff.GradientConfig", input, tp)
 }
 
@@ -65,6 +89,12 @@ reverse.grad.config <- function(input,
 #' @export
 reverse.jacobian.config <- function(input,
                                     tp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ReverseDiff.JacobianConfig", input, tp)
 }
 
@@ -73,5 +103,11 @@ reverse.jacobian.config <- function(input,
 reverse.hessian.config <- function(input,
                                    gtp = JuliaCall::julia_call("ReverseDiff.InstructionTape"),
                                    jtp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
     JuliaCall::julia_call("ReverseDiff.HessianConfig", input, gtp, jtp)
 }
