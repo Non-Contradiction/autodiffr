@@ -44,9 +44,7 @@ NULL
 forward.deriv <- function(f, x){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!isTRUE(.AD$initialized)) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ForwardDiff.derivative", f, x)
 }
@@ -58,9 +56,7 @@ forward.grad <- function(f, x,
                          check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!isTRUE(.AD$initialized)) {
-        ad_setup()
-    }
+    ad_setup()
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
@@ -76,9 +72,7 @@ forward.jacobian <- function(f, x,
                              check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!isTRUE(.AD$initialized)) {
-        ad_setup()
-    }
+    ad_setup()
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
@@ -94,9 +88,7 @@ forward.hessian <- function(f, x,
                             check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!isTRUE(.AD$initialized)) {
-        ad_setup()
-    }
+    ad_setup()
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
@@ -112,9 +104,7 @@ forward.hessian <- function(f, x,
 forward.grad.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!isTRUE(.AD$initialized)) {
-        ad_setup()
-    }
+    ad_setup()
 
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x))
@@ -129,9 +119,7 @@ forward.grad.config <- function(f, x, chunk_size = NULL){
 forward.jacobian.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!isTRUE(.AD$initialized)) {
-        ad_setup()
-    }
+    ad_setup()
 
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x))
@@ -146,9 +134,7 @@ forward.jacobian.config <- function(f, x, chunk_size = NULL){
 forward.hessian.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!isTRUE(.AD$initialized)) {
-        ad_setup()
-    }
+    ad_setup()
 
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x))
