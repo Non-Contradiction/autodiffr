@@ -107,7 +107,7 @@ forward.grad.config <- function(f, x, chunk_size = NULL){
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x))
     }
-    JuliaCall::julia_assign("_chunk_size", chunk_size)
+    JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
     chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
     JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x, chunk)
 }
@@ -124,7 +124,7 @@ forward.jacobian.config <- function(f, x, chunk_size = NULL){
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x))
     }
-    JuliaCall::julia_assign("_chunk_size", chunk_size)
+    JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
     chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
     JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x, chunk)
 }
@@ -141,7 +141,7 @@ forward.hessian.config <- function(f, x, chunk_size = NULL){
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x))
     }
-    JuliaCall::julia_assign("_chunk_size", chunk_size)
+    JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
     chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
     JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x, chunk)
 }
