@@ -64,7 +64,7 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
 
         JuliaCall::julia_assign("_f", f)
         JuliaCall::julia_assign("_X", X)
-        expect_equal(j, JuliaCall::julia_eval("Calculus.jacobian(x -> vec(_f(x)), _X, :forward)")
+        expect_equal(j, JuliaCall::julia_eval("Calculus.jacobian(x -> vec(_f(x)), _X, :forward)"))
 
         cfg0 <- forward.jacobian.config(f, X)
         expect_equal(j, forward.jacobian(f, X, cfg0))
