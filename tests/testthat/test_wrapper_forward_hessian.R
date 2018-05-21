@@ -3,36 +3,6 @@
 
 context("Test Wrapper Functions for ForwardDiff Hessian")
 
-for c in (1, 2, 3), tag in (nothing, Tag((f,gradient), eltype(x)))
-println("  ...running hardcoded test with chunk size = $c and tag = $tag")
-cfg = ForwardDiff.HessianConfig(f, x, ForwardDiff.Chunk{c}(), tag)
-resultcfg = ForwardDiff.HessianConfig(f, DiffResults.HessianResult(x), x, ForwardDiff.Chunk{c}(), tag)
-
-@test eltype(resultcfg) == eltype(cfg)
-
-@test isapprox(h, ForwardDiff.hessian(f, x))
-@test isapprox(h, ForwardDiff.hessian(f, x, cfg))
-
-out = similar(x, 3, 3)
-ForwardDiff.hessian!(out, f, x)
-@test isapprox(out, h)
-
-out = similar(x, 3, 3)
-ForwardDiff.hessian!(out, f, x, cfg)
-@test isapprox(out, h)
-
-out = DiffResults.HessianResult(x)
-ForwardDiff.hessian!(out, f, x)
-@test isapprox(DiffResults.value(out), v)
-@test isapprox(DiffResults.gradient(out), g)
-@test isapprox(DiffResults.hessian(out), h)
-
-out = DiffResults.HessianResult(x)
-ForwardDiff.hessian!(out, f, x, resultcfg)
-@test isapprox(DiffResults.value(out), v)
-@test isapprox(DiffResults.gradient(out), g)
-@test isapprox(DiffResults.hessian(out), h)
-end
 test_that("test on rosenbrock function", {
     skip_on_cran()
     ad_setup()
@@ -52,14 +22,15 @@ test_that("test on rosenbrock function", {
 
     for (c in 1:3) {
 
-            print(paste0("  ...running hardcoded test with chunk size = ", c)
+        print(paste0("  ...running hardcoded test with chunk size = ", c))
 
-            JuliaCall::julia_assign("c", c)
-            cfg <- forward.hessian.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+        JuliaCall::julia_assign("c", c)
 
-            expect_equal(h, forward.hessian(f, x, cfg))
-            expect_equal(h, forward.hessian(f, x))
-        }
+        cfg <- forward.hessian.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+
+        expect_equal(h, forward.hessian(f, x, cfg))
+
+        expect_equal(h, forward.hessian(f, x))
     }
 
     cfgx <- forward.hessian.config(sin, x)
