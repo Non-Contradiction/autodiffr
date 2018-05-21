@@ -17,27 +17,19 @@ test_that("test on rosenbrock function", {
     v <- f(x)
     g <- c(-9.4, 15.6, 52.0)
 
+    expect_equal(g, forward.grad(f, x))
+    cfg0 <- forward.grad.config(f, x)
+    expect_equal(g, forward.grad(f, x, cfg0))
+
     for (c in 1:3) {
-        for (tag in list(JuliaCall::julia_eval("nothing", need_return = "Julia"),
-                         JuliaCall::julia_call("ForwardDiff.Tag",
-                                               f, JuliaCall::julia_eval("Float64")))) {
 
-            print(paste0("  ...running hardcoded test with chunk size = ", c, " and tag = ", tag))
+        print(paste0("  ...running hardcoded test with chunk size = ", c))
 
-            JuliaCall::julia_assign("c", c)
-            cfg <- JuliaCall::julia_call("ForwardDiff.GradientConfig",
-                                         f, x,
-                                         JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"),
-                                         tag)
+        JuliaCall::julia_assign("c", c)
 
-            cfg0 <- forward.grad.config(f, x)
-            cfg1 <- forward.grad.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+        cfg <- forward.grad.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
 
-            expect_equal(g, forward.grad(f, x, cfg))
-            expect_equal(g, forward.grad(f, x, cfg0))
-            expect_equal(g, forward.grad(f, x, cfg1))
-            expect_equal(g, forward.grad(f, x))
-        }
+        expect_equal(g, forward.grad(f, x, cfg))
     }
 
     cfgx <- forward.grad.config(sin, x)
@@ -67,23 +59,14 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
         expect_equal(g, forward.grad(f, X, cfg = cfg0))
 
         for (c in CHUNK_SIZES) {
-            for (tag in list(JuliaCall::julia_eval("nothing", need_return = "Julia"),
-                             JuliaCall::julia_call("ForwardDiff.Tag",
-                                                   f, JuliaCall::julia_eval("Float64")))) {
 
-                print(paste0("  ...testing ", n, " with chunk size = ", c, " and tag = ", tag))
+            print(paste0("  ...testing ", n, " with chunk size = ", c))
 
-                JuliaCall::julia_assign("c", c)
-                cfg <- JuliaCall::julia_call("ForwardDiff.GradientConfig",
-                                             f, X,
-                                             JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"),
-                                             tag)
+            JuliaCall::julia_assign("c", c)
 
-                cfg1 <- forward.grad.config(f, X, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+            cfg <- forward.grad.config(f, X, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
 
-                expect_equal(g, forward.grad(f, X, cfg))
-                expect_equal(g, forward.grad(f, X, cfg1))
-            }
+            expect_equal(g, forward.grad(f, X, cfg))
         }
     }
 })
