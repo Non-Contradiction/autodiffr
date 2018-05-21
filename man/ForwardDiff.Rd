@@ -23,14 +23,11 @@ forward.jacobian(f, x,
 forward.hessian(f, x, cfg = JuliaCall::julia_call("ForwardDiff.HessianConfig",
   f, x), check = JuliaCall::julia_call("Val{true}"))
 
-forward.grad.config(f, x, chunk = JuliaCall::julia_call("ForwardDiff.Chunk",
-  x))
+forward.grad.config(f, x, chunk_size = NULL)
 
-forward.jacobian.config(f, x,
-  chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x))
+forward.jacobian.config(f, x, chunk_size = NULL)
 
-forward.hessian.config(f, x,
-  chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x))
+forward.hessian.config(f, x, chunk_size = NULL)
 }
 \arguments{
 \item{f}{the function you want to calulate the derivative, gradient and etc.
@@ -53,8 +50,8 @@ but you can drastically reduce memory usage if you preallocate them yourself.}
 Set check to \code{JuliaCall::julia_call("Val{false}")} to disable tag checking for \code{ForwardDiff}.
 This can lead to perturbation confusion, so should be used with care.}
 
-\item{chunk}{the chunk to construct the Config objects for \code{ForwardDiff}.
-Its size may be explicitly provided, or omitted,
+\item{chunk_size}{the size of the chunk to construct the Config objects for \code{ForwardDiff}.
+It may be explicitly provided, or omitted,
 in which case \code{ForwardDiff} will automatically select a chunk size for you.
 However, it is highly recommended to specify the chunk size manually when possible.
 See
