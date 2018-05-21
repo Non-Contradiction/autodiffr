@@ -55,7 +55,7 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
         v <- f(X)
         g <- forward.grad(f, X)
         h <- forward.hessian(f, X)
-        expect_equal(h, JuliaCall::julia_call("Calculus.hessian", f, X))
+        expect_equal(h, JuliaCall::julia_call("Calculus.hessian", f, X), tolerance = 0.001)
 
         cfg0 <- forward.hessian.config(f, X)
         expect_equal(h, forward.hessian(f, X, cfg0))
