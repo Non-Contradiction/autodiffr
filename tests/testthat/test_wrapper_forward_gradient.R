@@ -79,7 +79,7 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
                                              JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"),
                                              tag)
 
-                cfg1 <- forward.grad.config(f, x, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
+                cfg1 <- forward.grad.config(f, X, chunk = JuliaCall::julia_eval("ForwardDiff.Chunk{c}()"))
 
                 expect_equal(g, forward.grad(f, X, cfg))
                 expect_equal(g, forward.grad(f, X, cfg1))
