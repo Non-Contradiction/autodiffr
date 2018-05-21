@@ -22,8 +22,8 @@
 #' @param check whether to allow tag checking.
 #'   Set check to `JuliaCall::julia_call("Val{false}")` to disable tag checking for `ForwardDiff`.
 #'   This can lead to perturbation confusion, so should be used with care.
-#' @param chunk the chunk to construct the Config objects for `ForwardDiff`.
-#'   Its size may be explicitly provided, or omitted,
+#' @param chunk_size the size of the chunk to construct the Config objects for `ForwardDiff`.
+#'   It may be explicitly provided, or omitted,
 #'   in which case `ForwardDiff` will automatically select a chunk size for you.
 #'   However, it is highly recommended to specify the chunk size manually when possible.
 #'   See
@@ -97,39 +97,51 @@ forward.hessian <- function(f, x,
 
 #' @rdname ForwardDiff
 #' @export
-forward.grad.config <- function(f, x,
-                                chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x)){
+forward.grad.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
         ad_setup()
     }
 
+    if (is.null(chunk_size)) {
+        return(JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x))
+    }
+    JuliaCall::julia_assign("_chunk_size", chunk_size)
+    chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
     JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x, chunk)
 }
 
 #' @rdname ForwardDiff
 #' @export
-forward.jacobian.config <- function(f, x,
-                                    chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x)){
+forward.jacobian.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
         ad_setup()
     }
 
+    if (is.null(chunk_size)) {
+        return(JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x))
+    }
+    JuliaCall::julia_assign("_chunk_size", chunk_size)
+    chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
     JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x, chunk)
 }
 
 #' @rdname ForwardDiff
 #' @export
-forward.hessian.config <- function(f, x,
-                                   chunk = JuliaCall::julia_call("ForwardDiff.Chunk", x)){
+forward.hessian.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
         ad_setup()
     }
 
+    if (is.null(chunk_size)) {
+        return(JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x))
+    }
+    JuliaCall::julia_assign("_chunk_size", chunk_size)
+    chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
     JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x, chunk)
 }
