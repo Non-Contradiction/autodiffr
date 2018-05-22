@@ -65,3 +65,16 @@
 * Progress in adapting tests for Hessian for `ForwardDiff.jl` at <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/HessianTest.jl>.
 * Thinking about wrapping the mutating methods in `ForwardDiff.jl` and `ReverseDiff.jl` and doing some experiments about this.
 * Thinking about adding `tag` argument for the Config methods to match the signature in `ForwardDiff.jl` and `ReverseDiff.jl`.
+* More tests for the wrapper functions related to `Config` objects.
+
+## May 21
+
+* Yesterday I thought about adding `Tag` to the API. But after more thinking and investigation, it is unnecessary. The `Tag` type in `ForwardDiff.jl` is for checking perturbation confusion. Setting it manually doesn't have any benefit. After all, if users want to disable tag checking, they could use the check argument or let the function in config objects by nothing. Tests of `Tag` are useful in testing of `ForwardDiff.jl` internally, which is not the case for `autodiffr`. More discussions can be seen at github issue: <https://github.com/Non-Contradiction/autodiffr/issues/11>.
+* Finish testing for wrapper functions for ForwardDiff Hessian.
+* Adjust API of `config` functions, add `chunk_size` argument to replace `chunk` argument, as `chunk_size` is the only purpose for `Chunk` in `ForwardDiff.jl`. More discussions can be seen at <https://github.com/Non-Contradiction/autodiffr/issues/12>.
+* Adjust API of `grad`, `jacobian` and `hessian` functions. Use `TRUE` or `FALSE` as `check` instead of `Val{true}()` or `Val{false}()`. The change could make the wrapper functions more idiomatic for R.
+* Use wrapper functions wherever is possible, so users don't need to deal with functions from `JuliaCall` directly.
+* Some small improvements for the package.
+* Some tests fail because of some of internal generics are not implemented for `JuliaObject` in `JuliaCall`. Open the issue on `JuliaCall` at <https://github.com/Non-Contradiction/JuliaCall/issues/53>.
+* Implement the `rep.JuliaObject` method in `JuliaCall`.
+* Working on wrapper functions for ForwardDiff Jacobian. The hard-coded test pass because of the implementation of `rep.JuliaObject` in `JuliaCall`. The unpassed tests are temporarily commented out.
