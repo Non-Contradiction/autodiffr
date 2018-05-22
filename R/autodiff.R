@@ -20,6 +20,13 @@ ad_setup <- function(...) {
         .AD$julia$library("ForwardDiff")
         .AD$julia$library("ReverseDiff")
 
+        JuliaCall::julia_command("for R in (:Bool, :BigFloat)
+                                    @eval begin
+                                        Base.promote_rule(::Type{$R}, ::Type{ForwardDiff.Dual{T,V,N}}) where {T,V<:Real,N} = ForwardDiff.Dual{T,promote_type($R, V),N}
+                                        Base.promote_rule(::Type{ForwardDiff.Dual{T,V,N}}, ::Type{$R}) where {T,V<:Real,N} = ForwardDiff.Dual{T,promote_type(V, $R),N}
+                                    end
+                                 end")
+
         .AD$inited <- TRUE
     }
 }
