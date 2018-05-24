@@ -78,3 +78,18 @@
 * Some tests fail because of some of internal generics are not implemented for `JuliaObject` in `JuliaCall`. Open the issue on `JuliaCall` at <https://github.com/Non-Contradiction/JuliaCall/issues/53>.
 * Implement the `rep.JuliaObject` method in `JuliaCall`.
 * Working on wrapper functions for ForwardDiff Jacobian. The hard-coded test pass because of the implementation of `rep.JuliaObject` in `JuliaCall`. The unpassed tests are temporarily commented out.
+
+## May 22
+
+* Refine the implementation of `rep.JuliaObject` in `JuliaCall`.
+* Important bug fix for assign of `JuliaObject` in `JuliaCall`.
+* New experimental `assign!` to match behavior for assign in R and use it for `JuliaObject` in `JuliaCall`.
+* Experimental `JuliaPlain` idea to alleviate the problem that R dispatches only on the first argument, make `ifelse` possible to work for `JuliaObject` in `JuliaCall`.
+* Identify some issue in `ForwardDiff.jl`, create an issue and pull request to fix it.
+* Temporarily incorporate the above fix in `autodiffr` before the fix merged into `ForwardDiff.jl`.
+* Add the test on `ifelse` back which becomes possible due to the changes above.
+
+## May 23
+
+* More thinking on the `ifelse` issue and other related ones. Doing experimentation about this. And thinking about implementation in `JuliaCall`.
+* Fix some issues in `JuliaCall`.
