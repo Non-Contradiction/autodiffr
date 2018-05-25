@@ -93,3 +93,13 @@
 
 * More thinking on the `ifelse` issue and other related ones. Doing experimentation about this. And thinking about implementation in `JuliaCall`.
 * Fix some issues in `JuliaCall`.
+
+## May 24
+
+* Some optimization for `JuliaCall`.
+* Thinking and doing experimentations about wrapping mutating related APIs of `ForwardDiff.jl`.
+* Migrating more tests from `ForwardDiff.jl`.
+
+## May 25
+
+* Thinking about the `diag` issue with `autodiffr` and `JuliaCall`.
