@@ -376,17 +376,89 @@ names(TERNARY_MATRIX_TO_NUMBER_FUNCS) <- c("neural_step")
 ######################
 
 # chebyquad(x) = (y = fill(zero(eltype(x)), size(x)); chebyquad!(y, x); return y)
-#
+
+chebyquad <- function(x){
+    y <- JuliaCall:::JuliaPlain(rep(0, length(x)))
+    tk <- 1 / length(x)
+    for (j in 1:length(x)) {
+        temp1 <- 1.0
+        temp2 <- 2 * x[j] - 1
+        temp <- 2 * temp2
+        for (i in 1:length(y)) {
+            y[i] <- y[i] + temp2
+            ti <- temp * temp2 - temp1
+            temp1 <- temp2
+            temp2 <- ti
+        }
+    }
+    iev <- -1.0
+    for (k in 1:length(y)) {
+        y[k] <- y[k] * tk
+        if (iev > 0) {
+            y[k] <- y[k] + 1 / (k ^ 2 - 1)
+        }
+        iev <- -iev
+    }
+    y
+}
+
 # brown_almost_linear(x) = (y = fill(zero(eltype(x)), size(x)); brown_almost_linear!(y, x); return y)
-#
+
+brown_almost_linear <- function(x){
+    y <- JuliaCall:::JuliaPlain(rep(0, length(x)))
+    c <- sum(x) - (length(x) + 1)
+    for (i in  1:(length(x) - 1)) {
+        for (j in 1:(length(y) - 1)) {
+            y[j] <- y[j] + x[i] + c
+        }
+    }
+    y[length(y)] <- prod(x) - 1
+    y
+}
+
 # trigonometric(x) = (y = fill(one(eltype(x)), size(x)); trigonometric!(y, x); return y)
-#
+
+trigonometric <- function(x){
+    y <- JuliaCall:::JuliaPlain(rep(1, length(x)))
+    for (i in as.list(x)) {
+        for (j in as.list(y)) {
+            y[j] <- cos(i)
+        }
+    }
+    c <- sum(y)
+    n <- length(x)
+    for (i in as.list(x)) {
+        for (j in 1:length(y)) {
+            y[j] <- sin(i) * y[j] + n - c
+        }
+    }
+    y
+}
+
 # mutation_test_1(x) = (y = fill(zero(eltype(x)), size(x)); mutation_test_1!(y, x); return y)
-#
+
+mutation_test_1 <- function(x){
+    y <- JuliaCall:::JuliaPlain(rep(0, length(x)))
+    y[1] <- x[1]
+    y[1] <- y[1] * x[2]
+    y[2] <- y[2] * x[3]
+    y[3] <- sum(y)
+    y
+}
+
 # mutation_test_2(x) = (y = fill(one(eltype(x)), size(x)); mutation_test_2!(y, x); return y)
-#
+
+mutation_test_2 <- function(x){
+    y <- JuliaCall:::JuliaPlain(rep(1, length(x)))
+    y[1] <- y[1] * x[1]
+    y[2] <- y[2] * x[1]
+    y[1] <- y[1] * x[2]
+    y[2] <- y[2] * x[2]
+    y
+}
+
 # arr2arr_1(x) = (sum(x .* x); fill(zero(eltype(x)), size(x)))
-#
+arr2arr_1 <- function(x){sum(x * x); rep(0, length(x))}
 # arr2arr_2(x) = x[1, :] .+ x[1, :] .+ first(x)
 #
 # const ARRAY_TO_ARRAY_FUNCS = (-, chebyquad, brown_almost_linear, trigonometric, arr2arr_1,
