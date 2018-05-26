@@ -47,37 +47,37 @@ test_that("hardcoded test", {
 
 })
 
-# test_that("test on ARRAY_TO_ARRAY_FUNCS", {
-#     skip_on_cran()
-#     ad_setup()
-#     autodiffr:::test_setup()
-#
-#     ########################
-#     # test vs. Calculus.jl #
-#     ########################
-#
-#     for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
-#         f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
-#         n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
-#         v <- f(X)
-#         j <- forward.jacobian(f, X)
-#
-#         JuliaCall::julia_assign("_f", f)
-#         JuliaCall::julia_assign("_X", X)
-#         expect_equal(j, JuliaCall::julia_eval("Calculus.jacobian(x -> vec(_f(x)), _X, :forward)"))
-#
-#         cfg0 <- forward.jacobian.config(f, X)
-#         expect_equal(j, forward.jacobian(f, X, cfg0))
-#
-#         for (c in CHUNK_SIZES) {
-#
-#             print(paste0("  ...testing ", n, " with chunk size = ", c))
-#
-#             cfg <- forward.jacobian.config(f, X, chunk_size = c)
-#
-#             out <- forward.jacobian(f, X, cfg)
-#
-#             expect_equal(out, j)
-#         }
-#     }
-# })
+test_that("test on ARRAY_TO_ARRAY_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    ########################
+    # test vs. Calculus.jl #
+    ########################
+
+    for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
+        f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
+        n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
+        v <- f(X)
+        j <- forward.jacobian(f, X)
+
+        JuliaCall::julia_assign("_f", f)
+        JuliaCall::julia_assign("_X", X)
+        expect_equal(j, JuliaCall::julia_eval("Calculus.jacobian(x -> vec(_f(x)), _X, :forward)"))
+
+        cfg0 <- forward.jacobian.config(f, X)
+        expect_equal(j, forward.jacobian(f, X, cfg0))
+
+        for (c in CHUNK_SIZES) {
+
+            print(paste0("  ...testing ", n, " with chunk size = ", c))
+
+            cfg <- forward.jacobian.config(f, X, chunk_size = c)
+
+            out <- forward.jacobian(f, X, cfg)
+
+            expect_equal(out, j)
+        }
+    }
+})
