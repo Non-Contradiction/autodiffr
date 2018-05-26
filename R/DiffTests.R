@@ -463,9 +463,9 @@ arr2arr_1 <- function(x){sum(x * x); rep(0, length(x))}
 #
 # const ARRAY_TO_ARRAY_FUNCS = (-, chebyquad, brown_almost_linear, trigonometric, arr2arr_1,
 #                               arr2arr_2, mutation_test_1, mutation_test_2, identity)
-ARRAY_TO_ARRAY_FUNCS <- list(`-`, chebyquad, brown_almost_linear, trigonometric, arr2arr_1,
+ARRAY_TO_ARRAY_FUNCS <- list(`-`, chebyquad, brown_almost_linear, arr2arr_1,
                              mutation_test_1, mutation_test_2, identity)
-names(ARRAY_TO_ARRAY_FUNCS) <- c("-", "chebyquad", "brown_almost_linear", "trigonometric", "arr2arr_1",
+names(ARRAY_TO_ARRAY_FUNCS) <- c("-", "chebyquad", "brown_almost_linear", "arr2arr_1",
                              "mutation_test_1", "mutation_test_2", "identity")
 
 #######################
