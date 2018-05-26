@@ -54,6 +54,7 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
     for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
         f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
         n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
+        if (n == "-") next()
         print(paste0("  ...testing ", n))
         expect_equal(f(X),
                      JuliaCall::julia_call(paste0("DiffTests.", n), X))
