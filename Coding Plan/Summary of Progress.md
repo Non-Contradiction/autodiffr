@@ -105,3 +105,5 @@
 * Thinking about the `diag` issue with `autodiffr` and `JuliaCall`.
 * Have `diag` related methods implemented in `JuliaCall`, i.e., `is.matrix.JuliaObject`, `is.array.JuliaObject`, `dim.JuliaObject`. Have tests for the new functionalities in `JuliaCall`.
 * Implement `diagm` to supplement the `diag` methods from `JuliaCall`. It turns out very difficult to implement `diag` for `JuliaObject` vectors. `diagm` is a clear name for this functionality.
+* Finish adapting tests for Jacobian for `ForwardDiff.jl` at <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/JacobianTest.jl>.
+* Have tests to check the implementation of testing functions in `DiffTests.R`.
