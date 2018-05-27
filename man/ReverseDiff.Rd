@@ -16,15 +16,11 @@ reverse.jacobian(f, input, cfg = reverse.jacobian.config(input))
 
 reverse.hessian(f, input, cfg = reverse.hessian.config(input))
 
-reverse.grad.config(input,
-  tp = JuliaCall::julia_call("ReverseDiff.InstructionTape"))
+reverse.grad.config(input)
 
-reverse.jacobian.config(input,
-  tp = JuliaCall::julia_call("ReverseDiff.InstructionTape"))
+reverse.jacobian.config(input)
 
-reverse.hessian.config(input,
-  gtp = JuliaCall::julia_call("ReverseDiff.InstructionTape"),
-  jtp = JuliaCall::julia_call("ReverseDiff.InstructionTape"))
+reverse.hessian.config(input)
 }
 \arguments{
 \item{f}{the function you want to calulate the gradient, jacobian and hessian.
@@ -38,13 +34,7 @@ If you want to calulate the derivative of a function, you can considering using 
 \item{cfg}{Config objects which contains the preallocated tape and work buffers
 used by reverse mode automatic differentiation.
 \code{ReverseDiff}'s API methods will allocate the Config object automatically by default,
-but you can preallocate them yourself and reuse them for subsequent calls to reeuce memory usage.}
-
-\item{tp, gtp, jtp}{the tapes to construct the Config objects for \code{ReverseDiff},
-which are for advantage usage.
-See
-\url{http://www.juliadiff.org/ReverseDiff.jl/api/#the-abstracttape-api}
-for more details.}
+but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.}
 }
 \value{
 \code{reverse.grad}, \code{reverse.jacobian} and \code{reverse.hessian} return

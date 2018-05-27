@@ -15,12 +15,7 @@
 #' @param cfg Config objects which contains the preallocated tape and work buffers
 #'   used by reverse mode automatic differentiation.
 #'   `ReverseDiff`'s API methods will allocate the Config object automatically by default,
-#'   but you can preallocate them yourself and reuse them for subsequent calls to reeuce memory usage.
-#' @param tp,gtp,jtp the tapes to construct the Config objects for `ReverseDiff`,
-#'   which are for advantage usage.
-#'   See
-#'   <http://www.juliadiff.org/ReverseDiff.jl/api/#the-abstracttape-api>
-#'   for more details.
+#'   but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.
 #' @return `reverse.grad`, `reverse.jacobian` and `reverse.hessian` return
 #'   the gradient, jacobian and hessian of `f` correspondingly evaluated at `input`.
 #'   `reverse.grad.config`, `reverse.jacobian.config` and `reverse.hessian.config`
@@ -71,40 +66,36 @@ reverse.hessian <- function(f, input, cfg = reverse.hessian.config(input)){
 
 #' @rdname ReverseDiff
 #' @export
-reverse.grad.config <- function(input,
-                                tp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
+reverse.grad.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
         ad_setup()
     }
 
-    JuliaCall::julia_call("ReverseDiff.GradientConfig", input, tp)
+    JuliaCall::julia_call("ReverseDiff.GradientConfig", input)
 }
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian.config <- function(input,
-                                    tp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
+reverse.jacobian.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
         ad_setup()
     }
 
-    JuliaCall::julia_call("ReverseDiff.JacobianConfig", input, tp)
+    JuliaCall::julia_call("ReverseDiff.JacobianConfig", input)
 }
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian.config <- function(input,
-                                   gtp = JuliaCall::julia_call("ReverseDiff.InstructionTape"),
-                                   jtp = JuliaCall::julia_call("ReverseDiff.InstructionTape")){
+reverse.hessian.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
         ad_setup()
     }
 
-    JuliaCall::julia_call("ReverseDiff.HessianConfig", input, gtp, jtp)
+    JuliaCall::julia_call("ReverseDiff.HessianConfig", input)
 }
