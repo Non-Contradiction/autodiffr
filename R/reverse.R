@@ -99,3 +99,39 @@ reverse.hessian.config <- function(input){
 
     JuliaCall::julia_call("ReverseDiff.HessianConfig", input)
 }
+
+#' @rdname ReverseDiff
+#' @export
+reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
+    JuliaCall::julia_call("ReverseDiff.GradientTape", f, input, cfg)
+}
+
+#' @rdname ReverseDiff
+#' @export
+reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
+    JuliaCall::julia_call("ReverseDiff.JacobianTape", f, input, cfg)
+}
+
+#' @rdname ReverseDiff
+#' @export
+reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
+    JuliaCall::julia_call("ReverseDiff.HessianTape", f, input, cfg)
+}
