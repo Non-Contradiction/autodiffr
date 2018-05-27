@@ -10,14 +10,11 @@
 \alias{reverse.hessian.config}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
-reverse.grad(f, input,
-  cfg = JuliaCall::julia_call("ReverseDiff.GradientConfig", input))
+reverse.grad(f, input, cfg = reverse.grad.config(input))
 
-reverse.jacobian(f, input,
-  cfg = JuliaCall::julia_call("ReverseDiff.JacobianConfig", input))
+reverse.jacobian(f, input, cfg = reverse.jacobian.config(input))
 
-reverse.hessian(f, input,
-  cfg = JuliaCall::julia_call("ReverseDiff.HessianConfig", input))
+reverse.hessian(f, input, cfg = reverse.hessian.config(input))
 
 reverse.grad.config(input,
   tp = JuliaCall::julia_call("ReverseDiff.InstructionTape"))

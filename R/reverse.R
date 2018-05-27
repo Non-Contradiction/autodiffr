@@ -33,8 +33,7 @@ NULL
 
 #' @rdname ReverseDiff
 #' @export
-reverse.grad <- function(f, input,
-                         cfg = JuliaCall::julia_call("ReverseDiff.GradientConfig", input)){
+reverse.grad <- function(f, input, cfg = reverse.grad.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
@@ -46,8 +45,7 @@ reverse.grad <- function(f, input,
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian <- function(f, input,
-                             cfg = JuliaCall::julia_call("ReverseDiff.JacobianConfig", input)){
+reverse.jacobian <- function(f, input, cfg = reverse.jacobian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
@@ -59,8 +57,7 @@ reverse.jacobian <- function(f, input,
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian <- function(f, input,
-                            cfg = JuliaCall::julia_call("ReverseDiff.HessianConfig", input)){
+reverse.hessian <- function(f, input, cfg = reverse.hessian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     if (!(isTRUE(.AD$initialized))) {
