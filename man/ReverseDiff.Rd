@@ -47,6 +47,16 @@ If you want to calulate the derivative of a function, you can considering using 
 used by reverse mode automatic differentiation.
 \code{ReverseDiff}'s API methods will allocate the Config object automatically by default,
 but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.}
+
+\item{tape}{the object to record the target function's execution trace used by
+reverse mode automatic differentiation.
+In many cases, pre-recording and pre-compiling a reusable tape for a given function and
+differentiation operation can improve the performance of reverse mode automatic differentiation a lot.
+Note that pre-recording a tape can only capture the the execution trace of the target function
+with the given input values.
+In other words, the tape cannot any re-enact branching behavior that depends on the input values.
+If the target functions contain control flow based on the input values, be careful or not to
+use tape-related APIs.}
 }
 \value{
 \code{reverse.grad}, \code{reverse.jacobian} and \code{reverse.hessian} return
@@ -54,6 +64,9 @@ the gradient, jacobian and hessian of \code{f} correspondingly evaluated at \cod
 \code{reverse.grad.config}, \code{reverse.jacobian.config} and \code{reverse.hessian.config}
 return Config instances containing the preallocated tape and work buffers used by
 reverse mode automatic differentiation.
+\code{reverse.grad.tape}, \code{reverse.jacobian.tape} and \code{reverse.hessian.tape}
+return Tape instances containing the the execution trace of the target function
+with the given input values.
 }
 \description{
 Wrapper functions for API of \code{ReverseDiff.jl} at
