@@ -135,3 +135,15 @@ reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
 
     JuliaCall::julia_call("ReverseDiff.HessianTape", f, input, cfg)
 }
+
+#' @rdname ReverseDiff
+#' @export
+reverse.compile <- function(tape){
+    ## ad_setup() is not necessary,
+    ## unless you want to pass some arguments to it.
+    if (!(isTRUE(.AD$initialized))) {
+        ad_setup()
+    }
+
+    JuliaCall::julia_call("ReverseDiff.compile", tape)
+}

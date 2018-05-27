@@ -11,6 +11,7 @@
 \alias{reverse.grad.tape}
 \alias{reverse.jacobian.tape}
 \alias{reverse.hessian.tape}
+\alias{reverse.compile}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
 reverse.grad(f, input, cfg = reverse.grad.config(input))
@@ -30,6 +31,8 @@ reverse.grad.tape(f, input, cfg = reverse.grad.config(input))
 reverse.jacobian.tape(f, input, cfg = reverse.jacobian.config(input))
 
 reverse.hessian.tape(f, input, cfg = reverse.hessian.config(input))
+
+reverse.compile(tape)
 }
 \arguments{
 \item{f}{the function you want to calulate the gradient, jacobian and hessian.
