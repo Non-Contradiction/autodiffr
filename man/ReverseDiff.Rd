@@ -14,11 +14,11 @@
 \alias{reverse.compile}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
-reverse.grad(f, input, cfg = reverse.grad.config(input))
+reverse.grad(f_or_tape, input, cfg = reverse.grad.config(input))
 
-reverse.jacobian(f, input, cfg = reverse.jacobian.config(input))
+reverse.jacobian(f_or_tape, input, cfg = reverse.jacobian.config(input))
 
-reverse.hessian(f, input, cfg = reverse.hessian.config(input))
+reverse.hessian(f_or_tape, input, cfg = reverse.hessian.config(input))
 
 reverse.grad.config(input)
 
@@ -35,9 +35,7 @@ reverse.hessian.tape(f, input, cfg = reverse.hessian.config(input))
 reverse.compile(tape)
 }
 \arguments{
-\item{f}{the function you want to calulate the gradient, jacobian and hessian.
-Note that \code{f(x)} should be a scalar for \code{grad} and \code{hessian},
-a vector of length greater than 1 for \code{jacobian}.}
+\item{f_or_tape}{the target function \code{f} or the tape recording execution trace of \code{f}.}
 
 \item{input}{the point where you take the gradient, jacobian and hessian.
 Note that it should be a a vector of length greater than 1.
@@ -48,10 +46,14 @@ used by reverse mode automatic differentiation.
 \code{ReverseDiff}'s API methods will allocate the Config object automatically by default,
 but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.}
 
+\item{f}{the function you want to calulate the gradient, jacobian and hessian.
+Note that \code{f(x)} should be a scalar for \code{grad} and \code{hessian},
+a vector of length greater than 1 for \code{jacobian}.}
+
 \item{tape}{the object to record the target function's execution trace used by
 reverse mode automatic differentiation.
 In many cases, pre-recording and pre-compiling a reusable tape for a given function and
-differentiation operation can improve the performance of reverse mode automatic differentiation a lot.
+differentiation operation can improve the performance of reverse mode automatic differentiation.
 Note that pre-recording a tape can only capture the the execution trace of the target function
 with the given input values.
 In other words, the tape cannot any re-enact branching behavior that depends on the input values.
@@ -60,7 +62,7 @@ use tape-related APIs.}
 }
 \value{
 \code{reverse.grad}, \code{reverse.jacobian} and \code{reverse.hessian} return
-the gradient, jacobian and hessian of \code{f} correspondingly evaluated at \code{input}.
+the gradient, jacobian and hessian of \code{f} or \code{tape} correspondingly evaluated at \code{input}.
 \code{reverse.grad.config}, \code{reverse.jacobian.config} and \code{reverse.hessian.config}
 return Config instances containing the preallocated tape and work buffers used by
 reverse mode automatic differentiation.
