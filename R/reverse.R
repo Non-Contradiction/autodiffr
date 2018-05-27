@@ -45,9 +45,7 @@ NULL
 reverse.grad <- function(f_or_tape, input, cfg = reverse.grad.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.gradient", f_or_tape, input, cfg)
 }
@@ -57,9 +55,7 @@ reverse.grad <- function(f_or_tape, input, cfg = reverse.grad.config(input)){
 reverse.jacobian <- function(f_or_tape, input, cfg = reverse.jacobian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.jacobian", f_or_tape, input, cfg)
 }
@@ -69,9 +65,7 @@ reverse.jacobian <- function(f_or_tape, input, cfg = reverse.jacobian.config(inp
 reverse.hessian <- function(f_or_tape, input, cfg = reverse.hessian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.hessian", f_or_tape, input, cfg)
 }
@@ -83,9 +77,7 @@ reverse.hessian <- function(f_or_tape, input, cfg = reverse.hessian.config(input
 reverse.grad.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.GradientConfig", input)
 }
@@ -95,9 +87,7 @@ reverse.grad.config <- function(input){
 reverse.jacobian.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.JacobianConfig", input)
 }
@@ -107,9 +97,7 @@ reverse.jacobian.config <- function(input){
 reverse.hessian.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.HessianConfig", input)
 }
@@ -119,9 +107,7 @@ reverse.hessian.config <- function(input){
 reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.GradientTape", f, input, cfg)
 }
@@ -131,9 +117,7 @@ reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
 reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.JacobianTape", f, input, cfg)
 }
@@ -143,9 +127,7 @@ reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)
 reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.HessianTape", f, input, cfg)
 }
@@ -155,9 +137,7 @@ reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
 reverse.compile <- function(tape){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
-    if (!(isTRUE(.AD$initialized))) {
-        ad_setup()
-    }
+    ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.compile", tape)
 }
