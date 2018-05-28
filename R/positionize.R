@@ -1,13 +1,13 @@
 # Related to issue #15.
 # Turns a function with named arguments into a function with positional arguments
-# where the names of the positional arguments would be like the names of the list.
+# where the names of the positional arguments would be ns.
 
-positionize <- function(f, arg_list) {
+positionize <- function(f, ns) {
     force(f)
-    force(arg_list)
+    force(ns)
     ff <- function(...){
         arg_list1 <- list(...)
-        names(arg_list1) <- names(arg_list)
+        names(arg_list1) <- ns
         do.call("f", arg_list1)
     }
     ff
