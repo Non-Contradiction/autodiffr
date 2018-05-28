@@ -70,6 +70,9 @@ test_ternary_gradient <- function(f, a, b, c){
     seedc <- matrix(runif(length(c)), dim(c))
     tp <- reverse.grad.tape(f, list(seeda, seedb, seedc))
 
+    ## additional check of is_tape function
+    expect_true(autodiffr:::is_tape(tp))
+
     r <- reverse.grad(tp, list(a, b, c))
     ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
 
@@ -81,6 +84,9 @@ test_ternary_gradient <- function(f, a, b, c){
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
+
+        ## additional check of is_tape function
+        expect_true(autodiffr:::is_tape(tp))
 
         r <- reverse.grad(ctp, list(a, b, c))
         ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
