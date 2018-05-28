@@ -200,7 +200,7 @@ reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
     ad_setup()
 
     if (is.list(input)) {
-        f <- positionize(f, input)
+        f <- positionize(f, names(input))
         names(input) <- NULL
         class(input) <- "JuliaTuple"
     }
@@ -216,7 +216,7 @@ reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)
     ad_setup()
 
     if (is.list(input)) {
-        f <- positionize(f, input)
+        f <- positionize(f, names(input))
         names(input) <- NULL
         class(input) <- "JuliaTuple"
     }
@@ -232,7 +232,7 @@ reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
     ad_setup()
 
     if (is.list(input)) {
-        f <- positionize(f, input)
+        f <- positionize(f, names(input))
         names(input) <- NULL
         class(input) <- "JuliaTuple"
     }
