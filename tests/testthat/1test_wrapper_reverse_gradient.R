@@ -5,6 +5,14 @@ context("Test Wrapper Functions for ReverseDiff Gradient")
 
 COMPILED_TAPE_LIMIT <- 5000
 
+rand <- function(x){
+    if (length(dim(x)) == 0) stop(paste0("dim of ", x, " is 0."))
+    if (length(dim(x)) >= 2) stop(paste0("dim of ", x, " is greater than 2."))
+    if (length(dim(x)) == 1) seedx <- runif(length(x))
+    if (length(dim(x)) == 2) seedx <- matrix(runif(length(x)), dim(x))
+    seedx
+}
+
 test_unary_gradient <- function(f, x){
     test <- forward.grad(f, x)
 
@@ -20,7 +28,7 @@ test_unary_gradient <- function(f, x){
 
     # with GradientTape
 
-    seedx <- matrix(runif(length(x)), dim(x))
+    seedx <- rand(x)
     tp <- reverse.grad.tape(f, seedx)
 
     ## additional check of is_tape function
@@ -65,9 +73,9 @@ test_ternary_gradient <- function(f, a, b, c){
 
     # with GradientTape
 
-    seeda <- matrix(runif(length(a)), dim(a))
-    seedb <- matrix(runif(length(b)), dim(b))
-    seedc <- matrix(runif(length(c)), dim(c))
+    seeda <- rand(a)
+    seedb <- rand(b)
+    seedc <- rand(c)
     tp <- reverse.grad.tape(f, list(seeda, seedb, seedc))
 
     ## additional check of is_tape function
