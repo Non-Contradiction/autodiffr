@@ -42,7 +42,7 @@ NULL
 
 #' @rdname ReverseDiff
 #' @export
-reverse.grad <- function(f_or_tape, input, cfg = reverse.grad.config(input)){
+reverse.grad <- function(f_or_tape, input, cfg = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
@@ -50,12 +50,15 @@ reverse.grad <- function(f_or_tape, input, cfg = reverse.grad.config(input)){
     if (is_tape(f_or_tape)) {
         return(JuliaCall::julia_call("ReverseDiff.gradient!", f_or_tape, input))
     }
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ReverseDiff.gradient", f_or_tape, input))
+    }
     JuliaCall::julia_call("ReverseDiff.gradient", f_or_tape, input, cfg)
 }
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian <- function(f_or_tape, input, cfg = reverse.jacobian.config(input)){
+reverse.jacobian <- function(f_or_tape, input, cfg = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
@@ -63,18 +66,24 @@ reverse.jacobian <- function(f_or_tape, input, cfg = reverse.jacobian.config(inp
     if (is_tape(f_or_tape)) {
         return(JuliaCall::julia_call("ReverseDiff.jacobian!", f_or_tape, input))
     }
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ReverseDiff.jacobian", f_or_tape, input))
+    }
     JuliaCall::julia_call("ReverseDiff.jacobian", f_or_tape, input, cfg)
 }
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian <- function(f_or_tape, input, cfg = reverse.hessian.config(input)){
+reverse.hessian <- function(f_or_tape, input, cfg = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
 
     if (is_tape(f_or_tape)) {
         return(JuliaCall::julia_call("ReverseDiff.hessian!", f_or_tape, input))
+    }
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ReverseDiff.hessian", f_or_tape, input))
     }
     JuliaCall::julia_call("ReverseDiff.hessian", f_or_tape, input, cfg)
 }
