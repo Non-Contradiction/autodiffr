@@ -46,135 +46,50 @@ test_ternary_gradient <- function(f, a, b, c){
 
     # without GradientConfig
 
-    ga, gb, gc = ReverseDiff.gradient(f, (a, b, c))
-    test_approx(∇a, test_a)
-    test_approx(∇b, test_b)
-    test_approx(∇c, test_c)
+    r <- reverse.grad(f, list(a, b, c))
+    ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
+    expect_equal(ga, test_a)
+    expect_equal(gb, test_b)
+    expect_equal(gc, test_c)
 
-    ∇a, ∇b, ∇c = map(similar, (a, b, c))
-    ReverseDiff.gradient!((∇a, ∇b, ∇c), f, (a, b, c))
-    test_approx(∇a, test_a)
-    test_approx(∇b, test_b)
-    test_approx(∇c, test_c)
+    # with GradientConfig
 
-    ∇a, ∇b, ∇c = map(DiffResults.GradientResult, (a, b, c))
-    ReverseDiff.gradient!((∇a, ∇b, ∇c), f, (a, b, c))
-    test_approx(DiffResults.value(∇a), test_val)
-    test_approx(DiffResults.value(∇b), test_val)
-    test_approx(DiffResults.value(∇c), test_val)
-    test_approx(DiffResults.gradient(∇a), test_a)
-    test_approx(DiffResults.gradient(∇b), test_b)
-    test_approx(DiffResults.gradient(∇c), test_c)
-}
+    cfg <- reverse.grad.config(list(a, b, c))
 
-# with GradientConfig
+    r <- reverse.grad(f, list(a, b, c), cfg)
+    ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
 
-cfg = ReverseDiff.GradientConfig((a, b, c))
+    expect_equal(ga, test_a)
+    expect_equal(gb, test_b)
+    expect_equal(gc, test_c)
 
-∇a, ∇b, ∇c = ReverseDiff.gradient(f, (a, b, c), cfg)
-test_approx(∇a, test_a)
-test_approx(∇b, test_b)
-test_approx(∇c, test_c)
+    # with GradientTape
 
-∇a, ∇b, ∇c = map(similar, (a, b, c))
-ReverseDiff.gradient!((∇a, ∇b, ∇c), f, (a, b, c), cfg)
-test_approx(∇a, test_a)
-test_approx(∇b, test_b)
-test_approx(∇c, test_c)
+    seeda <- matrix(runif(length(a)), dim(a))
+    seedb <- matrix(runif(length(b)), dim(b))
+    seedc <- matrix(runif(length(c)), dim(c))
+    tp <- reverse.grad.tape(f, list(seeda, seedb, seedc))
 
-∇a, ∇b, ∇c = map(DiffResults.GradientResult, (a, b, c))
-ReverseDiff.gradient!((∇a, ∇b, ∇c), f, (a, b, c), cfg)
-test_approx(DiffResults.value(∇a), test_val)
-test_approx(DiffResults.value(∇b), test_val)
-test_approx(DiffResults.value(∇c), test_val)
-test_approx(DiffResults.gradient(∇a), test_a)
-test_approx(DiffResults.gradient(∇b), test_b)
-test_approx(DiffResults.gradient(∇c), test_c)
+    r <- reverse.grad(tp, list(a, b, c))
+    ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
 
-# with GradientTape
+    expect_equal(ga, test_a)
+    expect_equal(gb, test_b)
+    expect_equal(gc, test_c)
 
-tp = ReverseDiff.GradientTape(f, (rand(size(a)), rand(size(b)), rand(size(c))))
+    # with compiled GradientTape
 
-∇a, ∇b, ∇c = ReverseDiff.gradient!(tp, (a, b, c))
-test_approx(∇a, test_a)
-test_approx(∇b, test_b)
-test_approx(∇c, test_c)
+    if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
+        ctp <- reverse.compile(tp)
 
-∇a, ∇b, ∇c = map(similar, (a, b, c))
-ReverseDiff.gradient!((∇a, ∇b, ∇c), tp, (a, b, c))
-test_approx(∇a, test_a)
-test_approx(∇b, test_b)
-test_approx(∇c, test_c)
+        r <- reverse.grad(ctp, list(a, b, c))
+        ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
 
-∇a, ∇b, ∇c = map(DiffResults.GradientResult, (a, b, c))
-ReverseDiff.gradient!((∇a, ∇b, ∇c), tp, (a, b, c))
-test_approx(DiffResults.value(∇a), test_val)
-test_approx(DiffResults.value(∇b), test_val)
-test_approx(DiffResults.value(∇c), test_val)
-test_approx(DiffResults.gradient(∇a), test_a)
-test_approx(DiffResults.gradient(∇b), test_b)
-test_approx(DiffResults.gradient(∇c), test_c)
-
-# with compiled GradientTape
-
-if length(tp.tape) <= COMPILED_TAPE_LIMIT # otherwise compile time can be crazy
-ctp = ReverseDiff.compile(tp)
-
-∇a, ∇b, ∇c = ReverseDiff.gradient!(ctp, (a, b, c))
-test_approx(∇a, test_a)
-test_approx(∇b, test_b)
-test_approx(∇c, test_c)
-
-∇a, ∇b, ∇c = map(similar, (a, b, c))
-ReverseDiff.gradient!((∇a, ∇b, ∇c), ctp, (a, b, c))
-test_approx(∇a, test_a)
-test_approx(∇b, test_b)
-test_approx(∇c, test_c)
-
-∇a, ∇b, ∇c = map(DiffResults.GradientResult, (a, b, c))
-ReverseDiff.gradient!((∇a, ∇b, ∇c), ctp, (a, b, c))
-test_approx(DiffResults.value(∇a), test_val)
-test_approx(DiffResults.value(∇b), test_val)
-test_approx(DiffResults.value(∇c), test_val)
-test_approx(DiffResults.gradient(∇a), test_a)
-test_approx(DiffResults.gradient(∇b), test_b)
-test_approx(DiffResults.gradient(∇c), test_c)
-end
-end
-
-test_that("test on rosenbrock function", {
-    skip_on_cran()
-    ad_setup()
-    autodiffr:::test_setup()
-
-    ##################
-    # hardcoded test #
-    ##################
-
-    f <- autodiffr:::rosenbrock_1
-    x <- c(0.1, 0.2, 0.3)
-    v <- f(x)
-    g <- c(-9.4, 15.6, 52.0)
-
-    expect_equal(g, forward.grad(f, x))
-    cfg0 <- forward.grad.config(f, x)
-    expect_equal(g, forward.grad(f, x, cfg0))
-
-    for (c in 1:3) {
-
-        print(paste0("  ...running hardcoded test with chunk size = ", c))
-
-        cfg <- forward.grad.config(f, x, chunk_size = c)
-
-        expect_equal(g, forward.grad(f, x, cfg))
+        expect_equal(ga, test_a)
+        expect_equal(gb, test_b)
+        expect_equal(gc, test_c)
     }
-
-    cfgx <- forward.grad.config(sin, x)
-    expect_error(forward.grad(f, x, cfg = cfgx))
-    expect_identical(forward.grad(f, x, cfg = cfgx, check = FALSE),
-                     forward.grad(f,x))
-
-})
+}
 
 test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     skip_on_cran()
