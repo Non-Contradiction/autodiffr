@@ -291,7 +291,7 @@ sigmoid <- function(n) 1 / (1 + exp(-n))
 # neural_step(x1, w1, w2) = sigmoid(dot(w2[1:size(w1, 2)], relu(w1 * x1[1:size(w1, 2)])))
 ## additional function dot in R
 dot <- function(x, y) sum(x * y)
-neural_step <- function(x1, w1, w2) sigmoid(dot(w2[1:ncol(w1)], relu(w1 %*% x1[1:ncol(w1)])))
+neural_step <- function(x1, w1, w2) sigmoid(dot(w2[1:ncol(w1)], relu(w1 %x% x1[1:ncol(w1)])))
 
 # const TERNARY_MATRIX_TO_NUMBER_FUNCS = (neural_step,)
 TERNARY_MATRIX_TO_NUMBER_FUNCS <- list(neural_step)
