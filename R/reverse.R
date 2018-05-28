@@ -199,6 +199,12 @@ reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    if (is.list(input)) {
+        f <- positionize(f, input)
+        names(input) <- NULL
+        class(input) <- "JuliaTuple"
+    }
+
     JuliaCall::julia_call("ReverseDiff.GradientTape", f, input, cfg)
 }
 
@@ -209,6 +215,12 @@ reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    if (is.list(input)) {
+        f <- positionize(f, input)
+        names(input) <- NULL
+        class(input) <- "JuliaTuple"
+    }
+
     JuliaCall::julia_call("ReverseDiff.JacobianTape", f, input, cfg)
 }
 
@@ -218,6 +230,12 @@ reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
+
+    if (is.list(input)) {
+        f <- positionize(f, input)
+        names(input) <- NULL
+        class(input) <- "JuliaTuple"
+    }
 
     JuliaCall::julia_call("ReverseDiff.HessianTape", f, input, cfg)
 }
