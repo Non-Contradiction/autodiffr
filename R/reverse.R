@@ -47,6 +47,9 @@ reverse.grad <- function(f_or_tape, input, cfg = reverse.grad.config(input)){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    if (is_tape(f_or_tape)) {
+        return(JuliaCall::julia_call("ReverseDiff.gradient!", f_or_tape, input))
+    }
     JuliaCall::julia_call("ReverseDiff.gradient", f_or_tape, input, cfg)
 }
 
@@ -57,6 +60,9 @@ reverse.jacobian <- function(f_or_tape, input, cfg = reverse.jacobian.config(inp
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    if (is_tape(f_or_tape)) {
+        return(JuliaCall::julia_call("ReverseDiff.jacobian!", f_or_tape, input))
+    }
     JuliaCall::julia_call("ReverseDiff.jacobian", f_or_tape, input, cfg)
 }
 
@@ -67,6 +73,9 @@ reverse.hessian <- function(f_or_tape, input, cfg = reverse.hessian.config(input
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    if (is_tape(f_or_tape)) {
+        return(JuliaCall::julia_call("ReverseDiff.hessian!", f_or_tape, input))
+    }
     JuliaCall::julia_call("ReverseDiff.hessian", f_or_tape, input, cfg)
 }
 
@@ -140,4 +149,9 @@ reverse.compile <- function(tape){
     ad_setup()
 
     JuliaCall::julia_call("ReverseDiff.compile", tape)
+}
+
+is_tape <- function(tape) {
+    JuliaCall::julia_command("function is_tape(x) issubtype(typeof(x), ReverseDiff.AbstractTape) end")
+    JuliaCall::julia_call("is_tape", tape)
 }
