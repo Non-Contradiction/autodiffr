@@ -50,7 +50,6 @@ reverse.grad <- function(f_or_tape, input, cfg = NULL){
     is_list <- is.list(input)
 
     if (is_list) {
-        f_or_tape <- positionize(f_or_tape, input)
         ns <- names(input)
         names(input) <- NULL
         class(input) <- "JuliaTuple"
@@ -60,6 +59,10 @@ reverse.grad <- function(f_or_tape, input, cfg = NULL){
         r <- JuliaCall::julia_call("ReverseDiff.gradient!", f_or_tape, input)
     }
     else {
+        if (is_list) {
+            f_or_tape <- positionize(f_or_tape, ns)
+        }
+
         if (is.null(cfg)) {
             r <- JuliaCall::julia_call("ReverseDiff.gradient", f_or_tape, input)
         }
@@ -85,7 +88,6 @@ reverse.jacobian <- function(f_or_tape, input, cfg = NULL){
     is_list <- is.list(input)
 
     if (is_list) {
-        f_or_tape <- positionize(f_or_tape, input)
         ns <- names(input)
         names(input) <- NULL
         class(input) <- "JuliaTuple"
@@ -95,6 +97,10 @@ reverse.jacobian <- function(f_or_tape, input, cfg = NULL){
         r <- JuliaCall::julia_call("ReverseDiff.jacobian!", f_or_tape, input)
     }
     else {
+        if (is_list) {
+            f_or_tape <- positionize(f_or_tape, ns)
+        }
+
         if (is.null(cfg)) {
             r <- JuliaCall::julia_call("ReverseDiff.jacobian", f_or_tape, input)
         }
@@ -120,7 +126,6 @@ reverse.hessian <- function(f_or_tape, input, cfg = NULL){
     is_list <- is.list(input)
 
     if (is_list) {
-        f_or_tape <- positionize(f_or_tape, input)
         ns <- names(input)
         names(input) <- NULL
         class(input) <- "JuliaTuple"
@@ -130,6 +135,10 @@ reverse.hessian <- function(f_or_tape, input, cfg = NULL){
         r <- JuliaCall::julia_call("ReverseDiff.hessian!", f_or_tape, input)
     }
     else {
+        if (is_list) {
+            f_or_tape <- positionize(f_or_tape, ns)
+        }
+
         if (is.null(cfg)) {
             r <- JuliaCall::julia_call("ReverseDiff.hessian", f_or_tape, input)
         }
