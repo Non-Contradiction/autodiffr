@@ -6,10 +6,8 @@ context("Test Wrapper Functions for ReverseDiff Gradient")
 COMPILED_TAPE_LIMIT <- 5000
 
 rand <- function(x){
-    if (length(dim(x)) == 0) stop(paste0("dim of ", x, " is 0."))
-    if (length(dim(x)) >= 2) stop(paste0("dim of ", x, " is greater than 2."))
-    if (length(dim(x)) == 1) seedx <- runif(length(x))
     if (length(dim(x)) == 2) seedx <- matrix(runif(length(x)), dim(x))
+    else seedx <- runif(length(x))
     seedx
 }
 
