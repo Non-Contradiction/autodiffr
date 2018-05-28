@@ -154,6 +154,11 @@ reverse.grad.config <- function(input){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    if (is.list(input)) {
+        names(input) <- NULL
+        class(input) <- "JuliaTuple"
+    }
+
     JuliaCall::julia_call("ReverseDiff.GradientConfig", input)
 }
 
@@ -164,6 +169,11 @@ reverse.jacobian.config <- function(input){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    if (is.list(input)) {
+        names(input) <- NULL
+        class(input) <- "JuliaTuple"
+    }
+
     JuliaCall::julia_call("ReverseDiff.JacobianConfig", input)
 }
 
@@ -173,6 +183,11 @@ reverse.hessian.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
+
+    if (is.list(input)) {
+        names(input) <- NULL
+        class(input) <- "JuliaTuple"
+    }
 
     JuliaCall::julia_call("ReverseDiff.HessianConfig", input)
 }
