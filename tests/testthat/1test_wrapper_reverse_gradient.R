@@ -1,5 +1,5 @@
-## The file is adapted from the gradient test for ForwardDiff.jl
-## at <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>
+## The file is adapted from the gradient test for ReverseDiff.jl
+## at <https://github.com/JuliaDiff/ReverseDiff.jl/blob/master/test/api/GradientTests.jl>
 
 context("Test Wrapper Functions for ReverseDiff Gradient")
 
@@ -91,32 +91,47 @@ test_ternary_gradient <- function(f, a, b, c){
     }
 }
 
+test_that("test on MATRIX_TO_NUMBER_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    for (i in 1:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
+        f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
+        n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
+
+        print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
+
+        test_unary_gradient(f, matrix(runif(25), 5, 5))
+    }
+})
+
 test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     skip_on_cran()
     ad_setup()
     autodiffr:::test_setup()
 
-    ########################
-    # test vs. Calculus.jl #
-    ########################
-
     for (i in 1:length(autodiffr:::VECTOR_TO_NUMBER_FUNCS)) {
         f <- autodiffr:::VECTOR_TO_NUMBER_FUNCS[[i]]
         n <- names(autodiffr:::VECTOR_TO_NUMBER_FUNCS)[i]
-        v <- f(X)
-        g <- forward.grad(f, X)
-        expect_equal(g, JuliaCall::julia_call("Calculus.derivative", f, X))
 
-        cfg0 <- forward.grad.config(f, X)
-        expect_equal(g, forward.grad(f, X, cfg = cfg0))
+        print(paste0("VECTOR_TO_NUMBER_FUNCS ", n))
 
-        for (c in CHUNK_SIZES) {
+        test_unary_gradient(f, runif(5))
+    }
+})
 
-            print(paste0("  ...testing ", n, " with chunk size = ", c))
+test_that("test on TERNARY_MATRIX_TO_NUMBER_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
 
-            cfg <- forward.grad.config(f, X, chunk_size = c)
+    for (i in 1:length(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)) {
+        f <- autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS[[i]]
+        n <- names(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)[i]
 
-            expect_equal(g, forward.grad(f, X, cfg))
-        }
+        print(paste0("TERNARY_MATRIX_TO_NUMBER_FUNCS ", n))
+
+        test_ternary_gradient(f, matrix(runif(25), 5, 5), matrix(runif(25), 5, 5), matrix(runif(25), 5, 5))
     }
 })
