@@ -14,11 +14,11 @@
 \alias{reverse.compile}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
-reverse.grad(f_or_tape, input, cfg = reverse.grad.config(input))
+reverse.grad(f_or_tape, input, cfg = NULL)
 
-reverse.jacobian(f_or_tape, input, cfg = reverse.jacobian.config(input))
+reverse.jacobian(f_or_tape, input, cfg = NULL)
 
-reverse.hessian(f_or_tape, input, cfg = reverse.hessian.config(input))
+reverse.hessian(f_or_tape, input, cfg = NULL)
 
 reverse.grad.config(input)
 
