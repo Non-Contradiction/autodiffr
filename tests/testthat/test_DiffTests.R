@@ -61,3 +61,28 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
 
     }
 })
+
+rand <- function(x){
+    if (length(dim(x)) == 2) seedx <- matrix(runif(length(x)), dim(x))
+    else seedx <- runif(length(x))
+    seedx
+}
+
+test_that("test on TERNARY_MATRIX_TO_NUMBER_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    for (i in 1:length(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)) {
+        f <- autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS[[i]]
+        n <- names(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)[i]
+        print(paste0("  ...testing ", n))
+        x <- matrix(1, 5, 5)
+        a <- rand(x)
+        b <- rand(x)
+        c <- rand(x)
+        expect_equal(f(a, b, c),
+                     JuliaCall::julia_call(paste0("DiffTests.", n), a, b, c))
+
+    }
+})
