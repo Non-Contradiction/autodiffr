@@ -107,3 +107,17 @@
 * Implement `diagm` to supplement the `diag` methods from `JuliaCall`. It turns out very difficult to implement `diag` for `JuliaObject` vectors. `diagm` is a clear name for this functionality.
 * Finish adapting tests for Jacobian for `ForwardDiff.jl` at <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/JacobianTest.jl>.
 * Have tests to check the implementation of testing functions in `DiffTests.R`.
+
+## May 26
+
+* Thinking about APIs related to `DiffResults` at <https://github.com/JuliaDiff/DiffResults.jl> which can save the differentiation results and can get the differentiation results of multiple orders simultaneously.
+
+# May 27
+
+* Clean up the `ReverseDiff` API to use the wrapper functions.
+* Remove the tape arguments in the wrapper functions of Config APIs of `ReverseDiff`. As I understand, it doesn't make a big difference, and it also doesn't appear in documentations, examples and tests.
+* After consideration, decide to wrap `AbstractTape` APIs of `ReverseDiff` at <http://www.juliadiff.org/ReverseDiff.jl/api/#the-abstracttape-api>.
+* Initial implementation and documentation of `AbstractTape` APIs of `ReverseDiff`.
+* Incorporate the `AbstractTape`-related methods into current APIs of `ReverseDiff`.
+* Make corresponding adjustments for documentation of APIs.
+* Simplify codes related to `ad_setup()` a little bit.
