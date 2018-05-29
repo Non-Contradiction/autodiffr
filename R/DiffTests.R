@@ -230,7 +230,7 @@ mat2num_1 <- function(x) det(x[1,1] * solve(x %*% x) + x)
 mat2num_2 <- function(x){
     a <- matrix(x, length(x), 1)
     b <- matrix(x, 1, length(x))
-    sum(log((1 + (a %*% b)) + a - b))
+    sum(log((1 + (a %x% b)) + a - b))
 }
 
 # function mat2num_3(x)
@@ -248,7 +248,7 @@ mat2num_3 <- function(x){
 }
 
 # mat2num_4(x) = mean(sum(sin.(x) * x, 2))
-mat2num_4 <- function(x) mean(rowSums(sin(x) %*% x))
+mat2num_4 <- function(x) mean(rowSums(sin(x) %x% x))
 # softmax(x) = sum(exp.(x) ./ sum(exp.(x), 2))
 softmax <- function(x) sum(exp(x) / rowSums(exp(x)))
 
