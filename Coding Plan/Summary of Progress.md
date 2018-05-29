@@ -121,3 +121,13 @@
 * Incorporate the `AbstractTape`-related methods into current APIs of `ReverseDiff`.
 * Make corresponding adjustments for documentation of APIs.
 * Simplify codes related to `ad_setup()` a little bit.
+
+# May 28
+
+* Use `NULL` for `cfg` arguments in the APIs of `reverse.grad`, `reverse.jacobiann` and `reverse.hessian`. This can improve the performance of the functions a little, since the `Config` object is not needed in the `AbstractTape`-related methods.
+* APIs of `ReverseDiff` can deal with functions with multiple arguments. Use idea of `positionize` to turn idiomatic R functions with named arguments into functions with positional arguments which `ReverseDiff` is easy to deal with. Related to issue #15.
+* Incorporate the idea of `positionize` to deal with functions of multiple arguments into all `ReverseDiff` APIs step by step.
+* Correct some bugs in `AbstractTape`-related methods.
+* Adapting tests of `ReverseDiff` gradient from <https://github.com/JuliaDiff/ReverseDiff.jl/blob/master/test/api/GradientTests.jl>.
+* Identify some issues related to generics on `JuliaObject`, namely, `%*%`, `determinant` and `as.vector`.
+* Since `%*%` is only S4 generic but not S3 generic, it is difficult to overload this method for `JuliaObject`. Temporarily define `%x%` method to deal with this problem. And incorporate the method into tests. 
