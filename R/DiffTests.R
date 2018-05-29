@@ -228,8 +228,8 @@ mat2num_1 <- function(x) det(x[1,1] * solve(x %*% x) + x)
 # end
 
 mat2num_2 <- function(x){
-    a <- matrix(x, length(x), 1)
-    b <- matrix(x, 1, length(x))
+    a <- matrix(as.list(x), length(x), 1)
+    b <- matrix(as.list(x), 1, length(x))
     sum(log((1 + (a %x% b)) + a - b))
 }
 
@@ -243,8 +243,8 @@ mat2num_2 <- function(x){
 mat2num_3 <- function(x){
     k <- length(x)
     N <- as.integer(sqrt(k))
-    A <- matrix(x, N, N)
-    sum(sapply(A, function(n) sqrt(abs(n) + n^2) * 0.5))
+    A <- matrix(as.list(x), N, N)
+    sum(map(function(n) sqrt(abs(n) + n^2) * 0.5, A))
 }
 
 # mat2num_4(x) = mean(sum(sin.(x) * x, 2))
