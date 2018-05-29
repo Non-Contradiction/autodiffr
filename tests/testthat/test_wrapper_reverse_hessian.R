@@ -44,20 +44,20 @@ test_unary_hessian <- function(f, x){
     }
 }
 
-test_that("test on MATRIX_TO_NUMBER_FUNCS", {
-    skip_on_cran()
-    ad_setup()
-    autodiffr:::test_setup()
-
-    for (i in 7:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
-
-        print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
-
-        test_unary_hessian(f, matrix(runif(25), 5, 5))
-    }
-})
+# test_that("test on MATRIX_TO_NUMBER_FUNCS", {
+#     skip_on_cran()
+#     ad_setup()
+#     autodiffr:::test_setup()
+#
+#     for (i in 6:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
+#         f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
+#         n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
+#
+#         print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
+#
+#         test_unary_hessian(f, matrix(runif(25), 5, 5))
+#     }
+# })
 
 test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     skip_on_cran()
