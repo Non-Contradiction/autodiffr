@@ -378,7 +378,7 @@ names(TERNARY_MATRIX_TO_NUMBER_FUNCS) <- c("neural_step")
 # chebyquad(x) = (y = fill(zero(eltype(x)), size(x)); chebyquad!(y, x); return y)
 
 chebyquad <- function(x){
-    y <- JuliaCall::julia_call("zeros", x)
+    y <- zeros(x)
     tk <- 1 / length(x)
     for (j in 1:length(x)) {
         temp1 <- 1.0
@@ -405,7 +405,7 @@ chebyquad <- function(x){
 # brown_almost_linear(x) = (y = fill(zero(eltype(x)), size(x)); brown_almost_linear!(y, x); return y)
 
 brown_almost_linear <- function(x){
-    y <- JuliaCall::julia_call("zeros", x)
+    y <- zeros(x)
     c <- sum(x) - (length(x) + 1)
     for (i in  1:(length(x) - 1)) {
         for (j in 1:(length(y) - 1)) {
@@ -419,7 +419,7 @@ brown_almost_linear <- function(x){
 # trigonometric(x) = (y = fill(one(eltype(x)), size(x)); trigonometric!(y, x); return y)
 
 trigonometric <- function(x){
-    y <- JuliaCall::julia_call("zeros", x)
+    y <- zeros(x)
     for (i in as.list(x)) {
         for (j in 1:length(y)) {
             y[j] <- cos(i)
@@ -438,7 +438,7 @@ trigonometric <- function(x){
 # mutation_test_1(x) = (y = fill(zero(eltype(x)), size(x)); mutation_test_1!(y, x); return y)
 
 mutation_test_1 <- function(x){
-    y <- JuliaCall::julia_call("zeros", x)
+    y <- zeros(x)
     y[1] <- x[1]
     y[1] <- y[1] * x[2]
     y[2] <- y[2] * x[3]
@@ -449,7 +449,7 @@ mutation_test_1 <- function(x){
 # mutation_test_2(x) = (y = fill(one(eltype(x)), size(x)); mutation_test_2!(y, x); return y)
 
 mutation_test_2 <- function(x){
-    y <- JuliaCall::julia_call("ones", x)
+    y <- ones(x)
     y[1] <- y[1] * x[1]
     y[2] <- y[2] * x[1]
     y[1] <- y[1] * x[2]
