@@ -230,7 +230,7 @@ mat2num_1 <- function(x) det(x[1,1] * solve(x %*% x) + x)
 mat2num_2 <- function(x){
     a <- matrix(as.list(x), length(x), 1)
     b <- matrix(as.list(x), 1, length(x))
-    sum(log((1 + (a %x% b)) + a - b))
+    sum(log((1 + (a %m% b)) + a - b))
 }
 
 # function mat2num_3(x)
@@ -248,7 +248,7 @@ mat2num_3 <- function(x){
 }
 
 # mat2num_4(x) = mean(sum(sin.(x) * x, 2))
-mat2num_4 <- function(x) mean(rowSums(sin(x) %x% x))
+mat2num_4 <- function(x) mean(rowSums(sin(x) %m% x))
 # softmax(x) = sum(exp.(x) ./ sum(exp.(x), 2))
 softmax <- function(x) sum(exp(x) / rowSums(exp(x)))
 
@@ -291,7 +291,7 @@ sigmoid <- function(n) 1 / (1 + exp(-n))
 # neural_step(x1, w1, w2) = sigmoid(dot(w2[1:size(w1, 2)], relu(w1 * x1[1:size(w1, 2)])))
 ## additional function dot in R
 dot <- function(x, y) sum(x * y)
-neural_step <- function(x1, w1, w2) sigmoid(dot(w2[1:ncol(w1)], relu(w1 %x% x1[1:ncol(w1)])))
+neural_step <- function(x1, w1, w2) sigmoid(dot(w2[1:ncol(w1)], relu(w1 %m% x1[1:ncol(w1)])))
 
 # const TERNARY_MATRIX_TO_NUMBER_FUNCS = (neural_step,)
 TERNARY_MATRIX_TO_NUMBER_FUNCS <- list(neural_step)
