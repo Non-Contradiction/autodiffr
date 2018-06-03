@@ -9,6 +9,3 @@ x \%m\% y
 \arguments{
 \item{x, y}{numeric or complex matrices or vectors.}
 }
-\description{
-`%m%` is matrix multiplication operator compatible with `JuliaObject`.
-}
