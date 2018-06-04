@@ -219,7 +219,7 @@ names(VECTOR_TO_NUMBER_FUNCS) <- c("vec2num_1", "vec2num_2", "vec2num_3", "vec2n
 ########################
 
 # mat2num_1(x) = det(first(x) * inv(x * x) + x)
-mat2num_1 <- function(x) det(x[1,1] * solve(x %*% x) + x)
+mat2num_1 <- function(x) det(x[1,1] * solve(x %m% x) + x)
 
 # function mat2num_2(x)
 # a = reshape(x, length(x), 1)
@@ -228,8 +228,8 @@ mat2num_1 <- function(x) det(x[1,1] * solve(x %*% x) + x)
 # end
 
 mat2num_2 <- function(x){
-    a <- matrix(as.list(x), length(x), 1)
-    b <- matrix(as.list(x), 1, length(x))
+    a <- Jmatrix(x, length(x), 1)
+    b <- Jmatrix(x, 1, length(x))
     sum(log((1 + (a %m% b)) + a - b))
 }
 
@@ -243,14 +243,14 @@ mat2num_2 <- function(x){
 mat2num_3 <- function(x){
     k <- length(x)
     N <- as.integer(sqrt(k))
-    A <- matrix(as.list(x), N, N)
+    A <- Jmatrix(x, N, N)
     sum(map(function(n) sqrt(abs(n) + n^2) * 0.5, A))
 }
 
 # mat2num_4(x) = mean(sum(sin.(x) * x, 2))
-mat2num_4 <- function(x) mean(rowSums(sin(x) %m% x))
+mat2num_4 <- function(x) mean(rSums(sin(x) %m% x))
 # softmax(x) = sum(exp.(x) ./ sum(exp.(x), 2))
-softmax <- function(x) sum(exp(x) / rowSums(exp(x)))
+softmax <- function(x) sum(exp(x) / rSums(exp(x)))
 
 # const MATRIX_TO_NUMBER_FUNCS = (det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
 MATRIX_TO_NUMBER_FUNCS <- list(det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
