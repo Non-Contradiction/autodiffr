@@ -228,8 +228,8 @@ mat2num_1 <- function(x) det(x[1,1] * solve(x %m% x) + x)
 # end
 
 mat2num_2 <- function(x){
-    a <- Jmatrix(x, length(x), 1)
-    b <- Jmatrix(x, 1, length(x))
+    a <- array(x, c(length(x), 1))
+    b <- array(x, c(1, length(x)))
     sum(log((1 + (a %m% b)) + a - b))
 }
 
@@ -243,7 +243,7 @@ mat2num_2 <- function(x){
 mat2num_3 <- function(x){
     k <- length(x)
     N <- as.integer(sqrt(k))
-    A <- Jmatrix(x, N, N)
+    A <- array(x, c(N, N))
     sum(map(function(n) sqrt(abs(n) + n^2) * 0.5, A))
 }
 
