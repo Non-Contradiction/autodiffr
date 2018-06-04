@@ -284,10 +284,10 @@ A_mul_Bt <- function(x, y) x %m% t(y)
 At_mul_B <- function(x, y) t(x) %m% y
 At_mul_Bt <- function(x, y) t(x) %m% t(y)
 
-BINARY_MATRIX_TO_MATRIX_FUNCS <- list(`+`, `-`, `*`, `%m%`, `/`, solve,
+BINARY_MATRIX_TO_MATRIX_FUNCS <- list(`+`, `-`, `*`, `%m%`, `/`,
                                       `^`, A_mul_Bt, At_mul_B, At_mul_Bt)
 names(BINARY_MATRIX_TO_MATRIX_FUNCS) <- c("+", "-", "*", "%m%", "/",
-                                          "solve", "^",
+                                          "^",
                                           "A_mul_Bt", "At_mul_B", "At_mul_Bt")
 
 ###########################################
