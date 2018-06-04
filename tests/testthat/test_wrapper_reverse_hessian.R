@@ -11,7 +11,7 @@ rand <- function(x){
     seedx
 }
 
-test_unary_hessian <- function(f, x, use_tape = TRUE){
+test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE){
     test <- forward.hessian(f, x, forward.hessian.config(f, x, chunk_size = 1))
 
     # without HessianConfig
@@ -37,6 +37,11 @@ test_unary_hessian <- function(f, x, use_tape = TRUE){
     ## additional check of is_tape function
     expect_true(autodiffr:::is_tape(tp))
     expect_equal(reverse.hessian(tp, x), test)
+
+    if (!use_compiled_tape) {
+        print("....Compiled tape is not tested.")
+        return(0)
+    }
 
     # with compiled HessianTape
 

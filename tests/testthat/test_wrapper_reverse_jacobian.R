@@ -11,7 +11,7 @@ rand <- function(x){
     seedx
 }
 
-test_unary_jacobian <- function(f, x){
+test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
     test_val <- f(x)
     test <- forward.jacobian(f, x)
 
@@ -34,6 +34,11 @@ test_unary_jacobian <- function(f, x){
     expect_true(autodiffr:::is_tape(tp))
     expect_equal(reverse.jacobian(tp, x), test)
 
+    if (!use_compiled_tape) {
+        print("....Compiled tape is not tested.")
+        return(0)
+    }
+
     # with compiled GradientTape
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
@@ -45,7 +50,7 @@ test_unary_jacobian <- function(f, x){
     }
 }
 
-test_binary_jacobian <- function(f, a, b){
+test_binary_jacobian <- function(f, a, b, use_compiled_tape = FALSE){
     test_val <- f(a, b)
     test_a <- forward.jacobian(function(x) f(x, b), a)
     test_b <- forward.jacobian(function(x) f(a, x), b)
@@ -81,6 +86,11 @@ test_binary_jacobian <- function(f, a, b){
 
     expect_equal(Ja, test_a)
     expect_equal(Jb, test_b)
+
+    if (!use_compiled_tape) {
+        print("....Compiled tape is not tested.")
+        return(0)
+    }
 
     # with compiled JacobianTape
 
