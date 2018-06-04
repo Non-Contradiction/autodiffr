@@ -128,82 +128,82 @@ test_that("test on MATRIX_TO_MATRIX_FUNCS", {
     }
 })
 
-# test_that("test on BINARY_MATRIX_TO_MATRIX_FUNCS", {
-#     skip_on_cran()
-#     ad_setup()
-#     autodiffr:::test_setup()
-#
-#     for (i in 1:length(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)) {
-#         f <- autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS[[i]]
-#         n <- names(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)[i]
-#
-#         print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
-#
-#         test_binary_jacobian(f, matrix(runif(25), 5, 5), matrix(runif(25), 5, 5))
-#     }
-# })
-#
-# test_that("test on nested jacobians", {
-#     skip_on_cran()
-#     ad_setup()
-#     autodiffr:::test_setup()
-#
-#     fs <- c(autodiffr:::ARRAY_TO_ARRAY_FUNCS, autodiffr:::MATRIX_TO_MATRIX_FUNCS)
-#     for (i in 1:length(fs)) {
-#         f <- fs[[i]]
-#         n <- names(fs)[i]
-#
-#         print(paste0("ARRAY_TO_ARRAY_FUNCS + MATRIX_TO_MATRIX_FUNCS ", n))
-#
-#         x <- matrix(runif(25), 5, 5)
-#         test <- forward.jacobian(function(y) forward.jacobian(f, y), x)
-#
-#         # without JacobianTape
-#
-#         J <- reverse.jacobian(function(y) reverse.jacobian(f, y), x)
-#         expect_equal(J, test)
-#
-#         # with JacobianTape
-#
-#         tp <- reverse.jacobian.tape(function(y) reverse.jacobian(f, y), rand(x))
-#         J <- reverse.jacobian(tp, x)
-#         expect_equal(J, test)
-#     }
-#
-#
-#     for (i in 1:length(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)) {
-#         f <- autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS[[i]]
-#         n <- names(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)[i]
-#
-#         print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
-#
-#         a <- matrix(runif(25), 5, 5)
-#         b <- matrix(runif(25), 5, 5)
-#         test_val <- f(a, b)
-#         test_a <- forward.jacobian(function(y) forward.jacobian(function(x) f(x, b), y), a)
-#         test_b <- forward.jacobian(function(y) forward.jacobian(function(x) f(a, x), y), b)
-#
-#         # without JacobianTape
-#
-#         Ja <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(x, b), y), a)
-#         Jb <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(a, x), y), b)
-#         expect_equal(Ja, test_a)
-#         expect_equal(Jb, test_b)
-#
-#         # with JacobianTape
-#
-#         ra <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(x, b), y), rand(a))
-#         rb <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(a, x), y), rand(b))
-#         Ja <- reverse.jacobian(ra, a)
-#         Jb <- reverse.jacobian(rb, b)
-#         expect_equal(Ja, test_a)
-#         expect_equal(Jb, test_b)
-#
-#         # The below will fail until support for the Jacobian of
-#         # functions with multiple output arrays is implemented
-#
-#         # Ja, Jb = ReverseDiff.jacobian((x, y) -> ReverseDiff.jacobian(f, (x, y)), (a, b))
-#         # test_approx(Ja test_a)
-#         # test_approx(Jb test_b)
-#     }
-# })
+test_that("test on BINARY_MATRIX_TO_MATRIX_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    for (i in 1:length(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)) {
+        f <- autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS[[i]]
+        n <- names(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)[i]
+
+        print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
+
+        test_binary_jacobian(f, matrix(runif(25), 5, 5), matrix(runif(25), 5, 5))
+    }
+})
+
+test_that("test on nested jacobians", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    fs <- c(autodiffr:::ARRAY_TO_ARRAY_FUNCS, autodiffr:::MATRIX_TO_MATRIX_FUNCS)
+    for (i in 1:length(fs)) {
+        f <- fs[[i]]
+        n <- names(fs)[i]
+
+        print(paste0("ARRAY_TO_ARRAY_FUNCS + MATRIX_TO_MATRIX_FUNCS ", n))
+
+        x <- matrix(runif(25), 5, 5)
+        test <- forward.jacobian(function(y) forward.jacobian(f, y), x)
+
+        # without JacobianTape
+
+        J <- reverse.jacobian(function(y) reverse.jacobian(f, y), x)
+        expect_equal(J, test)
+
+        # with JacobianTape
+
+        tp <- reverse.jacobian.tape(function(y) reverse.jacobian(f, y), rand(x))
+        J <- reverse.jacobian(tp, x)
+        expect_equal(J, test)
+    }
+
+
+    for (i in 1:length(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)) {
+        f <- autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS[[i]]
+        n <- names(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)[i]
+
+        print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
+
+        a <- matrix(runif(25), 5, 5)
+        b <- matrix(runif(25), 5, 5)
+        test_val <- f(a, b)
+        test_a <- forward.jacobian(function(y) forward.jacobian(function(x) f(x, b), y), a)
+        test_b <- forward.jacobian(function(y) forward.jacobian(function(x) f(a, x), y), b)
+
+        # without JacobianTape
+
+        Ja <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(x, b), y), a)
+        Jb <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(a, x), y), b)
+        expect_equal(Ja, test_a)
+        expect_equal(Jb, test_b)
+
+        # with JacobianTape
+
+        ra <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(x, b), y), rand(a))
+        rb <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(a, x), y), rand(b))
+        Ja <- reverse.jacobian(ra, a)
+        Jb <- reverse.jacobian(rb, b)
+        expect_equal(Ja, test_a)
+        expect_equal(Jb, test_b)
+
+        # The below will fail until support for the Jacobian of
+        # functions with multiple output arrays is implemented
+
+        # Ja, Jb = ReverseDiff.jacobian((x, y) -> ReverseDiff.jacobian(f, (x, y)), (a, b))
+        # test_approx(Ja test_a)
+        # test_approx(Jb test_b)
+    }
+})
