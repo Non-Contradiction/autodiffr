@@ -9,5 +9,5 @@
 #' @export
 Jmatrix <- function(data, nrow, ncol){
     JuliaCall::julia_call("reshape", JuliaCall::julia_call("copy", data),
-                          nrow, ncol)
+                          as.integer(nrow), as.integer(ncol))
 }
