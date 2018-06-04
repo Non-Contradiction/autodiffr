@@ -280,6 +280,16 @@ names(MATRIX_TO_NUMBER_FUNCS) <- c("det", "mat2num_1", "mat2num_2", "mat2num_3",
 #                                        A_mul_Bt, At_mul_B, At_mul_Bt,
 #                                        A_mul_Bc, Ac_mul_B, Ac_mul_Bc)
 
+A_mul_Bt <- function(x, y) x %m% t(y)
+At_mul_B <- function(x, y) t(x) %m% y
+At_mul_Bt <- function(x, y) t(x) %m% t(y)
+
+BINARY_MATRIX_TO_MATRIX_FUNCS <- list(`+`, `-`, `*`, `%m%`, `/`, solve,
+                                      `^`, A_mul_Bt, At_mul_B, At_mul_Bt)
+names(BINARY_MATRIX_TO_MATRIX_FUNCS) <- c("+", "-", "*", "%m%", "/",
+                                          "solve", "^",
+                                          "A_mul_Bt", "At_mul_B", "At_mul_Bt")
+
 ###########################################
 # f(::Matrix, ::Matrix, ::Matrix)::Number #
 ###########################################
