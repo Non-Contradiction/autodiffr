@@ -98,36 +98,36 @@ test_binary_jacobian <- function(f, a, b){
     }
 }
 
-# test_that("test on ARRAY_TO_ARRAY_FUNCS", {
-#     skip_on_cran()
-#     ad_setup()
-#     autodiffr:::test_setup()
-#
-#     for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
-#         f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
-#         n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
-#
-#         print(paste0("ARRAY_TO_ARRAY_FUNCS ", n))
-#
-#         test_unary_jacobian(f, matrix(runif(25), 5, 5))
-#     }
-# })
-#
-# test_that("test on MATRIX_TO_MATRIX_FUNCS", {
-#     skip_on_cran()
-#     ad_setup()
-#     autodiffr:::test_setup()
-#
-#     for (i in 1:length(autodiffr:::MATRIX_TO_MATRIX_FUNCS)) {
-#         f <- autodiffr:::MATRIX_TO_MATRIX_FUNCS[[i]]
-#         n <- names(autodiffr:::MATRIX_TO_MATRIX_FUNCS)[i]
-#
-#         print(paste0("MATRIX_TO_MATRIX_FUNCS ", n))
-#
-#         test_unary_jacobian(f, matrix(runif(25), 5, 5))
-#     }
-# })
-#
+test_that("test on ARRAY_TO_ARRAY_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
+        f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
+        n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
+
+        print(paste0("ARRAY_TO_ARRAY_FUNCS ", n))
+
+        test_unary_jacobian(f, matrix(runif(25), 5, 5))
+    }
+})
+
+test_that("test on MATRIX_TO_MATRIX_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    for (i in 1:length(autodiffr:::MATRIX_TO_MATRIX_FUNCS)) {
+        f <- autodiffr:::MATRIX_TO_MATRIX_FUNCS[[i]]
+        n <- names(autodiffr:::MATRIX_TO_MATRIX_FUNCS)[i]
+
+        print(paste0("MATRIX_TO_MATRIX_FUNCS ", n))
+
+        test_unary_jacobian(f, matrix(runif(25), 5, 5))
+    }
+})
+
 # test_that("test on BINARY_MATRIX_TO_MATRIX_FUNCS", {
 #     skip_on_cran()
 #     ad_setup()
