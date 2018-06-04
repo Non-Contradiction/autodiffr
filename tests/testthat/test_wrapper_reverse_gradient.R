@@ -11,7 +11,7 @@ rand <- function(x){
     seedx
 }
 
-test_unary_gradient <- function(f, x){
+test_unary_gradient <- function(f, x, use_tape = TRUE){
     test <- forward.grad(f, x)
 
     # without GradientConfig
@@ -23,6 +23,11 @@ test_unary_gradient <- function(f, x){
     cfg <- reverse.grad.config(x)
 
     expect_equal(reverse.grad(f, x, cfg), test)
+
+    if (!use_tape) {
+        print("....Tape-related methods are not tested...")
+        return(0)
+    }
 
     # with GradientTape
 
@@ -103,20 +108,20 @@ test_ternary_gradient <- function(f, a, b, c){
     }
 }
 
-# test_that("test on MATRIX_TO_NUMBER_FUNCS", {
-#     skip_on_cran()
-#     ad_setup()
-#     autodiffr:::test_setup()
-#
-#     for (i in 1:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
-#         f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
-#         n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
-#
-#         print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
-#
-#         test_unary_gradient(f, matrix(runif(25), 5, 5))
-#     }
-# })
+test_that("test on MATRIX_TO_NUMBER_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    for (i in 1:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
+        f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
+        n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
+
+        print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
+
+        test_unary_gradient(f, matrix(runif(25), 5, 5), use_tape = (i > 2))
+    }
+})
 
 test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     skip_on_cran()
