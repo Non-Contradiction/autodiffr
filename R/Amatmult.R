@@ -1,10 +1,8 @@
-#' Matrix Multiplication Compatable with JuliaObject
+#' Matrix Multiplication Compatable with JuliaObject.
 #'
-#' `%m%` is matrix multiplication operator compatible with `JuliaObject`.
+#' \code{grapes-m-grapes} is matrix multiplication operator compatible with \code{JuliaObject}.
 #'
 #' @param x,y numeric or complex matrices or vectors.
-#'
-#' @md
 #'
 #' @export
 `%m%` <- function(x, y) JuliaCall::julia_call("*", x, y)

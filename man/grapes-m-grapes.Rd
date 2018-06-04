@@ -2,10 +2,13 @@
 % Please edit documentation in R/Amatmult.R
 \name{\%m\%}
 \alias{\%m\%}
-\title{Matrix Multiplication Compatable with JuliaObject}
+\title{Matrix Multiplication Compatable with JuliaObject.}
 \usage{
 x \%m\% y
 }
 \arguments{
 \item{x, y}{numeric or complex matrices or vectors.}
+}
+\description{
+\code{grapes-m-grapes} is matrix multiplication operator compatible with \code{JuliaObject}.
 }
