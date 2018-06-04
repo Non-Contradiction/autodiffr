@@ -11,7 +11,7 @@ rand <- function(x){
     seedx
 }
 
-test_unary_hessian <- function(f, x){
+test_unary_hessian <- function(f, x, use_tape = TRUE){
     test <- forward.hessian(f, x, forward.hessian.config(f, x, chunk_size = 1))
 
     # without HessianConfig
@@ -23,6 +23,11 @@ test_unary_hessian <- function(f, x){
     cfg <- reverse.hessian.config(x)
 
     expect_equal(reverse.hessian(f, x, cfg), test)
+
+    if (!use_tape) {
+        print("....Tape is not tested.")
+        return(0)
+    }
 
     # with HessianTape
 
