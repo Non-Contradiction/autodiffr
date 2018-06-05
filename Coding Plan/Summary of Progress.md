@@ -130,4 +130,54 @@
 * Correct some bugs in `AbstractTape`-related methods.
 * Adapting tests of `ReverseDiff` gradient from <https://github.com/JuliaDiff/ReverseDiff.jl/blob/master/test/api/GradientTests.jl>.
 * Identify some issues related to generics on `JuliaObject`, namely, `%*%`, `determinant` and `as.vector`.
-* Since `%*%` is only S4 generic but not S3 generic, it is difficult to overload this method for `JuliaObject`. Temporarily define `%x%` method to deal with this problem. And incorporate the method into tests. 
+* Since `%*%` is only S4 generic but not S3 generic, it is difficult to overload this method for `JuliaObject`. Temporarily define `%x%` method to deal with this problem. And incorporate the method into tests.
+
+# May 29
+
+* Finish implementation of tests for Hessian and Jacobian of `ReverseDiff`.
+* Try to make tests pass.
+* Identify various issues with `matrix` function.
+
+# May 30
+
+* Trying to make tests pass.
+* Thinking about wrapping `DiffResults` related APIs.
+
+# June 2
+
+* Use `%m%` instead of `%x%` as `%x%` already means Kronecker product in R.
+* Identify issues of multiplication between matrix and vector.
+* Trying to make tests pass.
+* Introduce function `zeros` and `ones` to deal with the problem of creating certain type
+  of `Julia` matrices.
+* Introduce function `Jmatrix` to deal with the reshaping problem of `JuliaObject`.
+* Introduce `cSums`, `cMeans`, `rSums`, `rMeans` to deal with the problem of `colSums`,
+  `colMeans`, `rowSums` and `rowMeans` for `JuliaObject`.
+* Try to support multiple index for `JuliaObject` in `JuliaCall`, which is related to `autodiffr`.
+
+# June 3
+
+* Implementation of `determinant`, `mean` and `solve` generics for `JuliaObject` in `JuliaCall`.
+* Implementation of `c.JuliaObject` because of a new problem identified in `det`.
+* Trying to make tests pass.
+* Because of one issue in implementation of `det` for `JuliaObject`. Omit the tests
+  of tape-related `ReverseDiff` methods with `det`.
+* Make all the tests in Gradient and Hessian tests of `ReverseDiff` pass.
+* Some tests in Jacobian tests of `ReverseDiff` can also pass.
+* Implementation of `t.JuliaObject` in `JuliaCall`.
+* Implementation of more testing functions in `DiffTests.R`.
+* Add more tests back.
+
+# June 4
+
+* Identify problems in the new implemented `c.JuliaObject` and fix it.
+* Fix small issues in `autodiffr`.
+* Make all tests works, except the `solve` one in `ReverseDiff` Jacobian testing currently.
+* Try to reduce testing time.
+* Summarize all the new defined functions in `autodiffr` in an `autodiffr` issue:
+  <https://github.com/Non-Contradiction/autodiffr/issues/18>.
+* Investigate into the issue again and find out that `array` can be used instead of
+  `matrix` and is more friendly to generics.
+* Implementation of more generics for `JuliaObject` in `JuliaCall`,
+  `as.vector`, `dim<-`, and `aperm`.
+* Use `array` instead of `Jmatrix`.
