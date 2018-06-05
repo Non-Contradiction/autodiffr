@@ -1,0 +1,33 @@
+---
+title: "Forward and Reverse Mode AD in autodiffr"
+author: "Changcheng Li"
+date: "2018/6/4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+`autodiffr` is now a work-in-progress. You can install it by
+```{r, eval=FALSE}
+devtools::install_github("Non-Contradiction/autodiffr")
+```
+
+It's also recommended to install the latest version of `JuliaCall` by
+```{r, eval=FALSE}
+devtools::install_github("Non-Contradiction/JuliaCall")
+```
+
+And after the installation is finished, just do the following steps,
+note that the first time it will take some time, but the next time it should be better.
+```{r}
+library(autodiffr)
+ad_setup()
+```
+
+## Forward Mode Automatic Differentiation
+
+## Reverse Mode Automatic Differentiation
