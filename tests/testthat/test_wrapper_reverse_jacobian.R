@@ -15,17 +15,17 @@ test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
     test_val <- f(x)
     test <- forward.jacobian(f, x)
 
-    # without JacobianConfig
+    print("....without JacobianConfig")
 
     expect_equal(reverse.jacobian(f, x), test)
 
-    # with JacobianConfig
+    print("....with JacobianConfig")
 
     cfg <- reverse.jacobian.config(x)
 
     expect_equal(reverse.jacobian(f, x, cfg), test)
 
-    # with GradientTape
+    print("....with GradientTape")
 
     seedx <- rand(x)
     tp <- reverse.jacobian.tape(f, seedx)
@@ -39,7 +39,7 @@ test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
         return(0)
     }
 
-    # with compiled GradientTape
+    print("....with compiled GradientTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
@@ -55,14 +55,14 @@ test_binary_jacobian <- function(f, a, b, use_compiled_tape = FALSE){
     test_a <- forward.jacobian(function(x) f(x, b), a)
     test_b <- forward.jacobian(function(x) f(a, x), b)
 
-    # without JacobianConfig
+    print("....without JacobianConfig")
 
     r <- reverse.jacobian(f, list(a, b))
     Ja <- r[[1]]; Jb <- r[[2]]
     expect_equal(Ja, test_a)
     expect_equal(Jb, test_b)
 
-    # with JacobianConfig
+    print("....with JacobianConfig")
 
     cfg <- reverse.jacobian.config(list(a, b))
 
@@ -72,7 +72,7 @@ test_binary_jacobian <- function(f, a, b, use_compiled_tape = FALSE){
     expect_equal(Ja, test_a)
     expect_equal(Jb, test_b)
 
-    # with JacobianTape
+    print("....with JacobianTape")
 
     seeda <- rand(a)
     seedb <- rand(b)
@@ -92,7 +92,7 @@ test_binary_jacobian <- function(f, a, b, use_compiled_tape = FALSE){
         return(0)
     }
 
-    # with compiled JacobianTape
+    print("....with compiled JacobianTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
@@ -168,12 +168,12 @@ test_that("test on nested jacobians", {
         x <- matrix(runif(25), 5, 5)
         test <- forward.jacobian(function(y) forward.jacobian(f, y), x)
 
-        # without JacobianTape
+        print("....without JacobianTape")
 
         J <- reverse.jacobian(function(y) reverse.jacobian(f, y), x)
         expect_equal(J, test)
 
-        # with JacobianTape
+        print("....with JacobianTape")
 
         tp <- reverse.jacobian.tape(function(y) reverse.jacobian(f, y), rand(x))
         J <- reverse.jacobian(tp, x)
@@ -193,14 +193,14 @@ test_that("test on nested jacobians", {
         test_a <- forward.jacobian(function(y) forward.jacobian(function(x) f(x, b), y), a)
         test_b <- forward.jacobian(function(y) forward.jacobian(function(x) f(a, x), y), b)
 
-        # without JacobianTape
+        print("....without JacobianTape")
 
         Ja <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(x, b), y), a)
         Jb <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(a, x), y), b)
         expect_equal(Ja, test_a)
         expect_equal(Jb, test_b)
 
-        # with JacobianTape
+        print("....with JacobianTape")
 
         ra <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(x, b), y), rand(a))
         rb <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(a, x), y), rand(b))

@@ -14,11 +14,11 @@ rand <- function(x){
 test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE){
     test <- forward.hessian(f, x, forward.hessian.config(f, x, chunk_size = 1))
 
-    # without HessianConfig
+    print("....without HessianConfig")
 
     expect_equal(reverse.hessian(f, x), test)
 
-    # with HessianConfig
+    print("....with HessianConfig")
 
     cfg <- reverse.hessian.config(x)
 
@@ -29,7 +29,7 @@ test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE)
         return(0)
     }
 
-    # with HessianTape
+    print("....with HessianTape")
 
     seedx <- rand(x)
     tp <- reverse.hessian.tape(f, seedx)
@@ -43,7 +43,7 @@ test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE)
         return(0)
     }
 
-    # with compiled HessianTape
+    print("....with compiled HessianTape")
 
     if (length(tp$tape) <= 10000) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)

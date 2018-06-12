@@ -14,11 +14,11 @@ rand <- function(x){
 test_unary_gradient <- function(f, x, use_tape = TRUE){
     test <- forward.grad(f, x)
 
-    # without GradientConfig
+    print("....without GradientConfig")
 
     expect_equal(reverse.grad(f, x), test)
 
-    # with GradientConfig
+    print("....with GradientConfig")
 
     cfg <- reverse.grad.config(x)
 
@@ -29,7 +29,7 @@ test_unary_gradient <- function(f, x, use_tape = TRUE){
         return(0)
     }
 
-    # with GradientTape
+    print("....with GradientTape")
 
     seedx <- rand(x)
     tp <- reverse.grad.tape(f, seedx)
@@ -38,7 +38,7 @@ test_unary_gradient <- function(f, x, use_tape = TRUE){
     expect_true(autodiffr:::is_tape(tp))
     expect_equal(reverse.grad(tp, x), test)
 
-    # with compiled GradientTape
+    print("....with compiled GradientTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
@@ -55,7 +55,7 @@ test_ternary_gradient <- function(f, a, b, c){
     test_b <- forward.grad(function(x) f(a, x, c), b)
     test_c <- forward.grad(function(x) f(a, b, x), c)
 
-    # without GradientConfig
+    print("....without GradientConfig")
 
     r <- reverse.grad(f, list(a, b, c))
     ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
@@ -63,7 +63,7 @@ test_ternary_gradient <- function(f, a, b, c){
     expect_equal(gb, test_b)
     expect_equal(gc, test_c)
 
-    # with GradientConfig
+    print("....with GradientConfig")
 
     cfg <- reverse.grad.config(list(a, b, c))
 
@@ -74,7 +74,7 @@ test_ternary_gradient <- function(f, a, b, c){
     expect_equal(gb, test_b)
     expect_equal(gc, test_c)
 
-    # with GradientTape
+    print("....with GradientTape")
 
     seeda <- rand(a)
     seedb <- rand(b)
@@ -91,7 +91,7 @@ test_ternary_gradient <- function(f, a, b, c){
     expect_equal(gb, test_b)
     expect_equal(gc, test_c)
 
-    # with compiled GradientTape
+    print("....with compiled GradientTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
