@@ -2,7 +2,7 @@
 title: "Forward and Reverse Mode AD in autodiffr"
 author: "Changcheng Li"
 date: "2018/6/4"
-output: html_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
@@ -28,6 +28,93 @@ library(autodiffr)
 ad_setup()
 ```
 
-## Forward Mode Automatic Differentiation
+And we can use package `numDeriv` to compare with `autodiffr`.
+```{r}
+library(numDeriv)
+```
 
-## Reverse Mode Automatic Differentiation
+## Basic Usage
+
+In this section, we are using a function similar to Rosenbrock function as an initial example:
+```{r}
+## Later on, I may export these functions maybe in an R environment including all testing functions.
+## So users can get easy access to these functions for examples, testing and benchmarking purposes.
+## But currently these functions are unexported in autodiffr
+rosen1 <- autodiffr:::rosenbrock_1
+# And there are other functions, which can be used to replace the rosen1 function in the following examples like
+# rosen2 <- autodiffr:::rosenbrock_2
+# rosen4 <- autodiffr:::rosenbrock_4
+# ackley <- autodiffr:::ackley
+
+rosen1
+# rosen2
+# rosen4
+# ackley
+
+target <- rosen1
+```
+
+These functions receive a vector input and generates scalar output.
+So `forward.grad` and `reverse.grad` can be used to calculate their gradients and `forward.hessian` and `reverse.hessian` can be used to calculate their hessians. Besides, it should be possible to calculate the jacobian of the gradient function, which should be the same with the hessian.
+
+The basic usage is as follows:
+```{r}
+X <- runif(10)
+X
+
+forward.grad(target, X)
+
+reverse.grad(target, X)
+
+forward.jacobian(function(x) forward.grad(target, x), X)
+
+reverse.jacobian(function(x) reverse.grad(target, x), X)
+
+forward.hessian(target, X)
+
+reverse.hessian(target, X)
+```
+
+And we can compare the results with `numDeriv`:
+```{r}
+numDeriv::grad(target, X)
+
+numDeriv::jacobian(function(x) numDeriv::grad(target, x), X)
+
+numDeriv::hessian(target, X)
+```
+We can see the result is similar, and results from `autodiffr` should be more accurate.
+
+## More Advantage Usage
+
+### Use of config object
+
+If gradient or hessian of the same target function need to be caculated repeatedly on inputs of the same shape, like input vectors of same length or input matrices with the same number of rows and columns, then users can caculate config objects before to improve the performance:
+
+```{r}
+cfg <- forward.grad.config(target, X)
+forward.grad(target, X, cfg = cfg)
+
+cfg <- reverse.grad.config(X)
+reverse.grad(target, X, cfg = cfg)
+
+cfg <- forward.hessian.config(target, X)
+forward.hessian(target, X, cfg = cfg)
+
+cfg <- reverse.hessian.config(X)
+reverse.hessian(target, X, cfg = cfg)
+```
+
+### Use of tape object in reverse mode automatic differentiation
+
+In reverse mode automatic differentiation, if the target function are defined without any branching, like `if`, `ifelse`, `while` and etc, then it is possible to use `tape` to further improve performance:
+
+```{r}
+tp <- reverse.grad.tape(target, X)
+reverse.grad(tp, X)
+
+tp <- reverse.hessian.tape(target, X)
+reverse.hessian(tp, X)
+```
+
+
