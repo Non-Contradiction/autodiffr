@@ -1,5 +1,5 @@
 ---
-title: "Lower Level APIs for Forward and Reverse Mode AD in autodiffr"
+title: "Forward and Reverse Mode AD in autodiffr"
 author: "Changcheng Li"
 date: "2018/6/4"
 output: github_document
@@ -11,31 +11,38 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-`autodiffr` is now a work-in-progress. You can install it by
+`autodiffr` is now a work-in-progress. You can install it by:
+
 ```{r, eval=FALSE}
 devtools::install_github("Non-Contradiction/autodiffr")
 ```
 
-It's also recommended to install the latest version of `JuliaCall` by
+It's also recommended to install the latest version of `JuliaCall` by:
+
 ```{r, eval=FALSE}
 devtools::install_github("Non-Contradiction/JuliaCall")
 ```
 
 And after the installation is finished, just do the following steps,
 note that the first time it will take some time, but the next time it should be better.
+
 ```{r}
 library(autodiffr)
 ad_setup()
 ```
 
 And we can use package `numDeriv` to compare with `autodiffr`.
+
 ```{r}
-library(numDeriv)
+require(numDeriv)
 ```
 
-## Basic Usage
+## Direct wrapper functions of `ForwardDiff` and `ReverseDiff`
+
+### Basic usage
 
 In this section, we are using a function similar to Rosenbrock function as an initial example:
+
 ```{r}
 ## Later on, I may export these functions maybe in an R environment including all testing functions.
 ## So users can get easy access to these functions for examples, testing and benchmarking purposes.
@@ -58,8 +65,9 @@ These functions receive a vector input and generates scalar output.
 So `forward.grad` and `reverse.grad` can be used to calculate their gradients and `forward.hessian` and `reverse.hessian` can be used to calculate their hessians. Besides, it should be possible to calculate the jacobian of the gradient function, which should be the same with the hessian.
 
 The basic usage is as follows:
+
 ```{r}
-X <- runif(10)
+X <- runif(5)
 X
 
 forward.grad(target, X)
@@ -76,6 +84,7 @@ reverse.hessian(target, X)
 ```
 
 And we can compare the results with `numDeriv`:
+
 ```{r}
 numDeriv::grad(target, X)
 
@@ -83,11 +92,12 @@ numDeriv::jacobian(function(x) numDeriv::grad(target, x), X)
 
 numDeriv::hessian(target, X)
 ```
+
 We can see the result is similar, and results from `autodiffr` should be more accurate.
 
-## More Advantage Usage
+### Advance usage
 
-### Use of config object
+#### Use of config object
 
 If gradient or hessian of the same target function need to be caculated repeatedly on inputs of the same shape, like input vectors of same length or input matrices with the same number of rows and columns, then users can caculate config objects before to improve the performance:
 
@@ -115,7 +125,7 @@ cfg1 <- forward.hessian.config(target, X, chunk_size = 1)
 forward.hessian(target, X, cfg = cfg1)
 ```
 
-### Use of tape object in reverse mode automatic differentiation
+#### Use of tape object in reverse mode automatic differentiation
 
 In reverse mode automatic differentiation, if the target function are defined without any branching, like `if`, `ifelse`, `while` and etc, then it is possible to use `tape` to further improve performance:
 
@@ -127,4 +137,90 @@ tp <- reverse.hessian.tape(target, X)
 reverse.hessian(tp, X)
 ```
 
+## User interface functions provided by `autodiffr`
 
+`autodiffr` provides a set of user interface functions to deal with the usage of forward and reverse mode automatic differentiation.
+
+### Basic usage
+
+If users want to caculate the gradient, hessian or jacobian directly:
+
+```{r}
+autodiffr::grad(target, X, mode = "forward")
+
+autodiffr::grad(target, X, mode = "reverse")
+
+autodiffr::hessian(target, X, mode = "forward")
+
+autodiffr::hessian(target, X, mode = "reverse")
+```
+
+It's easy to have a gradient, hessian, or jacobian function just by ommiting the `x` argument:
+
+```{r}
+autodiffr::grad(target, mode = "forward")(X)
+
+autodiffr::grad(target, mode = "reverse")(X)
+
+autodiffr::hessian(target, mode = "forward")(X)
+
+autodiffr::hessian(target, mode = "reverse")(X)
+```
+
+### Advanced usage
+
+If users want to have a gradient, hessian, or jacobian function specalised for inputs of the fixed shape (like length of the input vector or numbers of rows and columns of the input matrix), 
+then it is possible to have an optimized function by providing `xsize` argument:
+
+```{r}
+g1 <- autodiffr::grad(target, mode = "forward", xsize = runif(length(X)))
+g1(X)
+
+g2 <- autodiffr::grad(target, mode = "reverse", xsize = runif(length(X)))
+g2(X)
+
+h1 <- autodiffr::hessian(target, mode = "forward", xsize = runif(length(X)))
+h1(X)
+
+h2 <- autodiffr::hessian(target, mode = "reverse", xsize = runif(length(X)))
+h2(X)
+```
+
+Beyond the `xsize` argument, users can also provide `chunk_size` for forward mode automatic differentiation.
+From `?ForwardDiff` users can see instrustions on how to choose chunk size.
+And users can use `use_tape` for reverse mode automatic differentiation, which may increase the performance of gradient, hessian or jacobian functions a lot.
+
+```{r}
+g1 <- autodiffr::grad(target, mode = "forward", xsize = runif(length(X)), chunk_size = 1)
+g1(X)
+
+g2 <- autodiffr::grad(target, mode = "reverse", xsize = runif(length(X)), use_tape = TRUE)
+g2(X)
+
+h1 <- autodiffr::hessian(target, mode = "forward", xsize = runif(length(X)), chunk_size = 1)
+h1(X)
+
+h2 <- autodiffr::hessian(target, mode = "reverse", xsize = runif(length(X)), use_tape = TRUE)
+h2(X)
+```
+
+But please note that if the target function are defined with branching, like `if`, `ifelse`, `while` and etc, then `use_tape` may give incorrect results, like the following example.
+
+```{r}
+f <- function(x){
+    if (x[1] > 1.5) {
+        sum(x^2)
+    }
+    else {
+        sum(x^3)
+    }
+}
+
+gF <- autodiffr::grad(f, mode = "forward", xsize = rep(2,3), chunk_size = 1)
+
+gR <- autodiffr::grad(f, mode = "reverse", xsize = rep(2,3), use_tape = TRUE)
+
+gF(rep(1,3)) ## correct result
+
+gR(rep(1,3)) ## wrong result
+```
