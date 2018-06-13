@@ -86,3 +86,26 @@ test_that("test on TERNARY_MATRIX_TO_NUMBER_FUNCS", {
 
     }
 })
+
+test_that("test on MATRIX_TO_NUMBER_FUNCS", {
+    skip_on_cran()
+    ad_setup()
+    autodiffr:::test_setup()
+
+    for (i in 1:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
+        f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
+        n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
+        print(paste0("  ...testing ", n))
+        x <- matrix(1, 5, 5)
+        a <- rand(x)
+
+        if (n != "det") {
+            expect_equal(f(a),
+                         JuliaCall::julia_call(paste0("DiffTests.", n), a))
+        }
+        if (n == "det") {
+            expect_equal(f(a),
+                         JuliaCall::julia_call(n, a))
+        }
+    }
+})
