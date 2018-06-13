@@ -227,11 +227,11 @@ mat2num_1 <- function(x) det(x[1,1] * solve(x %m% x) + x)
 # return trace(log.((1 .+ (a * b)) .+ a .- b))
 # end
 
-mat2num_2 <- function(x){
-    a <- array(x, c(length(x), 1))
-    b <- array(x, c(1, length(x)))
-    sum(log((1 + (a %m% b)) + a - b))
-}
+# mat2num_2 <- function(x){
+#     a <- array(x, c(length(x), 1))
+#     b <- array(x, c(1, length(x)))
+#     sum(log((1 + (a %m% b)) + a - b))
+# }
 
 # function mat2num_3(x)
 # k = length(x)
@@ -253,8 +253,8 @@ mat2num_4 <- function(x) mean(rSums(sin(x) %m% x))
 softmax <- function(x) sum(exp(x) / rSums(exp(x)))
 
 # const MATRIX_TO_NUMBER_FUNCS = (det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
-MATRIX_TO_NUMBER_FUNCS <- list(det, mat2num_1, mat2num_2, mat2num_3, mat2num_4, softmax)
-names(MATRIX_TO_NUMBER_FUNCS) <- c("det", "mat2num_1", "mat2num_2", "mat2num_3", "mat2num_4", "softmax")
+MATRIX_TO_NUMBER_FUNCS <- list(det, mat2num_1, mat2num_3, mat2num_4, softmax)
+names(MATRIX_TO_NUMBER_FUNCS) <- c("det", "mat2num_1", "mat2num_3", "mat2num_4", "softmax")
 
 ####################
 # binary broadcast #
