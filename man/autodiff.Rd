@@ -5,6 +5,7 @@
 \alias{createInterface}
 \alias{jacobian}
 \alias{hessian}
+\alias{grad}
 \title{Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.}
 \usage{
 createInterface(fname = c("grad", "jacobian", "hessian"))
@@ -13,6 +14,9 @@ jacobian(func, x = NULL, mode = c("forward", "reverse"), xsize = x,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
 
 hessian(func, x = NULL, mode = c("forward", "reverse"), xsize = x,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
+
+grad(func, x = NULL, mode = c("forward", "reverse"), xsize = x,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
 }
 \arguments{

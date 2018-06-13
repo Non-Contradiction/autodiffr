@@ -6,5 +6,9 @@ jacobian <- createInterface("jacobian")
 #' @export
 hessian <- createInterface("hessian")
 
-## currently, gradient and derivative don't use the creator
-## because we may need to make them alias of each other.
+#' @rdname autodiff
+#' @export
+grad <- createInterface("grad")
+
+## currently, deriv don't use the creator
+## and we may need to make grad and deriv alias of each other.
