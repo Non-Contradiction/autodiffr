@@ -55,7 +55,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
         ## construction of target function
         force(func)
-        force(...)
+        if (!missing(...)) force(...)
 
         target <- function(x){
             if (is.list(x)) {
