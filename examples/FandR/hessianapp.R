@@ -21,7 +21,7 @@ diffnorm <- function(x1, x2) sqrt(sum((x1 - x2) ^ 2))
 ui <- fluidPage(
 
    # Application title
-   titlePanel("Forward and Reverse Mode AD in autodiffr"),
+   titlePanel("Hessian in autodiffr"),
 
    # Sidebar with a slider input for number of bins
    sidebarLayout(
