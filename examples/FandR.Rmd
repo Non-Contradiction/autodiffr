@@ -105,6 +105,16 @@ cfg <- reverse.hessian.config(X)
 reverse.hessian(target, X, cfg = cfg)
 ```
 
+And users can also choose a chunk size when using config objects for forward mode automatic differentiation, choosing appropriate sample size can improve performance further.
+
+```{r}
+cfg1 <- forward.grad.config(target, X, chunk_size = 1)
+forward.grad(target, X, cfg = cfg1)
+
+cfg1 <- forward.hessian.config(target, X, chunk_size = 1)
+forward.hessian(target, X, cfg = cfg1)
+```
+
 ### Use of tape object in reverse mode automatic differentiation
 
 In reverse mode automatic differentiation, if the target function are defined without any branching, like `if`, `ifelse`, `while` and etc, then it is possible to use `tape` to further improve performance:
