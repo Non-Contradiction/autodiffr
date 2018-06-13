@@ -49,6 +49,10 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
                   xsize = x, chunk_size = NULL,
                   use_tape = FALSE, compiled = FALSE,
                   ...){
+        ## ad_setup() is not necessary,
+        ## unless you want to pass some arguments to it.
+        ad_setup()
+
         ## construction of target function
         force(func)
         force(...)
