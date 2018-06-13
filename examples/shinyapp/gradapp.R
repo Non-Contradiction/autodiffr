@@ -11,7 +11,7 @@ library(shiny)
 
 library(autodiffr)
 
-library(numDeriv)
+require(numDeriv)
 
 testing_funcs <- c(autodiffr:::VECTOR_TO_NUMBER_FUNCS)
 

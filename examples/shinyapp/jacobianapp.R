@@ -11,7 +11,7 @@ library(shiny)
 
 library(autodiffr)
 
-library(numDeriv)
+require(numDeriv)
 
 testing_funcs <- c(autodiffr:::ARRAY_TO_ARRAY_FUNCS, autodiffr:::MATRIX_TO_MATRIX_FUNCS)
 
