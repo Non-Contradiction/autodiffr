@@ -1,3 +1,32 @@
+#' Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.
+#'
+#' These functions calculate gradient, jacobian or hessian for the target function.
+#'
+#' @param func the target function to calculate gradient, jacobian or hessian.
+#' @param x the input(s) where derivative is (are) taken.
+#' @param mode whether to use forward or reverse mode automatic differentiation.
+#' @param xsize If `x` is not given and `xsize` is given, then the returning functiopn
+#'   will be optimized w.r.t. the input(s) of the same size with `x`.
+#'   Note that if `xsize` is not given, then all the following parameters will be ignored.
+#' @param chunk_size the chunk size to use in forward mode automatic differentiation.
+#'   Note that this parameter is only effective when `mode = "forward"`.
+#' @param use_tape whether or not to use tape for reverse mode automatic differentiation.
+#'   Note that although `use_tape` can greatly improve the performance sometime,
+#'   it can only calculate the derivatives w.r.t a certain branching,
+#'   so it may not give the correct result for functions containing things like `if`.
+#'   And this parameter is only effective when `mode = "reverse"`.
+#' @param compiled whether or not to use compiled tape for reverse mode automatic differentiation.
+#'   Note that tape compiling can take a lot of time and
+#'   this parameter is only effective when `use_tape = TRUE`.
+#' @param ... other arguments passed to the target function `func`.
+#'
+#' @return if `x` is given, then return will be derivatives;
+#'   if `x` is not given, then return will be a function to calculate derivatives.
+#'
+#' @md
+#'
+#' @name autodiff
+
 createInterface <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     if (fname == "grad") {
