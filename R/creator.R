@@ -26,6 +26,7 @@
 #' @md
 #'
 #' @name autodiff
+NULL
 
 createInterface <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
