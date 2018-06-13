@@ -32,7 +32,7 @@ ui <- fluidPage(
           div("Inputs will be square matrices"),
           textInput("len", "Number of rows of input", "5"),
           h4("Function Source"),
-          textOutput("func")
+          verbatimTextOutput("func")
       ),
 
       # Show a plot of the generated distribution
@@ -78,7 +78,7 @@ server <- function(input, output) {
     func <- reactive(testing_funcs[[input$fn]])
     # output$X <- renderText(X())
     output$func <- renderText({
-        paste0(deparse(func(), width.cutoff = 20L), collapse = "\n\n")
+        paste0(deparse(func()), collapse = "\n")
         })
 
     nR <- reactive(numDeriv::jacobian(func(), X()))
