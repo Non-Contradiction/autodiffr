@@ -44,9 +44,7 @@ library(autodiffr)
 ## Do initial setup
 
 ad_setup()
-#> Julia version 0.6.2 at location /Applications/Julia-0.6.app/Contents/Resources/julia/bin will be used.
-#> Julia initiation...
-#> Finish Julia initiation.
+#> Julia version 0.6.3 at location /Applications/Julia-0.6.app/Contents/Resources/julia/bin will be used.
 #> Loading setup script for JuliaCall...
 #> Finish loading setup script for JuliaCall.
 
