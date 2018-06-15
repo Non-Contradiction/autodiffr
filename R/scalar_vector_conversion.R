@@ -1,6 +1,6 @@
-num2vec <- function(x){
+scalar2vector <- function(x){
     if (is.list(x)) {
-        lapply(x, num2vec)
+        lapply(x, scalar2vector)
     }
     else {
         if (length(x) > 1) {
@@ -10,7 +10,7 @@ num2vec <- function(x){
     }
 }
 
-vec2num <- function(x){
+vector2scalar <- function(x){
     if (length(x) == 1) x[1]
     else x
 }

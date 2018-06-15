@@ -71,42 +71,42 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
         target <-
             if (fname == "jacobian") {
-                function(x) num2vec(target0(x))
+                function(x) scalar2vector(target0(x))
             }
             else {
-                function(x) vec2num(target0(x))
+                function(x) vector2scalar(target0(x))
             }
 
         mode <- match.arg(mode)
         if (!is.null(x)) {
             ## when x is given, return result directly,
             ## and no optimization is possible
-            return(D[[mode]](target, num2vec(x)))
+            return(D[[mode]](target, scalar2vector(x)))
         }
         ## when x is null, need to return a function
 
         if (is.null(xsize)) {
             ## since xsize is not given, no optimization will be carried on
-            return(function(x) D[[mode]](target, num2vec(x)))
+            return(function(x) D[[mode]](target, scalar2vector(x)))
         }
 
         ## xsize is given, further optimization is possible
         if (mode == "forward") {
             ## when mode is forward,
             ## the only possible optimization is construction of Config objects
-            config <- Config$forward(target, num2vec(xsize), chunk_size = chunk_size)
-            return(function(x) D$forward(target, num2vec(x), cfg = config))
+            config <- Config$forward(target, scalar2vector(xsize), chunk_size = chunk_size)
+            return(function(x) D$forward(target, scalar2vector(x), cfg = config))
         }
 
         if (isFALSE(use_tape)) {
             ## If not use_tape,
             ## the only possible optimization in rev mode is also construction of Config objects
-            config <- Config$reverse(num2vec(xsize))
-            return(function(x) D$reverse(target, num2vec(x), cfg = config))
+            config <- Config$reverse(scalar2vector(xsize))
+            return(function(x) D$reverse(target, scalar2vector(x), cfg = config))
         }
 
         ## use_tape,
-        tape <- Tape(target, num2vec(xsize))
+        tape <- Tape(target, scalar2vector(xsize))
         if (isTRUE(compiled)) {
             tape <- reverse.compile(tape)
         }
