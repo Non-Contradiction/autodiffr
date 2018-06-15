@@ -84,14 +84,14 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
             ## when mode is forward,
             ## the only possible optimization is construction of Config objects
             config <- Config$forward(target, xsize, chunk_size = chunk_size)
-            return(function(x) D[[mode]](target, x, cfg = config))
+            return(function(x) D$forward(target, x, cfg = config))
         }
 
         if (isFALSE(use_tape)) {
             ## If not use_tape,
             ## the only possible optimization in rev mode is also construction of Config objects
             config <- Config$reverse(xsize)
-            return(function(x) D[[mode]](target, x, cfg = config))
+            return(function(x) D$reverse(target, x, cfg = config))
         }
 
         ## use_tape,
@@ -99,7 +99,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
         if (isTRUE(compiled)) {
             tape <- reverse.compile(tape)
         }
-        return(function(x) D[[mode]](tape, x))
+        return(function(x) D$reverse(tape, x))
     }
 
     f
