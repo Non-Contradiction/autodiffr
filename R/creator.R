@@ -58,7 +58,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
         force(func)
         if (!missing(...)) force(...)
 
-        target <- function(x){
+        target0 <- function(x){
             if (is.list(x)) {
                 do.call(func, c(x, ...))
             }
@@ -66,36 +66,47 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
             func(x, ...)
         }
 
+        ## in jacobian, the output of the target function should be a vector,
+        ## otherwise a scalar
+
+        target <-
+            if (fname == "jacobian") {
+                function(x) num2vec(target0(x))
+            }
+            else {
+                function(x) vec2num(target0(x))
+            }
+
         mode <- match.arg(mode)
         if (!is.null(x)) {
             ## when x is given, return result directly,
             ## and no optimization is possible
-            return(D[[mode]](target, x))
+            return(D[[mode]](target, num2vec(x)))
         }
         ## when x is null, need to return a function
 
         if (is.null(xsize)) {
             ## since xsize is not given, no optimization will be carried on
-            return(function(x) D[[mode]](target, x))
+            return(function(x) D[[mode]](target, num2vec(x)))
         }
 
         ## xsize is given, further optimization is possible
         if (mode == "forward") {
             ## when mode is forward,
             ## the only possible optimization is construction of Config objects
-            config <- Config$forward(target, xsize, chunk_size = chunk_size)
-            return(function(x) D$forward(target, x, cfg = config))
+            config <- Config$forward(target, num2vec(xsize), chunk_size = chunk_size)
+            return(function(x) D$forward(target, num2vec(x), cfg = config))
         }
 
         if (isFALSE(use_tape)) {
             ## If not use_tape,
             ## the only possible optimization in rev mode is also construction of Config objects
-            config <- Config$reverse(xsize)
-            return(function(x) D$reverse(target, x, cfg = config))
+            config <- Config$reverse(num2vec(xsize))
+            return(function(x) D$reverse(target, num2vec(x), cfg = config))
         }
 
         ## use_tape,
-        tape <- Tape(target, xsize)
+        tape <- Tape(target, num2vec(xsize))
         if (isTRUE(compiled)) {
             tape <- reverse.compile(tape)
         }
