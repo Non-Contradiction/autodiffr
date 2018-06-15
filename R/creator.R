@@ -46,7 +46,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
         Tape <- reverse.hessian.tape
     }
 
-    f <- function(func, x = NULL, mode = c("forward", "reverse"),
+    f <- function(func, x = NULL, mode = c("reverse", "forward"),
                   xsize = x, chunk_size = NULL,
                   use_tape = FALSE, compiled = FALSE,
                   ...){

@@ -7,13 +7,13 @@
 \alias{grad}
 \title{Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.}
 \usage{
-jacobian(func, x = NULL, mode = c("forward", "reverse"), xsize = x,
+jacobian(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
 
-hessian(func, x = NULL, mode = c("forward", "reverse"), xsize = x,
+hessian(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
 
-grad(func, x = NULL, mode = c("forward", "reverse"), xsize = x,
+grad(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
 }
 \arguments{
