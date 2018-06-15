@@ -10,5 +10,6 @@ hessian <- createInterface("hessian")
 #' @export
 grad <- createInterface("grad")
 
-## currently, deriv don't use the creator
-## and we may need to make grad and deriv alias of each other.
+#' @rdname autodiff
+#' @export
+deriv <- grad

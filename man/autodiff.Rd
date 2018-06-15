@@ -5,6 +5,7 @@
 \alias{jacobian}
 \alias{hessian}
 \alias{grad}
+\alias{deriv}
 \title{Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.}
 \usage{
 jacobian(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
@@ -14,6 +15,9 @@ hessian(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
 
 grad(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
+
+deriv(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
 }
 \arguments{
