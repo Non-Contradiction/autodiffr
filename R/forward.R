@@ -58,8 +58,6 @@ forward.grad <- function(f, x,
     ## unless you want to pass some arguments to it.
     ad_setup()
 
-    x <- num2vec(x)
-
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
         return(JuliaCall::julia_call("ForwardDiff.gradient", f, x, cfg, check))
@@ -75,8 +73,6 @@ forward.jacobian <- function(f, x,
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
-
-    x <- num2vec(x)
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
@@ -94,8 +90,6 @@ forward.hessian <- function(f, x,
     ## unless you want to pass some arguments to it.
     ad_setup()
 
-    x <- num2vec(x)
-
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
         return(JuliaCall::julia_call("ForwardDiff.hessian", f, x, cfg, check))
@@ -112,8 +106,6 @@ forward.grad.config <- function(f, x, chunk_size = NULL){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
-    x <- num2vec(x)
-
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x))
     }
@@ -129,8 +121,6 @@ forward.jacobian.config <- function(f, x, chunk_size = NULL){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
-    x <- num2vec(x)
-
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x))
     }
@@ -145,8 +135,6 @@ forward.hessian.config <- function(f, x, chunk_size = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
-
-    x <- num2vec(x)
 
     if (is.null(chunk_size)) {
         return(JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x))
