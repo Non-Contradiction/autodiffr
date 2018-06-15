@@ -127,6 +127,8 @@ reverse.hessian <- function(f_or_tape, input, cfg = NULL){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    input <- num2vec(input)
+
     is_list <- is.list(input)
 
     if (is_list) {
@@ -167,6 +169,8 @@ reverse.grad.config <- function(input){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    input <- num2vec(input)
+
     if (is.list(input)) {
         names(input) <- NULL
         class(input) <- "JuliaTuple"
@@ -181,6 +185,8 @@ reverse.jacobian.config <- function(input){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
+
+    input <- num2vec(input)
 
     if (is.list(input)) {
         names(input) <- NULL
@@ -197,6 +203,8 @@ reverse.hessian.config <- function(input){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    input <- num2vec(input)
+
     if (is.list(input)) {
         names(input) <- NULL
         class(input) <- "JuliaTuple"
@@ -211,6 +219,8 @@ reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
+
+    input <- num2vec(input)
 
     if (is.list(input)) {
         f <- positionize(f, names(input))
@@ -228,6 +238,8 @@ reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    input <- num2vec(input)
+
     if (is.list(input)) {
         f <- positionize(f, names(input))
         names(input) <- NULL
@@ -243,6 +255,8 @@ reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
+
+    input <- num2vec(input)
 
     if (is.list(input)) {
         f <- positionize(f, names(input))
