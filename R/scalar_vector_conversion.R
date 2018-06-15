@@ -6,7 +6,9 @@ scalar2vector <- function(x){
         if (length(x) > 1) {
             x
         }
-        JuliaCall::julia_call("vcat", x, need_return = "Julia")
+        else {
+            JuliaCall::julia_call("vcat", x, need_return = "Julia")
+        }
     }
 }
 
