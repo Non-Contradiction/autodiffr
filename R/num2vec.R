@@ -9,3 +9,8 @@ num2vec <- function(x){
         JuliaCall::julia_call("vcat", x, need_return = "Julia")
     }
 }
+
+vec2num <- function(x){
+    if (length(x) == 1) x[1]
+    else x
+}
