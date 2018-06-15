@@ -58,6 +58,8 @@ forward.grad <- function(f, x,
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    x <- num2vec(x)
+
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
         return(JuliaCall::julia_call("ForwardDiff.gradient", f, x, cfg, check))
@@ -89,6 +91,8 @@ forward.hessian <- function(f, x,
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
+
+    x <- num2vec(x)
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")

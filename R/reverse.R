@@ -47,6 +47,8 @@ reverse.grad <- function(f_or_tape, input, cfg = NULL){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
+    input <- num2vec(input)
+
     is_list <- is.list(input)
 
     if (is_list) {
@@ -84,6 +86,8 @@ reverse.jacobian <- function(f_or_tape, input, cfg = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
+
+    input <- num2vec(input)
 
     is_list <- is.list(input)
 
