@@ -181,3 +181,14 @@
 * Implementation of more generics for `JuliaObject` in `JuliaCall`,
   `as.vector`, `dim<-`, and `aperm`.
 * Use `array` instead of `Jmatrix`.
+
+# June 5 - June 13
+
+* Initial implementation of interface functions. Currently `grad`, `jacobian` and `hessian` are in place,
+  but `deriv` is not.
+  and the function signature is `grad(func, x = NULL, mode = c("forward", "reverse"), xsize = x,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)`.
+  May need to make `grad` also working for the scalar case and alias of `deriv`?
+* Basic examples in Rmd document in the example folder.
+* Basic shiny apps to compare automatic differentiation methods and numerical methods.
+* Fix many small issues in `autodiffr`.
