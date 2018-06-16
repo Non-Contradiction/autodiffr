@@ -14,22 +14,22 @@ rand <- function(x){
 test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE){
     test <- forward.hessian(f, x, forward.hessian.config(f, x, chunk_size = 1))
 
-    cat("....without HessianConfig")
+    print("....without HessianConfig")
 
     expect_equal(reverse.hessian(f, x), test)
 
-    cat("....with HessianConfig")
+    print("....with HessianConfig")
 
     cfg <- reverse.hessian.config(x)
 
     expect_equal(reverse.hessian(f, x, cfg), test)
 
     if (!use_tape) {
-        cat("....Tape is not tested.")
+        print("....Tape is not tested.")
         return(0)
     }
 
-    cat("....with HessianTape")
+    print("....with HessianTape")
 
     seedx <- rand(x)
     tp <- reverse.hessian.tape(f, seedx)
@@ -39,11 +39,11 @@ test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE)
     expect_equal(reverse.hessian(tp, x), test)
 
     if (!use_compiled_tape) {
-        cat("....Compiled tape is not tested.")
+        print("....Compiled tape is not tested.")
         return(0)
     }
 
-    cat("....with compiled HessianTape")
+    print("....with compiled HessianTape")
 
     if (length(tp$tape) <= 10000) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
@@ -65,7 +65,7 @@ test_that("test on MATRIX_TO_NUMBER_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
 
-        cat(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
+        print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
 
         test_unary_hessian(f, matrix(runif(9), 3, 3), use_tape = (i > 2))
     }
@@ -82,7 +82,7 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
 
-        cat(paste0("VECTOR_TO_NUMBER_FUNCS ", n))
+        print(paste0("VECTOR_TO_NUMBER_FUNCS ", n))
 
         test_unary_hessian(f, runif(5))
     }

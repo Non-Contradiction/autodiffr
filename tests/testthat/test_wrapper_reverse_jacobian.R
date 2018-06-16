@@ -15,17 +15,17 @@ test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
     test_val <- f(x)
     test <- forward.jacobian(f, x)
 
-    cat("....without JacobianConfig")
+    print("....without JacobianConfig")
 
     expect_equal(reverse.jacobian(f, x), test)
 
-    cat("....with JacobianConfig")
+    print("....with JacobianConfig")
 
     cfg <- reverse.jacobian.config(x)
 
     expect_equal(reverse.jacobian(f, x, cfg), test)
 
-    cat("....with GradientTape")
+    print("....with GradientTape")
 
     seedx <- rand(x)
     tp <- reverse.jacobian.tape(f, seedx)
@@ -35,11 +35,11 @@ test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
     expect_equal(reverse.jacobian(tp, x), test)
 
     if (!use_compiled_tape) {
-        cat("....Compiled tape is not tested.")
+        print("....Compiled tape is not tested.")
         return(0)
     }
 
-    cat("....with compiled GradientTape")
+    print("....with compiled GradientTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
@@ -55,14 +55,14 @@ test_binary_jacobian <- function(f, a, b, use_compiled_tape = FALSE){
     test_a <- forward.jacobian(function(x) f(x, b), a)
     test_b <- forward.jacobian(function(x) f(a, x), b)
 
-    cat("....without JacobianConfig")
+    print("....without JacobianConfig")
 
     r <- reverse.jacobian(f, list(a, b))
     Ja <- r[[1]]; Jb <- r[[2]]
     expect_equal(Ja, test_a)
     expect_equal(Jb, test_b)
 
-    cat("....with JacobianConfig")
+    print("....with JacobianConfig")
 
     cfg <- reverse.jacobian.config(list(a, b))
 
@@ -72,7 +72,7 @@ test_binary_jacobian <- function(f, a, b, use_compiled_tape = FALSE){
     expect_equal(Ja, test_a)
     expect_equal(Jb, test_b)
 
-    cat("....with JacobianTape")
+    print("....with JacobianTape")
 
     seeda <- rand(a)
     seedb <- rand(b)
@@ -88,11 +88,11 @@ test_binary_jacobian <- function(f, a, b, use_compiled_tape = FALSE){
     expect_equal(Jb, test_b)
 
     if (!use_compiled_tape) {
-        cat("....Compiled tape is not tested.")
+        print("....Compiled tape is not tested.")
         return(0)
     }
 
-    cat("....with compiled JacobianTape")
+    print("....with compiled JacobianTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
         ctp <- reverse.compile(tp)
@@ -119,7 +119,7 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
 
-        cat(paste0("ARRAY_TO_ARRAY_FUNCS ", n))
+        print(paste0("ARRAY_TO_ARRAY_FUNCS ", n))
 
         test_unary_jacobian(f, matrix(runif(9), 3, 3))
     }
@@ -136,7 +136,7 @@ test_that("test on MATRIX_TO_MATRIX_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
 
-        cat(paste0("MATRIX_TO_MATRIX_FUNCS ", n))
+        print(paste0("MATRIX_TO_MATRIX_FUNCS ", n))
 
         test_unary_jacobian(f, matrix(runif(9), 3, 3))
     }
@@ -153,7 +153,7 @@ test_that("test on BINARY_MATRIX_TO_MATRIX_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
 
-        cat(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
+        print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
 
         test_binary_jacobian(f, matrix(runif(9), 3, 3), matrix(runif(9), 3, 3))
     }
@@ -169,17 +169,17 @@ test_that("test on nested jacobians", {
         f <- fs[[i]]
         n <- names(fs)[i]
 
-        cat(paste0("ARRAY_TO_ARRAY_FUNCS + MATRIX_TO_MATRIX_FUNCS ", n))
+        print(paste0("ARRAY_TO_ARRAY_FUNCS + MATRIX_TO_MATRIX_FUNCS ", n))
 
         x <- matrix(runif(9), 3, 3)
         test <- forward.jacobian(function(y) forward.jacobian(f, y), x)
 
-        cat("....without JacobianTape")
+        print("....without JacobianTape")
 
         J <- reverse.jacobian(function(y) reverse.jacobian(f, y), x)
         expect_equal(J, test)
 
-        cat("....with JacobianTape")
+        print("....with JacobianTape")
 
         tp <- reverse.jacobian.tape(function(y) reverse.jacobian(f, y), rand(x))
         J <- reverse.jacobian(tp, x)
@@ -191,7 +191,7 @@ test_that("test on nested jacobians", {
         f <- autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS[[i]]
         n <- names(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)[i]
 
-        cat(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
+        print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
 
         a <- matrix(runif(9), 3, 3)
         b <- matrix(runif(9), 3, 3)
@@ -199,14 +199,14 @@ test_that("test on nested jacobians", {
         test_a <- forward.jacobian(function(y) forward.jacobian(function(x) f(x, b), y), a)
         test_b <- forward.jacobian(function(y) forward.jacobian(function(x) f(a, x), y), b)
 
-        cat("....without JacobianTape")
+        print("....without JacobianTape")
 
         Ja <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(x, b), y), a)
         Jb <- reverse.jacobian(function(y) reverse.jacobian(function(x) f(a, x), y), b)
         expect_equal(Ja, test_a)
         expect_equal(Jb, test_b)
 
-        cat("....with JacobianTape")
+        print("....with JacobianTape")
 
         ra <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(x, b), y), rand(a))
         rb <- reverse.jacobian.tape(function(y) reverse.jacobian(function(x) f(a, x), y), rand(b))
