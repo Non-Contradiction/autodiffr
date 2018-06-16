@@ -12,7 +12,7 @@ test_that("test on rosenbrock function", {
     # hardcoded test #
     ##################
 
-    f <- autodiffr:::rosenbrock_1
+    f <- TESTING_FUNCS$VECTOR_TO_NUMBER_FUNCS$rosenbrock_1
     x <- c(0.1, 0.2, 0.3)
     v <- f(x)
     g <- c(-9.4, 15.6, 52.0)
@@ -46,9 +46,11 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     # test vs. Calculus.jl #
     ########################
 
-    for (i in 1:length(autodiffr:::VECTOR_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::VECTOR_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::VECTOR_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$VECTOR_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         v <- f(X)
         g <- forward.grad(f, X)
         expect_equal(g, JuliaCall::julia_call("Calculus.derivative", f, X))

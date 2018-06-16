@@ -113,9 +113,11 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
-        f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
-        n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
+    funcs <- TESTING_FUNCS$ARRAY_TO_ARRAY_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
 
         print(paste0("ARRAY_TO_ARRAY_FUNCS ", n))
 
@@ -128,9 +130,11 @@ test_that("test on MATRIX_TO_MATRIX_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::MATRIX_TO_MATRIX_FUNCS)) {
-        f <- autodiffr:::MATRIX_TO_MATRIX_FUNCS[[i]]
-        n <- names(autodiffr:::MATRIX_TO_MATRIX_FUNCS)[i]
+    funcs <- TESTING_FUNCS$MATRIX_TO_MATRIX_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
 
         print(paste0("MATRIX_TO_MATRIX_FUNCS ", n))
 
@@ -143,9 +147,11 @@ test_that("test on BINARY_MATRIX_TO_MATRIX_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)) {
-        f <- autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS[[i]]
-        n <- names(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)[i]
+    funcs <- TESTING_FUNCS$BINARY_MATRIX_TO_MATRIX_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
 
         print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
 

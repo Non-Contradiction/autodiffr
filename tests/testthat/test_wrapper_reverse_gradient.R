@@ -113,9 +113,11 @@ test_that("test on MATRIX_TO_NUMBER_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$MATRIX_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
 
         print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
 
@@ -128,9 +130,11 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::VECTOR_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::VECTOR_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::VECTOR_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$VECTOR_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
 
         print(paste0("VECTOR_TO_NUMBER_FUNCS ", n))
 
@@ -143,9 +147,11 @@ test_that("test on TERNARY_MATRIX_TO_NUMBER_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$TERNARY_MATRIX_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
 
         print(paste0("TERNARY_MATRIX_TO_NUMBER_FUNCS ", n))
 

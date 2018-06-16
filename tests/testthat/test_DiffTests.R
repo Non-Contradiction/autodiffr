@@ -7,9 +7,11 @@ test_that("test on NUMBER_TO_NUMBER_FUNCS", {
 
     x <- 1
 
-    for (i in 1:length(autodiffr:::NUMBER_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::NUMBER_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::NUMBER_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$NUMBER_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         expect_equal(f(x),
                      JuliaCall::julia_call(paste0("DiffTests.", n), x))
@@ -23,9 +25,11 @@ test_that("test on NUMBER_TO_ARRAY_FUNCS", {
 
     x <- 1
 
-    for (i in 1:length(autodiffr:::NUMBER_TO_ARRAY_FUNCS)) {
-        f <- autodiffr:::NUMBER_TO_ARRAY_FUNCS[[i]]
-        n <- names(autodiffr:::NUMBER_TO_ARRAY_FUNCS)[i]
+    funcs <- TESTING_FUNCS$NUMBER_TO_ARRAY_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         expect_equal(f(x),
                      JuliaCall::julia_call(paste0("DiffTests.", n), x))
@@ -37,9 +41,11 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::VECTOR_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::VECTOR_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::VECTOR_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$VECTOR_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         expect_equal(f(X),
                      JuliaCall::julia_call(paste0("DiffTests.", n), X))
@@ -51,9 +57,11 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
-        f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
-        n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
+    funcs <- TESTING_FUNCS$ARRAY_TO_ARRAY_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         if (n == "-") next()
         print(paste0("  ...testing ", n))
         expect_equal(f(X),
@@ -73,9 +81,11 @@ test_that("test on TERNARY_MATRIX_TO_NUMBER_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::TERNARY_MATRIX_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$TERNARY_MATRIX_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         x <- matrix(1, 5, 5)
         a <- rand(x)
@@ -92,9 +102,11 @@ test_that("test on MATRIX_TO_NUMBER_FUNCS", {
     ad_setup()
     autodiffr:::test_setup()
 
-    for (i in 1:length(autodiffr:::MATRIX_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::MATRIX_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::MATRIX_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$MATRIX_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         x <- matrix(1, 5, 5)
         a <- rand(x)

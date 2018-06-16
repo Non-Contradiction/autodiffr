@@ -14,9 +14,11 @@ test_that("test on NUMBER_TO_NUMBER_FUNCS", {
 
     x <- 1
 
-    for (i in 1:length(autodiffr:::NUMBER_TO_NUMBER_FUNCS)) {
-        f <- autodiffr:::NUMBER_TO_NUMBER_FUNCS[[i]]
-        n <- names(autodiffr:::NUMBER_TO_NUMBER_FUNCS)[i]
+    funcs <- TESTING_FUNCS$NUMBER_TO_NUMBER_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         v <- f(x)
         d <- forward.deriv(f, x)
@@ -31,9 +33,11 @@ test_that("test on NUMBER_TO_ARRAY_FUNCS", {
 
     x <- 1
 
-    for (i in 1:length(autodiffr:::NUMBER_TO_ARRAY_FUNCS)) {
-        f <- autodiffr:::NUMBER_TO_ARRAY_FUNCS[[i]]
-        n <- names(autodiffr:::NUMBER_TO_ARRAY_FUNCS)[i]
+    funcs <- TESTING_FUNCS$NUMBER_TO_ARRAY_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         v <- f(x)
         d <- forward.deriv(f, x)

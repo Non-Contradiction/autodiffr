@@ -56,9 +56,11 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
     # test vs. Calculus.jl #
     ########################
 
-    for (i in 1:length(autodiffr:::ARRAY_TO_ARRAY_FUNCS)) {
-        f <- autodiffr:::ARRAY_TO_ARRAY_FUNCS[[i]]
-        n <- names(autodiffr:::ARRAY_TO_ARRAY_FUNCS)[i]
+    funcs <- TESTING_FUNCS$ARRAY_TO_ARRAY_FUNCS
+
+    for (i in 1:length(funcs)) {
+        f <- funcs[[i]]
+        n <- names(funcs)[i]
         v <- f(X)
         j <- forward.jacobian(f, X)
 
