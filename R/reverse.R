@@ -73,6 +73,7 @@ reverse.grad <- function(f_or_tape, input, cfg = NULL){
 
     if (is_list) {
         names(r) <- ns
+        class(r) <- NULL
     }
 
     r
@@ -111,6 +112,7 @@ reverse.jacobian <- function(f_or_tape, input, cfg = NULL){
 
     if (is_list) {
         names(r) <- ns
+        class(r) <- NULL
     }
 
     r
@@ -149,6 +151,7 @@ reverse.hessian <- function(f_or_tape, input, cfg = NULL){
 
     if (is_list) {
         names(r) <- ns
+        class(r) <- NULL
     }
 
     r
