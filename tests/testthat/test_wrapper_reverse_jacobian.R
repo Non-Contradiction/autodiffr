@@ -164,7 +164,7 @@ test_that("test on nested jacobians", {
     ad_setup()
     autodiffr:::test_setup()
 
-    fs <- c(autodiffr:::ARRAY_TO_ARRAY_FUNCS, autodiffr:::MATRIX_TO_MATRIX_FUNCS)
+    fs <- c(TESTING_FUNCS$ARRAY_TO_ARRAY_FUNCS, TESTING_FUNCS$MATRIX_TO_MATRIX_FUNCS)
     for (i in 1:length(fs)) {
         f <- fs[[i]]
         n <- names(fs)[i]
@@ -186,10 +186,10 @@ test_that("test on nested jacobians", {
         expect_equal(J, test)
     }
 
-
-    for (i in 1:length(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)) {
-        f <- autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS[[i]]
-        n <- names(autodiffr:::BINARY_MATRIX_TO_MATRIX_FUNCS)[i]
+    fs <- TESTING_FUNCS$BINARY_MATRIX_TO_MATRIX_FUNCS
+    for (i in 1:length(fs)) {
+        f <- fs[[i]]
+        n <- names(fs)[i]
 
         print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
 
