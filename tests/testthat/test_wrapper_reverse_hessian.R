@@ -67,7 +67,7 @@ test_that("test on MATRIX_TO_NUMBER_FUNCS", {
 
         print(paste0("MATRIX_TO_NUMBER_FUNCS ", n))
 
-        test_unary_hessian(f, matrix(runif(25), 5, 5), use_tape = (i > 2))
+        test_unary_hessian(f, matrix(runif(9), 3, 3), use_tape = (i > 2))
     }
 })
 

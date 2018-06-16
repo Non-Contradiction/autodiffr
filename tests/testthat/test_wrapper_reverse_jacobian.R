@@ -121,7 +121,7 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
 
         print(paste0("ARRAY_TO_ARRAY_FUNCS ", n))
 
-        test_unary_jacobian(f, matrix(runif(25), 5, 5))
+        test_unary_jacobian(f, matrix(runif(9), 3, 3))
     }
 })
 
@@ -138,7 +138,7 @@ test_that("test on MATRIX_TO_MATRIX_FUNCS", {
 
         print(paste0("MATRIX_TO_MATRIX_FUNCS ", n))
 
-        test_unary_jacobian(f, matrix(runif(25), 5, 5))
+        test_unary_jacobian(f, matrix(runif(9), 3, 3))
     }
 })
 
@@ -155,7 +155,7 @@ test_that("test on BINARY_MATRIX_TO_MATRIX_FUNCS", {
 
         print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
 
-        test_binary_jacobian(f, matrix(runif(25), 5, 5), matrix(runif(25), 5, 5))
+        test_binary_jacobian(f, matrix(runif(9), 3, 3), matrix(runif(9), 3, 3))
     }
 })
 
@@ -171,7 +171,7 @@ test_that("test on nested jacobians", {
 
         print(paste0("ARRAY_TO_ARRAY_FUNCS + MATRIX_TO_MATRIX_FUNCS ", n))
 
-        x <- matrix(runif(25), 5, 5)
+        x <- matrix(runif(9), 3, 3)
         test <- forward.jacobian(function(y) forward.jacobian(f, y), x)
 
         print("....without JacobianTape")
@@ -193,8 +193,8 @@ test_that("test on nested jacobians", {
 
         print(paste0("BINARY_MATRIX_TO_MATRIX_FUNCS ", n))
 
-        a <- matrix(runif(25), 5, 5)
-        b <- matrix(runif(25), 5, 5)
+        a <- matrix(runif(9), 3, 3)
+        b <- matrix(runif(9), 3, 3)
         test_val <- f(a, b)
         test_a <- forward.jacobian(function(y) forward.jacobian(function(x) f(x, b), y), a)
         test_b <- forward.jacobian(function(y) forward.jacobian(function(x) f(a, x), y), b)
