@@ -485,3 +485,17 @@ names(ARRAY_TO_ARRAY_FUNCS) <- c("-", "chebyquad", "brown_almost_linear", "trigo
 # const MATRIX_TO_MATRIX_FUNCS = (inv,)
 MATRIX_TO_MATRIX_FUNCS <- list(solve)
 names(MATRIX_TO_MATRIX_FUNCS) <- c("solve")
+
+#' Testing functions.
+#'
+#'  Lists of testing functions, which can be used for examples, testing and benchmarks.
+#'
+#' @export
+TESTING_FUNCS <- list(NUMBER_TO_NUMBER_FUNCS = NUMBER_TO_NUMBER_FUNCS,
+                      NUMBER_TO_ARRAY_FUNCS = NUMBER_TO_ARRAY_FUNCS,
+                      VECTOR_TO_NUMBER_FUNCS = VECTOR_TO_NUMBER_FUNCS,
+                      MATRIX_TO_NUMBER_FUNCS = MATRIX_TO_NUMBER_FUNCS,
+                      BINARY_MATRIX_TO_MATRIX_FUNCS = BINARY_MATRIX_TO_MATRIX_FUNCS,
+                      TERNARY_MATRIX_TO_NUMBER_FUNCS = TERNARY_MATRIX_TO_NUMBER_FUNCS,
+                      ARRAY_TO_ARRAY_FUNCS = ARRAY_TO_ARRAY_FUNCS,
+                      MATRIX_TO_MATRIX_FUNCS = MATRIX_TO_MATRIX_FUNCS)
