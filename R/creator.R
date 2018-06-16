@@ -56,14 +56,11 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
         ## construction of target function
         force(func)
-        if (!missing(...)) force(...)
+        dot <- list(...)
 
-        target0 <- function(x){
-            if (is.list(x)) {
-                do.call(func, c(x, ...))
-            }
-            ## x is not list
-            func(x, ...)
+        target0 <- function(...){
+            x <- list(...)
+            do.call(func, c(x, dot))
         }
 
         ## in jacobian, the output of the target function should be a vector,
@@ -71,10 +68,10 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
         target <-
             if (fname == "jacobian") {
-                function(x) scalar2vector(target0(x))
+                function(...) scalar2vector(target0(...))
             }
             else {
-                function(x) vector2scalar(target0(x))
+                function(...) vector2scalar(target0(...))
             }
 
         mode <- match.arg(mode)
