@@ -31,18 +31,18 @@ NULL
 createInterface <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     if (fname == "grad") {
-        D <- list(forward = forward.grad, reverse = reverse.grad)
-        Config <- list(forward = forward.grad.config, reverse = reverse.grad.config)
+        D <- list(forward = multi.forward.grad, reverse = reverse.grad)
+        Config <- list(forward = multi.forward.grad.config, reverse = reverse.grad.config)
         Tape <- reverse.grad.tape
     }
     if (fname == "jacobian") {
-        D <- list(forward = forward.jacobian, reverse = reverse.jacobian)
-        Config <- list(forward = forward.jacobian.config, reverse = reverse.jacobian.config)
+        D <- list(forward = multi.forward.jacobian, reverse = reverse.jacobian)
+        Config <- list(forward = multi.forward.jacobian.config, reverse = reverse.jacobian.config)
         Tape <- reverse.jacobian.tape
     }
     if (fname == "hessian") {
-        D <- list(forward = forward.hessian, reverse = reverse.hessian)
-        Config <- list(forward = forward.hessian.config, reverse = reverse.hessian.config)
+        D <- list(forward = multi.forward.hessian, reverse = reverse.hessian)
+        Config <- list(forward = multi.forward.hessian.config, reverse = reverse.hessian.config)
         Tape <- reverse.hessian.tape
     }
 
