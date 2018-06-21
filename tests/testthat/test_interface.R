@@ -4,7 +4,7 @@ test_that("test of grad", {
     skip_on_cran()
     ad_setup()
 
-    X <- runif(3)
+    X <- runif(5)
 
     funcs <- TESTING_FUNCS$VECTOR_TO_NUMBER_FUNCS
 
@@ -36,7 +36,7 @@ test_that("test of hessian", {
     skip_on_cran()
     ad_setup()
 
-    X <- runif(3)
+    X <- runif(5)
 
     funcs <- TESTING_FUNCS$VECTOR_TO_NUMBER_FUNCS
 
