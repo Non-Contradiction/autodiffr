@@ -91,6 +91,16 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
         if (mode == "forward") {
             ## when mode is forward,
             ## the only possible optimization is construction of Config objects
+
+            ## note that the chunk size cannot be greater than length(x)
+            if (!is.null(chunk_size)) {
+                if (chunk_size > length(xsize)) {
+                    warning("chunk size cannot be greater than length(x)")
+                    warning("automatically set chunk size to length(x)")
+                    chunk_size <- length(xsize)
+                }
+            }
+
             config <- Config$forward(target, scalar2vector(xsize), chunk_size = chunk_size)
             return(function(x) D$forward(target, scalar2vector(x), cfg = config))
         }
