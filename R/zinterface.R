@@ -107,7 +107,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
         if (isTRUE(compiled)) {
             tape <- reverse.compile(tape)
         }
-        return(function(x) D$reverse(tape, x))
+        return(function(x) D$reverse(tape, scalar2vector(x)))
     }
 
     f
