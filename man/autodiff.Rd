@@ -8,22 +8,24 @@
 \alias{deriv}
 \title{Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.}
 \usage{
-jacobian(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
+jacobian(func, x = NULL, ..., mode = c("reverse", "forward"), xsize = x,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
 
-hessian(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
+hessian(func, x = NULL, ..., mode = c("reverse", "forward"), xsize = x,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
 
-grad(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
+grad(func, x = NULL, ..., mode = c("reverse", "forward"), xsize = x,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
 
-deriv(func, x = NULL, mode = c("reverse", "forward"), xsize = x,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, ...)
+deriv(func, x = NULL, ..., mode = c("reverse", "forward"), xsize = x,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
 }
 \arguments{
 \item{func}{the target function to calculate gradient, jacobian or hessian.}
 
 \item{x}{the input(s) where derivative is (are) taken.}
+
+\item{...}{other arguments passed to the target function \code{func}.}
 
 \item{mode}{whether to use forward or reverse mode automatic differentiation.}
 
@@ -43,8 +45,6 @@ And this parameter is only effective when \code{mode = "reverse"}.}
 \item{compiled}{whether or not to use compiled tape for reverse mode automatic differentiation.
 Note that tape compiling can take a lot of time and
 this parameter is only effective when \code{use_tape = TRUE}.}
-
-\item{...}{other arguments passed to the target function \code{func}.}
 }
 \value{
 if \code{x} is given, then return will be derivatives;

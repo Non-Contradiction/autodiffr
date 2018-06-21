@@ -46,10 +46,9 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
         Tape <- reverse.hessian.tape
     }
 
-    f <- function(func, x = NULL, mode = c("reverse", "forward"),
+    f <- function(func, x = NULL, ..., mode = c("reverse", "forward"),
                   xsize = x, chunk_size = NULL,
-                  use_tape = FALSE, compiled = FALSE,
-                  ...){
+                  use_tape = FALSE, compiled = FALSE){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
