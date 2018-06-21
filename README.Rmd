@@ -72,17 +72,46 @@ h <- hessian(f)
 h(c(2, 3))
 
 ## Define a target function with vector input and vector output
-f1 <- function(x) x^2
+f <- function(x) x^2
 
-## Calculate jacobian of f1 at [2,3] by
-jacobian(f1, c(2, 3))
+## Calculate jacobian of f at [2,3] by
+jacobian(f, c(2, 3))
 
-## Get a jacobian function j1
-j1 <- jacobian(f1)
+## Get a jacobian function j
+j <- jacobian(f)
 
-## Evaluate the gradient function j1 at [2,3]
-j1(c(2, 3))
+## Evaluate the gradient function j at [2,3]
+j(c(2, 3))
 ```
+
+## Advanced Usage
+
+### Functions with Multiple Arguments
+
+```{r}
+## Define a target function with mulitple arguments
+f <- function(a = 1, b = 2, c = 3) a * b ^ 2 * c ^ 3
+
+## Calculate gradient/derivative of f at a = 2, when b = c = 1 by
+grad(f, 2, b = 1, c = 1) ## deriv(f, 2, b = 1, c = 1)
+
+## Get a gradient/derivative function g w.r.t a when b = c = 1 by
+g <- grad(f, b = 1, c = 1)
+
+## Evaluate the gradient/derivative function g at a = 2
+g(2)
+
+## Calculate gradient/derivative of f at a = 2, b = 3, when c = 1 by
+grad(f, list(a = 2, b = 3), c = 1)
+
+## Get a gradient/derivative function g w.r.t a and b when c = 1 by
+g <- grad(f, c = 1)
+
+## Evaluate the gradient/derivative function g at a = 2, b = 3
+g(list(a = 2, b = 3))
+```
+
+
 
 ## Trouble Shooting and Way to Get Help
 
