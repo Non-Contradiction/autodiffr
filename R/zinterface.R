@@ -94,10 +94,10 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
             ## note that the chunk size cannot be greater than length(x)
             if (!is.null(chunk_size)) {
-                if (chunk_size > length(xsize)) {
-                    warning("chunk size cannot be greater than length(x),
-                            automatically set chunk size to length(x)")
-                    chunk_size <- length(xsize)
+                if (chunk_size > alength(xsize)) {
+                    warning("chunk size cannot be greater than the length of input vector(s),
+                            automatically reduce chunk size.")
+                    chunk_size <- alength(xsize)
                 }
             }
 
