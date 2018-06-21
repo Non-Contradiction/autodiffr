@@ -40,6 +40,11 @@ devtools::install_github("Non-Contradiction/JuliaCall")
 
 ``` r
 library(autodiffr)
+#> 
+#> Attaching package: 'autodiffr'
+#> The following object is masked from 'package:stats':
+#> 
+#>     deriv
 
 ## Do initial setup
 
@@ -52,15 +57,52 @@ ad_setup()
 ## ad_setup(JULIA_HOME = "the folder that contains julia binary"), 
 ## or you can set JULIA_HOME in command line environment or use `options(...)`
 
+## Define a target function with vector input and scalar output
 f <- function(x) sum(x^2L)
 
-grad(f, c(2, 3))
+## Calculate gradient of f at [2,3] by
+grad(f, c(2, 3)) ## deriv(f, c(2, 3))
 #> [1] 4 6
 
+## Get a gradient function g
 g <- grad(f)
 
+## Evaluate the gradient function g at [2,3]
 g(c(2, 3))
 #> [1] 4 6
+
+## Calculate hessian of f at [2,3] by
+hessian(f, c(2, 3))
+#>      [,1] [,2]
+#> [1,]    2    0
+#> [2,]    0    2
+
+## Get a hessian function h
+h <- hessian(f)
+
+## Evaluate the hessian function h at [2,3]
+h(c(2, 3))
+#>      [,1] [,2]
+#> [1,]    2    0
+#> [2,]    0    2
+
+## Define a target function with vector input and vector output
+f1 <- function(x) x^2
+
+## Calculate jacobian of f1 at [2,3] by
+jacobian(f1, c(2, 3))
+#>      [,1] [,2]
+#> [1,]    4    0
+#> [2,]    0    6
+
+## Get a jacobian function j1
+j1 <- jacobian(f1)
+
+## Evaluate the gradient function j1 at [2,3]
+j1(c(2, 3))
+#>      [,1] [,2]
+#> [1,]    4    0
+#> [2,]    0    6
 ```
 
 ## Trouble Shooting and Way to Get Help
@@ -90,8 +132,3 @@ find `Julia` on PATH, and there are three ways for `autodiffr` to find
 reporting is welcome\! You may report it using the link:
 <https://github.com/Non-Contradiction/autodiffr/issues/new>. Or email me
 at <lch34677@gmail.com> or <cxl508@psu.edu>.
-
-## Coding Plan
-
-For coding plan of `autodiffr`, see [Coding
-Plan](https://github.com/Non-Contradiction/autodiffr/blob/master/Coding%20Plan.md).
