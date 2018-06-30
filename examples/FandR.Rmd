@@ -95,6 +95,22 @@ numDeriv::hessian(target, X)
 
 We can see the result is similar, and results from `autodiffr` should be more accurate.
 
+### Creating a function for the gradient
+
+```{r}
+grosen <- grad(target)
+grosen
+grosen(X)
+## use in optimization
+library(optimx)
+x0<-c(-1.2, 1)
+target(x0)
+grosen(x0)
+srosen0 <- optimr(x0, target, grosen, method="Rvmmin", control=list(trace=1))
+srosen0
+```
+
+
 ### Advance usage
 
 #### Use of config object
