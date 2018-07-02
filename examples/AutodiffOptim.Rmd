@@ -35,6 +35,11 @@ Most methods for optimization require
  perhaps also for any exogenous data and/or fixed parameters)
 
 
+We need to load the `autodiffr` package and then initiate it.
+NOTE: This is quite slow the first time it is run. WORSE: It is
+always treated as a "first time" when called in knitr during the
+processing of a vignette from an Rmd-type file.
+
 ```{r}
 library(autodiffr)
 ad_setup()
@@ -52,7 +57,10 @@ This is simply to test how we can get the gradient of a function that is defined
 sum of squares of residuals, BUT the residuals are computed in a subsidiary function 
 that must be called.
 
-```{r}
+At July 2, 2018, this gives an error that stops knitr, so evaluation is turned off
+in the following example.
+
+```{r, eval=FALSE}
 require(autodiffr)
 ad_setup() # to ensure it is established
 
@@ -307,24 +315,49 @@ x0 <- c(-3,-1,-3,-1) # Wood standard start
 cat("Function value at x0=",wood.f(x0),"\n")
 wood.ag <- autodiffr::grad(wood.f)
 cat("Autodiffr gradient value:")
-print(wood.ag(x0))
+vwag0<-wood.ag(x0)
+print(vwag0)
 cat("Manually coded:")
-print(wood.g(x0))
-
+vwg0 <- wood.g(x0)
+print(vwg0)
+cat("Differences:\n")
+print(vwag0-vwg0)
 
 
 cat("Autodiffr hessian of function value:")
 wood.ah <- autodiffr::hessian(wood.f)
-print(wood.ah(x0))
+vwah0 <- wood.ah(x0)
+print(vwah0)
 cat("Autodiffr hessian via jacobian of autodiff gradient value:")
 wood.ahjag <- autodiffr::jacobian(wood.ag)
-print(wood.ah(x0))
+vwahjag0<-wood.ahjag(x0)
+print(vwahjag0)
 
 cat("Autodiffr hessian via jacobian of manual gradient value:")
 wood.ahj <- autodiffr::jacobian(wood.g)
-print(wood.ah(x0))
+vwahj0 <- wood.ah(x0)
+print(vwahj0)
 cat("Manually coded:")
-print(wood.h(x0))
+vwh0<-wood.h(x0)
+print(vwh0)
+cat("Differences from vwh0\n")
+
+cat("vwah0\n")
+print(vwah0-vwh0)
+cat("\n")
+
+
+
+
+cat("vwahj0\n")
+print(vwahj0-vwh0)
+cat("\n")
+
+cat("vwahjag0\n")
+print(vwahjag0-vwh0)
+cat("\n")
+
+
 
 ## d <- c(1,1,1,1)
 require(optimx)
