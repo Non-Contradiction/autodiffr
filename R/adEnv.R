@@ -52,6 +52,7 @@ decorate <- function(parentEnv){
 #'
 #' @param f the original function.
 #' @md
+#' @export
 ad.variant <- function(f){
     if (is.null(.AD$env)) {
         .AD$env <- decorate(environment(f))

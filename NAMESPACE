@@ -2,6 +2,7 @@
 
 export("%m%")
 export(TESTING_FUNCS)
+export(ad.variant)
 export(ad_setup)
 export(cMeans)
 export(cSums)
