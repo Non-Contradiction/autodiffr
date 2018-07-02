@@ -1,0 +1,246 @@
+---
+title: "Optimization and related uses of autodiffr: Illustrations"
+author: "Changcheng Li and John C. Nash"
+date: "2018/7/1"
+output: pdf_document
+bibliography: opt.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+`autodiffr` is an **R** package to perform automatic differentiation of
+**R** functions by calling the automatic differentiation tools in the 
+**Julia** programming language. The document **FandR** (??ref) describes
+how to install `autodiffr`.
+
+Here we will illustrate how `autodiffr` can be used to provide gradients
+or other derivative information for use in optimization problems for which
+**R** is being used to attempt solutions.
+
+## Problem setup
+
+Most methods for optimization require
+
+ - an objective function that is to be minimized or maximized. Because the 
+ mimimum of $f(x)$ is the maximum of $-f(x)$, we will only talk of 
+ minimizing functions. Though the mathematics of this are trivial, the
+ care and attention to avoid errors when translating a maximization 
+ problem to one involving minimization require serious effort and 
+ continuous checking.
+ - a starting set of values for the parameters to be optimized (and
+ perhaps also for any exogenous data and/or fixed parameters)
+
+
+```{r}
+library(autodiffr)
+ad_setup()
+```
+And we can use package `numDeriv` to compare with `autodiffr`.
+
+```{r}
+require(numDeriv)
+```
+
+## Test problem -- Chebyquad
+
+This problem was given prominence in the optimization literature by @Fletcher65.
+
+Here are some extra pieces of JN's cyq.R.
+
+```
+# Ref: Fletcher, R. (1965) Function minimization without calculating derivatives -- a review,
+#         Computer J., 8, 33-41.
+
+# Note we do not have all components here e.g., .jsd, .h
+
+cyq.jac<- function (x) {
+#  Chebyquad Jacobian matrix
+   n<-length(x)
+   cj<-matrix(0.0, n, n)
+   for (i in 1:n) { # loop over rows
+     for (k in 1:n) { # loop over columns (parameters)
+       z5<-0.0
+       cj[i,k]<-2.0
+       z8<-2.0*x[k]-1.0 
+       z2<-z8
+       z7<-1.0
+       j<- 1
+       while (j<i) { # recurrence loop
+         z4<-z5
+         z5<-cj[i,k]
+         cj[i,k]<-4.0*z8+2.0*z2*z5-z4
+         z6<-z7
+         z7<-z8
+         z8<-2.0*z2*z7-z6
+         j<- j+1
+       } # end recurrence loop
+       cj[i,k]<-cj[i,k]/n
+     } # end loop on k
+   } # end loop on i
+   cj
+}
+
+
+cyq.g <- function (x) {
+   cj<-cyq.jac(x)
+   rv<-cyq.res(x)
+   gg<- as.vector(2.0* rv %*% cj)
+}
+
+
+```
+
+First let us define our Chebyquad function. Note that this is for the **vector** x.
+This version is expressed as the sum of squares of a vector of function values,
+which provide a nonlinear least squares problem.
+
+```{r}
+cyq.f <- function (x) {
+  rv<-cyq.res(x)
+  f<-sum(rv*rv)
+}
+
+cyq.res <- function (x) {
+# Fletcher's chebyquad function m = n -- residuals 
+   n<-length(x)
+   res<-rep(0,n) # initialize
+   for (i in 1:n) { #loop over resids
+     rr<-0.0
+     for (k in 1:n) {
+	z7<-1.0
+	z2<-2.0*x[k]-1.0
+        z8<-z2
+        j<-1
+        while (j<i) {
+            z6<-z7
+            z7<-z8
+            z8<-2*z2*z7-z6 # recurrence to compute Chebyshev polynomial
+            j<-j+1
+        } # end recurrence loop
+        rr<-rr+z8
+      } # end loop on k
+      rr<-rr/n
+      if (2*trunc(i/2) == i) { rr <- rr + 1.0/(i*i - 1) }
+      res[i]<-rr
+    } # end loop on i
+    res
+}
+```
+
+Let us choose a single value for the number of parameters, and for illustration
+use $n = 4$. 
+
+```{r}
+## cyq.setup
+n <- 4
+  lower<-rep(-10.0, n)
+  upper<-rep(10.0, n) 
+  x<-1:n
+  x<-x/(n+1.0) # Initial value suggested by Fletcher
+```
+
+For safety, let us check the function and a numerical approximation to the gradient.
+
+```{r}
+require(numDeriv)
+cat("Initial parameters:")
+print(x)
+cat("Initial value of the function is ",cyq.f(x),"\n")
+gn <- numDeriv::grad(cyq.f, x) # using numDeriv
+cat("Approximation to gradient at initial point:")
+print(gn)
+```
+
+
+We can now try to see if `autodiffr` matches this gradient.
+
+
+We can get the Chebyquad function from the package `funconstrain`
+as well as from JN's function collection. Moreover, the `funconstrain`
+offering does NOT require a call to the residuals, but has a single
+level **R** function.
+
+```{r, eval=TRUE, echo=TRUE}
+require(funconstrain)
+cat("funconstrain loaded\n")
+cheb <- chebyquad() # Seem to need the brackets or doesn't return pieces
+print(str(cheb))
+cyq2.f <- cheb$fn
+x0b <- cheb$x0(n=4) # Need the size of the vector
+x0b
+cyq2.f(x0b)
+```
+Split chunks to narrow down error
+
+```{r}
+## Try the gradient
+cyq2.g <- autodiffr::grad(cyq2.f) # Works in console, NOT in knit without autodiffr specified ??
+```
+
+Isolate the troublesome line.
+
+```{r}
+print(cyq2.g)
+cat("Gradient at x0b")
+print(cyq2.g(x0b))
+```
+
+
+
+```{r, eval=FALSE}
+cyq.ag <- autodiffr::grad(cyq.f,x) # should return a function
+## Seems to hang -- doesn't execute, or does it?
+cat("Result of grad(cyq.f):\n")
+```
+
+We isolate the line to see where failure is located.
+
+```{r, eval=FALSE}
+print(cyq.ag)
+cat("Evaluated at x0:")
+print(cyq.ag(x))
+```
+
+Chebyquad Questions: 
+
+ - How fast is the calculation? Try different ways and produce a table.
+ 
+ - Why is JN's cyq.ag NOT working? Does it have something to do with calling cyq.res to compute cyq.f?
+ 
+## Test problem -- Hobbs weed infestation
+
+
+## Test problem -- Wood
+
+
+## Test problem -- Candlestick
+
+```{r}
+# candlestick function
+# J C Nash 2011-2-3
+cstick.f<-function(x,alpha=1){
+	x<-as.vector(x)
+	r2<-crossprod(x)
+	f<-as.double(r2+alpha/r2)
+	return(f)
+}
+
+cstick.g<-function(x,alpha=1){
+	x<-as.vector(x)
+	r2<-crossprod(x)
+	g1<-2*x
+	g2 <- (-alpha)*2*x/(r2*r2)
+	g<-as.double(g1+g2)
+	return(g)
+}
+```
+
+
+
+
+## Bibliography
+
