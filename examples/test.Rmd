@@ -1,0 +1,49 @@
+---
+title: "Test"
+author: "Changcheng Li and John C. Nash"
+date: "2018/7/1"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+require(autodiffr)
+ad_setup() # to ensure it is established
+
+ores <- function(x){
+    x # Function will be the parameters. ofn is sum of squares
+}
+
+logit <- function(x) exp(x) / (1 + exp(x))
+
+ofn <- function(x){
+    res <- ores(x) # returns a vector of residual values
+    sum(logit(x) ^ 2)
+}
+
+## Now try to generate the gradient function
+ogr <- grad(ofn)
+
+system.time(ogr(runif(100)))
+
+system.time(ogr(runif(100)))
+
+ogr1 <- grad(ofn, xsize = runif(100))
+
+system.time(ogr1(runif(100)))
+
+system.time(ogr1(runif(100)))
+
+ogr2 <- grad(ofn, xsize = runif(100), use_tape = TRUE)
+
+system.time(ogr2(runif(100)))
+
+system.time(ogr2(runif(100)))
+```
+
+
+

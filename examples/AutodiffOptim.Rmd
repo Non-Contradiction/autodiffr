@@ -60,7 +60,7 @@ that must be called.
 At July 2, 2018, this gives an error that stops knitr, so evaluation is turned off
 in the following example.
 
-```{r, eval=FALSE}
+```{r}
 require(autodiffr)
 ad_setup() # to ensure it is established
 
@@ -68,19 +68,31 @@ ores <- function(x){
     x # Function will be the parameters. ofn is sum of squares
 }
 
-ofn <- function(x){
+ofn0 <- function(x){ # original ofn
    res <- ores(x) # returns a vector of residual values
    print(res)
    val <- as.numeric(crossprod(res)) # as.numeric because crossprod is a matrix
    val
 }
 
+ofn <- function(x){ # But autodiffr does not understand crossprod()
+   res <- ores(x) # returns a vector of residual values
+   # print(res)
+   val <- sum(res*res) # as.numeric because crossprod is a matrix
+   val
+}
+```
+
+```{r, eval=FALSE}
 ## Now try to generate the gradient function
 ogr <- grad(ofn)
-print(ogr) # this will be more or less meaningless link to Julia function
+
+# print(ogr) # this will be more or less meaningless link to Julia function
 x0 <- c(1,2,3)
 print(ofn(x0)) # should be 14
-print(ogr(x0)) # should be 2, 4, 6
+print(ofn0(x0)) # should be 14
+ogr0<-ogr(x0) # should be 2, 4, 6
+ogr0
 ```
 
 
@@ -249,37 +261,73 @@ Chebyquad Questions:
  - How fast is the calculation? Try different ways and produce a table.
  
  - Why is JN's cyq.ag NOT working? Does it have something to do with calling cyq.res to compute cyq.f?
+   NO. crossprod()
  
 ## Test problem -- Hobbs weed infestation
 
 
-## Test problem -- Wood
 
 
 ## Test problem -- Candlestick
+
+This function was developed by one of us to provide a simple but (for n equal 1 or 2) graphic example of a
+function with an infinity of solutions. The function can be seen by graphing it to have 
+a 
 
 ```{r}
 # candlestick function
 # J C Nash 2011-2-3
 cstick.f<-function(x,alpha=1){
 	x<-as.vector(x)
-	r2<-crossprod(x)
+	r2<-sum(x*x)
 	f<-as.double(r2+alpha/r2)
 	return(f)
 }
 
 cstick.g<-function(x,alpha=1){
 	x<-as.vector(x)
-	r2<-crossprod(x)
+	r2<-sum(x*x)
 	g1<-2*x
 	g2 <- (-alpha)*2*x/(r2*r2)
 	g<-as.double(g1+g2)
 	return(g)
 }
+
+x <- seq(-100:100)/20.0
+y <- x
+
+for (ii in 1:length(x)){
+    y[ii] <- cstick.f(x[ii])
+}
+plot(x, y, type='l') # ?? does not plot from console??
+x0 <- c(1,2)
+require(optimx)
+sdef0 <- optimr(x0, cstick.f, cstick.g, method="Rvmmin", control=list(trace=1))
+sdef0
+xstar <- sdef0$par
+gstar <- cstick.g(xstar)
+cat("Gradient at proposed solution:")
+print(gstar)
+```
+
+```{r, eval=FALSE}
+## This doesn't seem to work well??
+require(autodiffr)
+ad_setup()
+hc <- hessian(cstick.f)
+hstar<-hc(xstar)
+cat("Hessian at proposed solution:\n")
+print(hstar)
+print(eigen(hstar)$values)
+hc(x0)
 ```
 
 
-## Wood 4 parameter function
+## ## Test problem -- Wood 4 parameter function
+
+This is reported by @more81 as coming from @colville68. The problem in 
+4 parameters seems to have a false solution far from the accepted one.
+Is there a good description of this function and the issues it presents?
 
 ```{r}
 require(autodiffr)
@@ -346,9 +394,6 @@ cat("vwah0\n")
 print(vwah0-vwh0)
 cat("\n")
 
-
-
-
 cat("vwahj0\n")
 print(vwahj0-vwh0)
 cat("\n")
@@ -357,17 +402,85 @@ cat("vwahjag0\n")
 print(vwahjag0-vwh0)
 cat("\n")
 
-
-
 ## d <- c(1,1,1,1)
 require(optimx)
-wdefault <- snewton(x0, fn=wood.f, gr=wood.g, hess=wood.h, control=list(trace=2))
+wdefault <- snewton(x0, fn=wood.f, gr=wood.g, hess=wood.h, control=list(trace=1))
 print(wdefault)
 
-wagah <- snewton(x0, fn=wood.f, gr=wood.ag, hess=wood.ah, control=list(trace=2))
+wagah <- snewton(x0, fn=wood.f, gr=wood.ag, hess=wood.ah, control=list(trace=1))
 print(wagah)
-
-
 ```
+
+
+## Performance issues
+
+Optimization is, by its very nature, about improving things. Thus it is of prime interest
+to seek faster and better ways to optimize functions. In this section we look at some issues
+that may influence the speed, reliability and correctness of optimization calculations.
+
+First, it is critical to note that **R** almost always offers several ways to accomplish the
+same computational result. However, the speed with which the different approaches return a
+result can be wildly different. (?? can JN find the 800% scale factor example??). 
+
+Second, there are many parts of the autodiffr wrapper of Julia's automatic differentiation
+that may use up computing cycles:
+
+- We must translate from one programming language to another in some sense in order to 
+call the appropriate functions in Julia based on **R** functions.
+
+- Results must be properly structured on return to **R**.
+
+- Hand coded derivative expressions, especially hand-optimized ones, can be expected to
+out-perform automatic differentiation results.
+
+NOTE: Performance is interesting, but it is far from the complete picture. We can use
+results from autodiffr to validate hand-coded functions. We can get results that are
+efficient of human time and effort that may be otherwise unavailable. Moreover, the
+results of computing gradients and hessians allow us to conclude that a solution has
+been achieved.
+
+### A small performance comparison using `autodiffr`
+
+```{r}
+rm(list=ls())
+require(autodiffr)
+ad_setup() # to ensure it is established
+
+ores <- function(x){
+    x # Function will be the parameters. ofn is sum of squares
+}
+
+logit <- function(x) exp(x) / (1 + exp(x))
+
+ofn <- function(x){
+    res <- ores(x) # returns a vector of residual values
+    sum(logit(x) ^ 2)
+}
+
+## Now try to generate the gradient function
+ogr <- grad(ofn)
+
+system.time(ogr(runif(100)))
+
+system.time(ogr(runif(100)))
+
+ogr1 <- grad(ofn, xsize = runif(100))
+
+system.time(ogr1(runif(100)))
+
+system.time(ogr1(runif(100)))
+
+ogr2 <- grad(ofn, xsize = runif(100), use_tape = TRUE)
+
+system.time(ogr2(runif(100)))
+
+system.time(ogr2(runif(100)))
+```
+
+
+
+
+
+
 ## Bibliography
 
