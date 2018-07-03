@@ -85,7 +85,7 @@ ofn <- function(x){ # But autodiffr does not understand crossprod()
 
 ```{r, eval=FALSE}
 ## Now try to generate the gradient function
-ogr <- grad(ofn)
+ogr <- autodiffr::grad(ofn)
 
 # print(ogr) # this will be more or less meaningless link to Julia function
 x0 <- c(1,2,3)
@@ -314,7 +314,7 @@ print(gstar)
 ## This doesn't seem to work well??
 require(autodiffr)
 ad_setup()
-hc <- hessian(cstick.f)
+hc <- autodiffr::hessian(cstick.f)
 hstar<-hc(xstar)
 cat("Hessian at proposed solution:\n")
 print(hstar)
