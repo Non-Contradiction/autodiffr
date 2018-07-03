@@ -444,7 +444,7 @@ been achieved.
 ```{r}
 rm(list=ls())
 require(autodiffr)
-ad_setup() # to ensure it is established
+autodiffr::ad_setup() # to ensure it is established
 
 ores <- function(x){
     x # Function will be the parameters. ofn is sum of squares
@@ -454,23 +454,23 @@ logit <- function(x) exp(x) / (1 + exp(x))
 
 ofn <- function(x){
     res <- ores(x) # returns a vector of residual values
-    sum(logit(x) ^ 2)
+    sum(logit(res) ^ 2)
 }
 
 ## Now try to generate the gradient function
-ogr <- grad(ofn)
+ogr <- autodiffr::grad(ofn)
 
 system.time(ogr(runif(100)))
 
 system.time(ogr(runif(100)))
 
-ogr1 <- grad(ofn, xsize = runif(100))
+ogr1 <- autodiffr::grad(ofn, xsize = runif(100))
 
 system.time(ogr1(runif(100)))
 
 system.time(ogr1(runif(100)))
 
-ogr2 <- grad(ofn, xsize = runif(100), use_tape = TRUE)
+ogr2 <- autodiffr::grad(ofn, xsize = runif(100), use_tape = TRUE)
 
 system.time(ogr2(runif(100)))
 
