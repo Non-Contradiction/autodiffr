@@ -30,6 +30,10 @@ ad_setup <- function(...) {
         JuliaCall::julia_command("Base.promote_rule(::Type{Bool}, ::Type{ForwardDiff.Dual{T,V,N}}) where {T,V<:Real,N} = ForwardDiff.Dual{T,promote_type(Bool, V),N}")
         JuliaCall::julia_command("Base.promote_rule(::Type{ForwardDiff.Dual{T,V,N}}, ::Type{Bool}) where {T,V<:Real,N} = ForwardDiff.Dual{T,promote_type(V, Bool),N}")
 
+        JuliaCall::julia_command("import Base.float")
+        JuliaCall::julia_command("using Suppressor")
+        JuliaCall::julia_command("@suppress begin function Base.float{V,D,O}(t::ReverseDiff.TrackedReal{V,D,O}) t end end")
+
         .AD$inited <- TRUE
     }
 }
