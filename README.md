@@ -162,7 +162,7 @@ find `Julia` on PATH, and there are three ways for `autodiffr` to find
     development version of `autodiffr`:
     <https://non-contradiction.github.io/autodiffr/>.
 
-  - And you are more than welcome to contact me about `JuliaCall` at
+  - And you are more than welcome to contact me about `autodiffr` at
     <lch34677@gmail.com> or <cxl508@psu.edu>.
 
 ## Suggestion and Issue Reporting
