@@ -472,7 +472,8 @@ cat("Gradient at proposed solution:")
 print(gstar)
 ```
 
-```{r, eval=FALSE}
+```{r}
+## FIXED??
 ## This doesn't seem to work well??
 require(autodiffr)
 ad_setup()
