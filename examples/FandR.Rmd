@@ -98,7 +98,7 @@ We can see the result is similar, and results from `autodiffr` should be more ac
 ### Creating a function for the gradient
 
 ```{r}
-grosen <- grad(target)
+grosen <- autodiffr::grad(target)
 grosen
 grosen(X)
 ## use in optimization
