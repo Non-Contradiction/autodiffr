@@ -192,3 +192,54 @@
 * Basic examples in Rmd document in the example folder.
 * Basic shiny apps to compare automatic differentiation methods and numerical methods.
 * Fix many small issues in `autodiffr`.
+
+# June 14 - June 22
+
+* Make `autodiffr` interface functions more robust to things like length-1 vectors and 1x1 matrices.
+  The interface functions can now treat scalars as length-1 vectors and 1x1 matrices as scalar if necessary.
+* Use reverse mode as default since it seems to be more performant and can deal with
+  all the things that forward mode can deal with.
+* Let `deriv` to be as same as `grad`.
+* Implement multi-argument handling in forward mode.
+* Refactor tests and various improvements.
+* Have more robust way to locate libjulia in `JuliaCall`, which deals with potential setup problem with
+  `autodiffr` on linux.
+* Have tests for interface functions and fix many small issues.
+* Fix issues related to handling of multi-argument functions.
+* Fix many small issues in `autodiffr`.
+
+# June 23 - July 1
+
+* Experimentation in `JuliaCall` about using `Rcpp` with `JuliaCall`.
+* Experimentation in `autodiffr` about
+    - tool to make suggestion for normal R functions to be suitable for AD,
+    - automatic adaptation tool,
+    - some debugging tools.
+* Have a simple interface in `Rcpp` to get access to `JuliaCall`.
+* Bug fixes and performance improvements for the `Rcpp` interface of `JuliaCall`.
+* Have a simple `Rcpp` example in `autodiffr`.
+
+# July 2
+
+* Bug correction in `JuliaCall` for `as.vector.JuliaObject`.
+* Prepare new release for `JuliaCall` on `CRAN`.
+* Have the experimented `ad.variant` function exported in `JuliaCall` which is
+  an automatic adaptation tool for normal R functions to be more suitable for AD.
+* Identify problems of AD caused by `as.numeric` (equivalent to `as.double`).
+
+# July 3
+
+* Fix bugs in `as.double.JuliaObject` in `JuliaCall`.
+* Identify an issue in Julia package `ReverseDiff.jl` caused by `Base.float`
+  at <https://github.com/JuliaDiff/ReverseDiff.jl/issues/107>.
+* Incorporate a temporary incomplete fix into `autodiffr` for problems with `as.double`.
+
+# July 4
+
+* Add helpful error information in `JuliaCall` to help users setup `autodiffr`.
+* Prepare new release for `JuliaCall`.
+
+# July 5
+
+* New release of `JuliaCall` on `CRAN`.
+* Have `autodiffr` depending on the new release of `JuliaCall`.
