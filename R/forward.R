@@ -49,6 +49,41 @@ forward.deriv <- function(f, x){
     JuliaCall::julia_call("ForwardDiff.derivative", f, x)
 }
 
+######### Constructing Config objects for ForwardDiff
+
+forward_config <- function(name){
+    fullname <- paste0("ForwardDiff.", name)
+
+    config <- function(f, x, chunk_size = NULL){
+        ## ad_setup() is not necessary,
+        ## unless you want to pass some arguments to it.
+        ad_setup()
+
+        if (is.null(chunk_size)) {
+            return(JuliaCall::julia_call(fullname, f, x))
+        }
+        JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
+        chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
+        JuliaCall::julia_call(fullname, f, x, chunk)
+    }
+
+    config
+}
+
+#' @rdname ForwardDiff
+#' @export
+forward.grad.config <- forward_config("GradientConfig")
+
+#' @rdname ForwardDiff
+#' @export
+forward.jacobian.config <- forward_config("JacobianConfig")
+
+#' @rdname ForwardDiff
+#' @export
+forward.hessian.config <- forward_config("HessianConfig")
+
+######### ForwardDiff
+
 forward_diff <- function(name, config_method){
     fullname <- paste0("ForwardDiff.", name)
     force(config_method)
@@ -87,36 +122,3 @@ forward.jacobian <- forward_diff("jacobian", forward.jacobian.config)
 #' @rdname ForwardDiff
 #' @export
 forward.hessian <- forward_diff("hessian", forward.hessian.config)
-
-######### Constructing Config objects for ForwardDiff
-
-forward_config <- function(name){
-    fullname <- paste0("ForwardDiff.", name)
-
-    config <- function(f, x, chunk_size = NULL){
-        ## ad_setup() is not necessary,
-        ## unless you want to pass some arguments to it.
-        ad_setup()
-
-        if (is.null(chunk_size)) {
-            return(JuliaCall::julia_call(fullname, f, x))
-        }
-        JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
-        chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
-        JuliaCall::julia_call(fullname, f, x, chunk)
-    }
-
-    config
-}
-
-#' @rdname ForwardDiff
-#' @export
-forward.grad.config <- forward_config("GradientConfig")
-
-#' @rdname ForwardDiff
-#' @export
-forward.jacobian.config <- forward_config("JacobianConfig")
-
-#' @rdname ForwardDiff
-#' @export
-forward.hessian.config <- forward_config("HessianConfig")
