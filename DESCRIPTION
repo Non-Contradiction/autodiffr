@@ -15,5 +15,6 @@ Encoding: UTF-8
 LazyData: true
 SystemRequirements: Julia >= 0.6.0
 Suggests: testthat
-Imports: JuliaCall (>= 0.14.0)
+Imports: JuliaCall (>= 0.14.0),
+    R6
 RoxygenNote: 6.0.1
