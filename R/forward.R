@@ -51,49 +51,67 @@ forward.deriv <- function(f, x){
 
 #' @rdname ForwardDiff
 #' @export
-forward.grad <- function(f, x,
-                         cfg = forward.grad.config(f, x),
-                         check = TRUE){
+forward.grad <- function(f, x, cfg = NULL, check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
+
+        if (is.null(cfg)) cfg <- forward.grad.config(f, x)
+
         return(JuliaCall::julia_call("ForwardDiff.gradient", f, x, cfg, check))
     }
+
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ForwardDiff.gradient", f, x))
+    }
+
     JuliaCall::julia_call("ForwardDiff.gradient", f, x, cfg)
 }
 
 #' @rdname ForwardDiff
 #' @export
-forward.jacobian <- function(f, x,
-                             cfg = forward.jacobian.config(f, x),
-                             check = TRUE){
+forward.jacobian <- function(f, x, cfg = NULL, check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
+
+        if (is.null(cfg)) cfg <- forward.jacobian.config(f, x)
+
         return(JuliaCall::julia_call("ForwardDiff.jacobian", f, x, cfg, check))
     }
+
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ForwardDiff.jacobian", f, x))
+    }
+
     JuliaCall::julia_call("ForwardDiff.jacobian", f, x, cfg)
 }
 
 #' @rdname ForwardDiff
 #' @export
-forward.hessian <- function(f, x,
-                            cfg = forward.hessian.config(f, x),
-                            check = TRUE){
+forward.hessian <- function(f, x, cfg = NULL, check = TRUE){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
 
     if (isFALSE(check)) {
         check <- JuliaCall::julia_call("Val{false}")
+
+        if (is.null(cfg)) cfg <- forward.hessian.config(f, x)
+
         return(JuliaCall::julia_call("ForwardDiff.hessian", f, x, cfg, check))
     }
+
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ForwardDiff.hessian", f, x))
+    }
+
     JuliaCall::julia_call("ForwardDiff.hessian", f, x, cfg)
 }
 
