@@ -26,11 +26,11 @@ reverse.jacobian.config(input)
 
 reverse.hessian.config(input)
 
-reverse.grad.tape(f, input, cfg = reverse.grad.config(input))
+reverse.grad.tape(f, input, cfg = NULL)
 
-reverse.jacobian.tape(f, input, cfg = reverse.jacobian.config(input))
+reverse.jacobian.tape(f, input, cfg = NULL)
 
-reverse.hessian.tape(f, input, cfg = reverse.hessian.config(input))
+reverse.hessian.tape(f, input, cfg = NULL)
 
 reverse.compile(tape)
 }

@@ -134,7 +134,7 @@ reverse.hessian.config <- reverse_config("HessianConfig")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
+reverse.grad.tape <- function(f, input, cfg = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
@@ -143,6 +143,10 @@ reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
         f <- positionize(f, names(input))
         names(input) <- NULL
         class(input) <- "JuliaTuple"
+    }
+
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ReverseDiff.GradientTape", f, input))
     }
 
     JuliaCall::julia_call("ReverseDiff.GradientTape", f, input, cfg)
@@ -150,7 +154,7 @@ reverse.grad.tape <- function(f, input, cfg = reverse.grad.config(input)){
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)){
+reverse.jacobian.tape <- function(f, input, cfg = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
@@ -161,12 +165,16 @@ reverse.jacobian.tape <- function(f, input, cfg = reverse.jacobian.config(input)
         class(input) <- "JuliaTuple"
     }
 
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ReverseDiff.JacobianTape", f, input))
+    }
+
     JuliaCall::julia_call("ReverseDiff.JacobianTape", f, input, cfg)
 }
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
+reverse.hessian.tape <- function(f, input, cfg = NULL){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
@@ -175,6 +183,10 @@ reverse.hessian.tape <- function(f, input, cfg = reverse.hessian.config(input)){
         f <- positionize(f, names(input))
         names(input) <- NULL
         class(input) <- "JuliaTuple"
+    }
+
+    if (is.null(cfg)) {
+        return(JuliaCall::julia_call("ReverseDiff.HessianTape", f, input))
     }
 
     JuliaCall::julia_call("ReverseDiff.HessianTape", f, input, cfg)
