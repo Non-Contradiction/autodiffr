@@ -244,11 +244,6 @@ print(cyq2.g(x0b))
 cyq.ag <- autodiffr::grad(cyq2.f) # should return a function
 print(cyq.ag)
 cat("Result of grad(cyq.f):\n")
-```
-
-We isolate the line to see where failure is located.
-
-```{r}
 # print(cyq.ag)
 cat("Evaluated at x0:")
 cyqag0b <- cyq.ag(x0b)
@@ -578,10 +573,11 @@ cat("\n")
 
 ## d <- c(1,1,1,1)
 require(optimx)
-wdefault <- snewton(x0, fn=wood.f, gr=wood.g, hess=wood.h, control=list(trace=1))
+meths <- c("snewton", "snewtonm", "nlm")
+wdefault <- opm(x0, fn=wood.f, gr=wood.g, hess=wood.h, method=meths, control=list(trace=0))
 print(wdefault)
 
-wagah <- snewton(x0, fn=wood.f, gr=wood.ag, hess=wood.ah, control=list(trace=1))
+wagah <- opm(x0, fn=wood.f, gr=wood.ag, hess=wood.ah, method=meths, control=list(trace=0))
 print(wagah)
 ```
 
