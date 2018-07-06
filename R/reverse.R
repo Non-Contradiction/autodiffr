@@ -132,65 +132,41 @@ reverse.hessian.config <- reverse_config("HessianConfig")
 
 ####### Constructing Tape objects for ReverseDiff
 
-#' @rdname ReverseDiff
-#' @export
-reverse.grad.tape <- function(f, input, cfg = NULL){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
+reverse_tape <- function(name){
+    fullname <- paste0("ReverseDiff.", name)
 
-    if (is.list(input)) {
-        f <- positionize(f, names(input))
-        names(input) <- NULL
-        class(input) <- "JuliaTuple"
+    tape_func <- function(f, input, cfg = NULL){
+        ## ad_setup() is not necessary,
+        ## unless you want to pass some arguments to it.
+        ad_setup()
+
+        if (is.list(input)) {
+            f <- positionize(f, names(input))
+            names(input) <- NULL
+            class(input) <- "JuliaTuple"
+        }
+
+        if (is.null(cfg)) {
+            return(JuliaCall::julia_call(fullname, f, input))
+        }
+
+        JuliaCall::julia_call(fullname, f, input, cfg)
     }
 
-    if (is.null(cfg)) {
-        return(JuliaCall::julia_call("ReverseDiff.GradientTape", f, input))
-    }
-
-    JuliaCall::julia_call("ReverseDiff.GradientTape", f, input, cfg)
+    tape_func
 }
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian.tape <- function(f, input, cfg = NULL){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
-
-    if (is.list(input)) {
-        f <- positionize(f, names(input))
-        names(input) <- NULL
-        class(input) <- "JuliaTuple"
-    }
-
-    if (is.null(cfg)) {
-        return(JuliaCall::julia_call("ReverseDiff.JacobianTape", f, input))
-    }
-
-    JuliaCall::julia_call("ReverseDiff.JacobianTape", f, input, cfg)
-}
+reverse.grad.tape <- reverse_tape("GradientTape")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian.tape <- function(f, input, cfg = NULL){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
+reverse.jacobian.tape <- reverse_tape("JacobianTape")
 
-    if (is.list(input)) {
-        f <- positionize(f, names(input))
-        names(input) <- NULL
-        class(input) <- "JuliaTuple"
-    }
-
-    if (is.null(cfg)) {
-        return(JuliaCall::julia_call("ReverseDiff.HessianTape", f, input))
-    }
-
-    JuliaCall::julia_call("ReverseDiff.HessianTape", f, input, cfg)
-}
+#' @rdname ReverseDiff
+#' @export
+reverse.hessian.tape <- reverse_tape("HessianTape")
 
 #' @rdname ReverseDiff
 #' @export
