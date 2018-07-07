@@ -20,14 +20,25 @@ subfunc <- function(func, x, i){
     subF
 }
 
+correspond_null <- function(x){
+    if (is.list(x)) return(replicate(length(x), NULL))
+    NULL
+}
+
 multi.forward.D <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
-    Cfg <- multi.forward.config(fname)
     singleD <- singleDs[[fname]]
 
-    f <- function(func, x, cfg = Cfg(func, x)){
+    f <- function(func, x, cfg = correspond_null(x), diffresult = NULL){
         if (!is.list(x)) {
-            return(singleD(func, x, cfg))
+            return(singleD(func, x, cfg, diffresult = diffresult))
+        }
+
+        # deal with diffresult first
+
+        if (!is.null(diffresult)) {
+            warning("Doesn't support DiffResults API with multi-input function currently.")
+            diffresult <- NULL
         }
 
         funcs <- lapply(1:length(x), subfunc, func = func, x = x)
@@ -46,9 +57,16 @@ multi.forward.config <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     singleCfg <- singleCfgs[[fname]]
 
-    f <- function(func, x, chunk_size = NULL){
+    f <- function(func, x, chunk_size = NULL, diffresult = NULL){
         if (!is.list(x)) {
-            return(singleCfg(func, x, chunk_size))
+            return(singleCfg(func, x, chunk_size, diffresult = diffresult))
+        }
+
+        ## deal with diffresult first
+
+        if (!is.null(diffresult)) {
+            warning("Doesn't support DiffResults API with multi-input function currently.")
+            diffresult <- NULL
         }
 
         funcs <- lapply(1:length(x), subfunc, func = func, x = x)
