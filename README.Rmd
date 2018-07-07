@@ -32,11 +32,6 @@ Pakcage `autodiffr` is not on CRAN yet. You can get the development version of `
 devtools::install_github("Non-Contradiction/autodiffr")
 ```
 
-It's recommended at this stage to also use the development version of `JuliaCall` by
-```{r eval=FALSE}
-devtools::install_github("Non-Contradiction/JuliaCall")
-```
-
 ## Basic Usage
 
 ```{r}
