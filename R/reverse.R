@@ -44,7 +44,7 @@ reverse_diff <- function(name){
     fullname <- paste0("ReverseDiff.", name)
     fullmutatename <- paste0("ReverseDiff.", name, "!")
 
-    diff <- function(f_or_tape, input, cfg = NULL){
+    diff <- function(f_or_tape, input, cfg = NULL, diffresult = NULL){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -55,6 +55,18 @@ reverse_diff <- function(name){
             ns <- names(input)
             names(input) <- NULL
             class(input) <- "JuliaTuple"
+
+            if (!is.null(diffresult)) {
+                warning("Doesn't support DiffResults API with multi-input function currently.")
+                diffresult <- NULL
+            }
+        }
+
+        ## deal with diffresult first
+        if (!is.null(diffresult)) {
+            if (!is.null(cfg) && !is_tape(f_or_tape))
+                return(JuliaCall::julia_call(fullmutatename, diffresult, f_or_tape, input, cfg))
+            return(JuliaCall::julia_call(fullmutatename, diffresult, f_or_tape, input))
         }
 
         if (is_tape(f_or_tape)) {
@@ -102,7 +114,7 @@ reverse.hessian <- reverse_diff("hessian")
 reverse_config <- function(name){
     fullname <- paste0("ReverseDiff.", name)
 
-    config <- function(input){
+    config <- function(input, diffresult = NULL){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -110,6 +122,17 @@ reverse_config <- function(name){
         if (is.list(input)) {
             names(input) <- NULL
             class(input) <- "JuliaTuple"
+
+            if (!is.null(diffresult)) {
+                warning("Doesn't support DiffResults API with multi-input function currently.")
+                diffresult <- NULL
+            }
+        }
+
+        ## deal with diffresult first
+
+        if (!is.null(diffresult) && identical(fullname, "ReverseDiff.HessianConfig")) {
+            return(JuliaCall::julia_call(fullname, diffresult, input))
         }
 
         JuliaCall::julia_call(fullname, input)
