@@ -17,6 +17,7 @@ ad_setup <- function(...) {
         .AD$julia <- JuliaCall::julia_setup(...)
         .AD$julia$install_package_if_needed("ForwardDiff")
         .AD$julia$install_package_if_needed("ReverseDiff")
+        .AD$julia$library("DiffResults")
         .AD$julia$library("ForwardDiff")
         .AD$julia$library("ReverseDiff")
 
