@@ -13,17 +13,17 @@
 \usage{
 forward.deriv(f, x)
 
-forward.grad.config(f, x, chunk_size = NULL)
+forward.grad.config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.jacobian.config(f, x, chunk_size = NULL)
+forward.jacobian.config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.hessian.config(f, x, chunk_size = NULL)
+forward.hessian.config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.grad(f, x, cfg = NULL, check = TRUE)
+forward.grad(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
 
-forward.jacobian(f, x, cfg = NULL, check = TRUE)
+forward.jacobian(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
 
-forward.hessian(f, x, cfg = NULL, check = TRUE)
+forward.hessian(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
 }
 \arguments{
 \item{f}{the function you want to calulate the derivative, gradient and etc.
@@ -42,6 +42,8 @@ However, it is highly recommended to specify the chunk size manually when possib
 See
 \url{http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1}
 for more details.}
+
+\item{diffresult}{Optional DiffResult object to store the derivative information.}
 
 \item{cfg}{Config object which have
 information useful to do automatic differentiation for \code{f}.

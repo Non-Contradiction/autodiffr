@@ -29,6 +29,8 @@
 #'   See
 #'   <http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1>
 #'   for more details.
+#' @param diffresult Optional DiffResult object to store the derivative information.
+#'
 #' @return `forward.deriv`, `forward.grad`, `forward.jacobian` and `forward.hessian` return
 #'   the derivative, gradient, jacobian and hessian of `f` correspondingly evaluated at `x`.
 #'   `forward.grad.config`, `forward.jacobian.config` and `forward.hessian.config`
