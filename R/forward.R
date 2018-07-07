@@ -54,10 +54,21 @@ forward.deriv <- function(f, x){
 forward_config <- function(name){
     fullname <- paste0("ForwardDiff.", name)
 
-    config <- function(f, x, chunk_size = NULL){
+    config <- function(f, x, chunk_size = NULL, diffresult = NULL){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
+
+        ## deal with diffresult first
+
+        if (!is.null(diffresult) && identical(fullname, "ForwardDiff.HessianConfig")) {
+            if (is.null(chunk_size)) {
+                return(JuliaCall::julia_call(fullname, diffresult, f, x))
+            }
+            JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
+            chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
+            return(JuliaCall::julia_call(fullname, diffresult, f, x, chunk))
+        }
 
         if (is.null(chunk_size)) {
             return(JuliaCall::julia_call(fullname, f, x))
@@ -86,12 +97,31 @@ forward.hessian.config <- forward_config("HessianConfig")
 
 forward_diff <- function(name, config_method){
     fullname <- paste0("ForwardDiff.", name)
+    fullmutatename <- paste0(fullname, "!")
     force(config_method)
 
-    diff <- function(f, x, cfg = NULL, check = TRUE){
+    diff <- function(f, x, cfg = NULL, check = TRUE, diffresult = NULL){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
+
+        ## deal with diffresult first
+
+        if (!is.null(diffresult)) {
+            if (isFALSE(check)) {
+                check <- JuliaCall::julia_call("Val{false}")
+
+                if (is.null(cfg)) cfg <- config_method(f, x)
+
+                return(JuliaCall::julia_call(fullmutatename, diffresult, f, x, cfg, check))
+            }
+
+            if (is.null(cfg)) {
+                return(JuliaCall::julia_call(fullmutatename, diffresult, f, x))
+            }
+
+            return(JuliaCall::julia_call(fullmutatename, diffresult, f, x, cfg))
+        }
 
         if (isFALSE(check)) {
             check <- JuliaCall::julia_call("Val{false}")
