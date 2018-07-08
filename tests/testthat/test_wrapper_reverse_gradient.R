@@ -13,16 +13,27 @@ rand <- function(x){
 
 test_unary_gradient <- function(f, x, use_tape = TRUE){
     test <- forward.grad(f, x)
+    testval <- f(x)
 
     print("....without GradientConfig")
 
     expect_equal(reverse.grad(f, x), test)
+
+    result <- GradientResult(x)
+    reverse.grad(f, x, diffresult = result)
+    expect_equal(result$value, testval)
+    expect_equal(result$gradient, test)
 
     print("....with GradientConfig")
 
     cfg <- reverse.grad.config(x)
 
     expect_equal(reverse.grad(f, x, cfg), test)
+
+    result <- GradientResult(x)
+    reverse.grad(f, x, cfg, diffresult = result)
+    expect_equal(result$value, testval)
+    expect_equal(result$grad, test)
 
     if (!use_tape) {
         print("....Tape-related methods are not tested...")
@@ -38,6 +49,11 @@ test_unary_gradient <- function(f, x, use_tape = TRUE){
     expect_true(autodiffr:::is_tape(tp))
     expect_equal(reverse.grad(tp, x), test)
 
+    result <- GradientResult(x)
+    reverse.grad(tp, x, diffresult = result)
+    expect_equal(result$value, testval)
+    expect_equal(result$grad, test)
+
     print("....with compiled GradientTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
@@ -46,6 +62,11 @@ test_unary_gradient <- function(f, x, use_tape = TRUE){
         ## additional check of is_tape function
         expect_true(autodiffr:::is_tape(ctp))
         expect_equal(reverse.grad(ctp, x), test)
+
+        result <- GradientResult(x)
+        reverse.grad(ctp, x, diffresult = result)
+        expect_equal(result$value, testval)
+        expect_equal(result$grad, test)
     }
 }
 
