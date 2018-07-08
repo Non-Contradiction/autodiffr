@@ -249,3 +249,12 @@
 
 * Thoroughly refactor of wrapper functions of `ReverseDiff` and `ForwardDiff`.
 * Incorporate the API of `DiffResults` into wrapper functions of `ReverseDiff` and `ForwardDiff`.
+
+## July 7
+
+* Finish the basic implementation and documentation of wrappers of `DiffResults`-related APIs.
+* Update README and Github page.
+
+## July 8
+
+* Add tests for wrappers of `DiffResults`-related APIs.
