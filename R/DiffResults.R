@@ -4,6 +4,8 @@
 #' of derivative results at the same time.
 #'
 #' @param x a vector of same shape with potential input vectors.
+#' @param y a vector of same shape with potential output vectors.
+#'   When it is NULL (default), it means that `y` has the same shape with `x`.
 #' @md
 #'
 #' @name DiffResults
@@ -21,9 +23,14 @@ GradientResult <- function(x){
 
 #' @rdname DiffResults
 #' @export
-JacobianResult <- function(x){
+JacobianResult <- function(x, y = NULL){
     ad_setup()
-    r <- JuliaCall::julia_call("DiffResults.JacobianResult", x)
+    if (is.null(y)) {
+        r <- JuliaCall::julia_call("DiffResults.JacobianResult", x)
+    }
+    else {
+        r <- JuliaCall::julia_call("DiffResults.JacobianResult", y, x)
+    }
     makeActiveBinding("value", function() JuliaCall::julia_call("DiffResults.value", r), r)
     makeActiveBinding("jacobian", function() JuliaCall::julia_call("DiffResults.jacobian", r), r)
     r

@@ -9,12 +9,15 @@
 \usage{
 GradientResult(x)
 
-JacobianResult(x)
+JacobianResult(x, y = NULL)
 
 HessianResult(x)
 }
 \arguments{
 \item{x}{a vector of same shape with potential input vectors.}
+
+\item{y}{a vector of same shape with potential output vectors.
+When it is NULL (default), it means that \code{y} has the same shape with \code{x}.}
 }
 \description{
 Create \code{DiffResult} object which can be used for storage of functions values and different orders
