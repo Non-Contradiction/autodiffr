@@ -34,7 +34,7 @@ test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE)
 
     result <- HessianResult(x)
     cfg <- reverse.hessian.config(x, diffresult = result)
-    reverse.hessian(result, f, x, cfg)
+    reverse.hessian(f, x, cfg, diffresult = result)
     expect_equal(result$value, testval)
     expect_equal(result$grad, testgrad)
     expect_equal(result$hessian, test)
