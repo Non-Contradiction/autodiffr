@@ -13,7 +13,7 @@ rand <- function(x){
 
 test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE){
     test <- forward.hessian(f, x, forward.hessian.config(f, x, chunk_size = 1))
-    testgrad <- forward.grad(f, x, forward.hessian.config(f, x, chunk_size = 1))
+    testgrad <- forward.grad(f, x)
     testval <- f(x)
 
     print("....without HessianConfig")
