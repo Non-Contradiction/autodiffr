@@ -22,7 +22,7 @@ test_unary_gradient <- function(f, x, use_tape = TRUE){
     result <- GradientResult(x)
     reverse.grad(f, x, diffresult = result)
     expect_equal(result$value, testval)
-    expect_equal(result$gradient, test)
+    expect_equal(result$grad, test)
 
     print("....with GradientConfig")
 
