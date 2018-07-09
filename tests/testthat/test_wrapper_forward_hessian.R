@@ -84,11 +84,11 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
 
             expect_equal(out, h)
 
-            out <- HessianResult(X)
-            forward.hessian(f, X, resultcfg, diffresult = out)
-            expect_equal(out$value, v)
-            expect_equal(out$grad, g)
-            expect_equal(out$hessian, h)
+            # out <- HessianResult(X)
+            # forward.hessian(f, X, resultcfg, diffresult = out)
+            # expect_equal(out$value, v)
+            # expect_equal(out$grad, g)
+            # expect_equal(out$hessian, h)
         }
     }
 })
