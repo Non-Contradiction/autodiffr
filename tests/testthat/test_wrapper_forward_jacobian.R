@@ -42,7 +42,7 @@ test_that("hardcoded test", {
         out <- JacobianResult(rep(0, 4), rep(0, 3))
         forward.jacobian(f, x, cfg, diffresult = out)
         expect_equal(out$value, v)
-        expect_equal(out$jacobian), j)
+        expect_equal(out$jacobian, j)
     }
 
     cfgx <- forward.jacobian.config(sin, x)
