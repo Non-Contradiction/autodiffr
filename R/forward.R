@@ -65,11 +65,11 @@ forward_config <- function(name){
 
         if (!is.null(diffresult) && identical(fullname, "ForwardDiff.HessianConfig")) {
             if (is.null(chunk_size)) {
-                return(JuliaCall::julia_call(fullname, diffresult, f, x))
+                return(JuliaCall::julia_call(fullname, f, diffresult, x))
             }
             JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
             chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
-            return(JuliaCall::julia_call(fullname, diffresult, f, x, chunk))
+            return(JuliaCall::julia_call(fullname, f, diffresult, x, chunk))
         }
 
         if (is.null(chunk_size)) {
