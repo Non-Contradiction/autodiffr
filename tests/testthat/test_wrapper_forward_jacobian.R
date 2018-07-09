@@ -39,7 +39,7 @@ test_that("hardcoded test", {
 
         expect_equal(j, forward.jacobian(f, x))
 
-        out <- JacobianResult(rep(0, 4), rep(0, 3))
+        out <- JacobianResult(y = rep(0, 4), rep(0, 3))
         forward.jacobian(f, x, cfg, diffresult = out)
         expect_equal(out$value, v)
         expect_equal(out$jacobian, j)
