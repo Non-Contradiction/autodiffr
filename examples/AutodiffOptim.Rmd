@@ -1,7 +1,7 @@
 ---
 title: "Optimization and related uses of autodiffr: Illustrations"
 author: "Changcheng Li and John C. Nash"
-date: "2018/7/1"
+date: "2018/7/10"
 output: pdf_document
 bibliography: opt.bib
 ---
@@ -70,20 +70,20 @@ ores <- function(x){
 
 ofn0 <- function(x){ # original ofn
    res <- ores(x) # returns a vector of residual values
-   print(res)
    val <- as.numeric(crossprod(res)) # as.numeric because crossprod is a matrix
    val
 }
 
 ofn <- function(x){ # But autodiffr does not understand crossprod()
    res <- ores(x) # returns a vector of residual values
-   # print(res)
-   val <- sum(res*res) # as.numeric because crossprod is a matrix
+   val <- sum(res*res) # NOT crossprod()
    val
 }
 ```
 
-```{r, eval=FALSE}
+Note that this works with `eval=TRUE`, but Chebyquad still failing.
+
+```{r, eval=TRUE}
 ## Now try to generate the gradient function
 ogr <- autodiffr::grad(ofn)
 
@@ -100,59 +100,18 @@ ogr0
 
 This problem was given prominence in the optimization literature by @Fletcher65.
 
-Here are some extra pieces of JN's cyq.R.
-
-```
-# Ref: Fletcher, R. (1965) Function minimization without calculating derivatives -- a review,
-#         Computer J., 8, 33-41.
-
-# Note we do not have all components here e.g., .jsd, .h
-
-cyq.jac<- function (x) {
-#  Chebyquad Jacobian matrix
-   n<-length(x)
-   cj<-matrix(0.0, n, n)
-   for (i in 1:n) { # loop over rows
-     for (k in 1:n) { # loop over columns (parameters)
-       z5<-0.0
-       cj[i,k]<-2.0
-       z8<-2.0*x[k]-1.0 
-       z2<-z8
-       z7<-1.0
-       j<- 1
-       while (j<i) { # recurrence loop
-         z4<-z5
-         z5<-cj[i,k]
-         cj[i,k]<-4.0*z8+2.0*z2*z5-z4
-         z6<-z7
-         z7<-z8
-         z8<-2.0*z2*z7-z6
-         j<- j+1
-       } # end recurrence loop
-       cj[i,k]<-cj[i,k]/n
-     } # end loop on k
-   } # end loop on i
-   cj
-}
-
-
-cyq.g <- function (x) {
-   cj<-cyq.jac(x)
-   rv<-cyq.res(x)
-   gg<- as.vector(2.0* rv %*% cj)
-}
-
-
-```
-
 First let us define our Chebyquad function. Note that this is for the **vector** x.
 This version is expressed as the sum of squares of a vector of function values,
-which provide a nonlinear least squares problem.
+which provide a nonlinear least squares problem. Note that
+`crossprod()` may cause difficulties as it is not written in **R**. 
+
 
 ```{r}
+require(autodiffr)
+ad_setup()
 cyq.f <- function (x) {
   rv<-cyq.res(x)
-  f<-sum(rv*rv)
+  f <- sum(rv*rv)
 }
 
 cyq.res <- function (x) {
@@ -206,12 +165,68 @@ cat("Approximation to gradient at initial point:")
 print(gn)
 ```
 
+Using a modular approach to the problem, first specifying it
+via **residuals** and computing the function as a sum of squares, we can
+also generate the gradient. 
 
-We can now try to see if `autodiffr` matches this gradient.
+```{r}
+# Ref: Fletcher, R. (1965) Function minimization without calculating derivatives -- a review,
+#         Computer J., 8, 33-41.
+
+# Note we do not have all components here e.g., .jsd, .h
+
+cyq.jac<- function (x) {
+#  Chebyquad Jacobian matrix
+   n<-length(x)
+   cj<-matrix(0.0, n, n)
+   for (i in 1:n) { # loop over rows
+     for (k in 1:n) { # loop over columns (parameters)
+       z5<-0.0
+       cj[i,k]<-2.0
+       z8<-2.0*x[k]-1.0 
+       z2<-z8
+       z7<-1.0
+       j<- 1
+       while (j<i) { # recurrence loop
+         z4<-z5
+         z5<-cj[i,k]
+         cj[i,k]<-4.0*z8+2.0*z2*z5-z4
+         z6<-z7
+         z7<-z8
+         z8<-2.0*z2*z7-z6
+         j<- j+1
+       } # end recurrence loop
+       cj[i,k]<-cj[i,k]/n
+     } # end loop on k
+   } # end loop on i
+   cj
+}
 
 
-We can get the Chebyquad function from the package `funconstrain`
-as well as from JN's function collection. Moreover, the `funconstrain`
+cyq.g <- function (x) {
+   cj<-cyq.jac(x)
+   rv<-cyq.res(x)
+   gg<- 2.0 * as.vector(rv %*% cj)
+}
+
+
+# check gradient function cyq.g
+
+gajn <- cyq.g(x)
+print(gajn)
+```
+We can now try to see if `autodiffr` matches this gradient. 
+However, the following code gives an error in Julia.
+
+```{r, eval=FALSE}
+# Do not evaluate, as this fails
+ cyq.ag <- autodiffr::grad(cyq.f)
+gaag <- cyq.ag(x)
+print(gaag)
+```
+
+As a workaround, we can get the Chebyquad function from the package `funconstrain`.
+The `funconstrain`
 offering does NOT require a call to the residuals, but has a single
 level **R** function.
 
@@ -221,41 +236,41 @@ cat("funconstrain loaded\n")
 cheb <- chebyquad() # Seem to need the brackets or doesn't return pieces
 print(str(cheb))
 cyq2.f <- cheb$fn
-x0b <- cheb$x0(n=4) # Need the size of the vector
-x0b
-cyq2.f(x0b)
-```
-Split chunks to narrow down error
-
-```{r}
+## Note that funconstrain offers the starting value
+## x0b <- cheb$x0(n=4) # Need the size of the vector
+## x0b
+## cyq2.f(x0b)
+## same as
+print(cyq2.f(x))
 ## Try the gradient
-cyq2.g <- autodiffr::grad(cyq2.f) # Works in console, NOT in knit without autodiffr specified ??
-```
+cyq2.ag <- autodiffr::grad(cyq2.f) # Need autodiffr:: specified for knitr
+## print(cyq2.g)
+cat("Gradient at x")
+g2ag <- cyq2.ag(x)
+print(g2ag)
 
-Isolate the troublesome line.
+require(microbenchmark)
 
-```{r}
-print(cyq2.g)
-cat("Gradient at x0b")
-print(cyq2.g(x0b))
-```
+cat("cyq.f timing:\n")
+tcyq.f <- microbenchmark(cyq.f(x))
+tcyq.f
+cat("cyq2.f timing:\n")
+tcyq2.f <- microbenchmark(cyq2.f(x))
+tcyq2.f
+tcyq.g <- microbenchmark(cyq.g(x))
+tcyq.g
+tcyq2.ag <- microbenchmark(cyq2.ag(x), unit="us" )
+# microseconds
+tcyq2.ag
 
-```{r}
-cyq.ag <- autodiffr::grad(cyq2.f) # should return a function
-print(cyq.ag)
-cat("Result of grad(cyq.f):\n")
-# print(cyq.ag)
-cat("Evaluated at x0:")
-cyqag0b <- cyq.ag(x0b)
-print(cyqag0b)
 ```
 
 Chebyquad Questions: 
-ec
+
  - How fast is the calculation? Try different ways and produce a table.
  
  - Why is JN's cyq.ag NOT working? Does it have something to do with calling cyq.res to compute cyq.f?
-   NO. crossprod()
+   NO. crossprod() seems to be somehow invoked even though not explicit.
  
 ## Test problem -- Hobbs weed infestation
 
@@ -353,11 +368,11 @@ cat("Sum of squares at the GOOD starting point:",f0good,"\n")
 f0bad <- hobbs.f(x0bad)
 cat("Sum of squares at the BAD starting point:",f0bad,"\n")
 res0good <- hobbs.res(x0good)
-cat("Residuals -- good starting point\n")
+## Residuals -- good starting point
 res0good
 
 res0bad <- hobbs.res(x0bad)
-cat("Residuals -- bad starting point\n")
+## Residuals -- bad starting point
 res0bad
 
 require(autodiffr)
@@ -366,13 +381,13 @@ hobbs.ag <- autodiffr::grad(hobbs.f)
 hobbsag0good <- hobbs.ag(x0good)
 ## Gradient by AD -- good starting point
 hobbsag0good
-cat("Compare hand coded function:\n")
+## Compare hand coded function
 hobbsggood <- hobbs.g(x0good)
 hobbsggood
 ## Gradient by AD -- bad starting point
 hobbsag0bad <- hobbs.ag(x0bad)
 hobbsag0bad 
-cat("Compare hand coded function:\n")
+## Compare hand coded function
 hobbsgbad <- hobbs.g(x0bad)
 hobbsgbad
 ## Interestingly, the magnitude of gradient elements greater for "good"
@@ -382,18 +397,18 @@ hobbs.aj <- autodiffr::jacobian(hobbs.res)
 ## Gradient by AD -- good starting point
 hobbsaj0good <- hobbs.aj(x0good)
 hobbsaj0good
-cat("Compare hand coded function:\n")
+## Compare hand coded function
 hobbsjgood <- hobbs.jac(x0good)
 hobbsjgood
 ## Gradient by AD -- bad starting point
 hobbsaj0bad <- hobbs.aj(x0bad)
 hobbsaj0bad 
-cat("Compare hand coded function:\n")
+## Compare hand coded function
 hobbsjbad <- hobbs.jac(x0bad)
 hobbsjbad
 ```
 
-Now let us try in a solution of nonlinear least squares.
+Now let us try this in a solution of nonlinear least squares.
 
 WARNING: Because of some compatibility issues with other **R** software, 
 the jacobian must be available in the "gradient" attribute returned by
@@ -409,13 +424,11 @@ require(nlsr)
 
 ## manual
 smgood <- nlfb(x0good, hobbs.res, hobbs.jac, trace=TRUE)
-
 ## WARNING: we need the jacobian in the "gradient" attribute
-
 hobbs.ajx <- function(x){
      jj <- hobbs.aj(x)
      jjr <- jj
-     attr(jjr, "gradient")<- jj
+     attr(jjr, "gradient")<- jj # !!! IMPORTANT
      jjr
 }
 
