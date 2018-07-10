@@ -4,12 +4,45 @@
     <loc>https://non-contradiction.github.io/JuliaCall//index.html</loc>
   </url>
   <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/DiffResults.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/ForwardDiff.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/ReverseDiff.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/TESTING_FUNCS.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/ad.variant.html</loc>
+  </url>
+  <url>
     <loc>https://non-contradiction.github.io/JuliaCall//reference/ad_setup.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/autodiff.html</loc>
   </url>
   <url>
     <loc>https://non-contradiction.github.io/JuliaCall//reference/autodiffr.html</loc>
   </url>
   <url>
-    <loc>https://non-contradiction.github.io/JuliaCall//reference/grad.html</loc>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/colSums.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/diagm.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/grapes-m-grapes.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/map.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/ones.html</loc>
+  </url>
+  <url>
+    <loc>https://non-contradiction.github.io/JuliaCall//reference/zeros.html</loc>
   </url>
 </urlset>

@@ -3,27 +3,27 @@
 \name{ForwardDiff}
 \alias{ForwardDiff}
 \alias{forward.deriv}
-\alias{forward.grad}
-\alias{forward.jacobian}
-\alias{forward.hessian}
 \alias{forward.grad.config}
 \alias{forward.jacobian.config}
 \alias{forward.hessian.config}
+\alias{forward.grad}
+\alias{forward.jacobian}
+\alias{forward.hessian}
 \title{Wrapper functions for API of \code{ForwardDiff.jl}.}
 \usage{
 forward.deriv(f, x)
 
-forward.grad(f, x, cfg = forward.grad.config(f, x), check = TRUE)
+forward.grad.config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.jacobian(f, x, cfg = forward.jacobian.config(f, x), check = TRUE)
+forward.jacobian.config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.hessian(f, x, cfg = forward.hessian.config(f, x), check = TRUE)
+forward.hessian.config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.grad.config(f, x, chunk_size = NULL)
+forward.grad(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
 
-forward.jacobian.config(f, x, chunk_size = NULL)
+forward.jacobian(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
 
-forward.hessian.config(f, x, chunk_size = NULL)
+forward.hessian(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
 }
 \arguments{
 \item{f}{the function you want to calulate the derivative, gradient and etc.
@@ -35,6 +35,16 @@ and could be either a scalar or a vector for \code{deriv}.}
 Note that it should be a scalar for \code{deriv} and a vector of length greater than 1 for
 \code{grad}, \code{jacobian} and \code{hessian}.}
 
+\item{chunk_size}{the size of the chunk to construct the Config objects for \code{ForwardDiff}.
+It may be explicitly provided, or omitted,
+in which case \code{ForwardDiff} will automatically select a chunk size for you.
+However, it is highly recommended to specify the chunk size manually when possible.
+See
+\url{http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1}
+for more details.}
+
+\item{diffresult}{Optional DiffResult object to store the derivative information.}
+
 \item{cfg}{Config object which have
 information useful to do automatic differentiation for \code{f}.
 It allows the user to easily feed several different parameters to \code{ForwardDiff}'s API,
@@ -45,14 +55,6 @@ but you can drastically reduce memory usage if you preallocate them yourself.}
 \item{check}{whether to allow tag checking.
 Set check to \code{FALSE} to disable tag checking for \code{ForwardDiff}.
 This can lead to perturbation confusion, so should be used with care.}
-
-\item{chunk_size}{the size of the chunk to construct the Config objects for \code{ForwardDiff}.
-It may be explicitly provided, or omitted,
-in which case \code{ForwardDiff} will automatically select a chunk size for you.
-However, it is highly recommended to specify the chunk size manually when possible.
-See
-\url{http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1}
-for more details.}
 }
 \value{
 \code{forward.deriv}, \code{forward.grad}, \code{forward.jacobian} and \code{forward.hessian} return

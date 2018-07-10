@@ -29,6 +29,8 @@
 #'   See
 #'   <http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1>
 #'   for more details.
+#' @param diffresult Optional DiffResult object to store the derivative information.
+#'
 #' @return `forward.deriv`, `forward.grad`, `forward.jacobian` and `forward.hessian` return
 #'   the derivative, gradient, jacobian and hessian of `f` correspondingly evaluated at `x`.
 #'   `forward.grad.config`, `forward.jacobian.config` and `forward.hessian.config`
@@ -49,97 +51,106 @@ forward.deriv <- function(f, x){
     JuliaCall::julia_call("ForwardDiff.derivative", f, x)
 }
 
-#' @rdname ForwardDiff
-#' @export
-forward.grad <- function(f, x,
-                         cfg = forward.grad.config(f, x),
-                         check = TRUE){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
-
-    if (isFALSE(check)) {
-        check <- JuliaCall::julia_call("Val{false}")
-        return(JuliaCall::julia_call("ForwardDiff.gradient", f, x, cfg, check))
-    }
-    JuliaCall::julia_call("ForwardDiff.gradient", f, x, cfg)
-}
-
-#' @rdname ForwardDiff
-#' @export
-forward.jacobian <- function(f, x,
-                             cfg = forward.jacobian.config(f, x),
-                             check = TRUE){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
-
-    if (isFALSE(check)) {
-        check <- JuliaCall::julia_call("Val{false}")
-        return(JuliaCall::julia_call("ForwardDiff.jacobian", f, x, cfg, check))
-    }
-    JuliaCall::julia_call("ForwardDiff.jacobian", f, x, cfg)
-}
-
-#' @rdname ForwardDiff
-#' @export
-forward.hessian <- function(f, x,
-                            cfg = forward.hessian.config(f, x),
-                            check = TRUE){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
-
-    if (isFALSE(check)) {
-        check <- JuliaCall::julia_call("Val{false}")
-        return(JuliaCall::julia_call("ForwardDiff.hessian", f, x, cfg, check))
-    }
-    JuliaCall::julia_call("ForwardDiff.hessian", f, x, cfg)
-}
-
 ######### Constructing Config objects for ForwardDiff
 
-#' @rdname ForwardDiff
-#' @export
-forward.grad.config <- function(f, x, chunk_size = NULL){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
+forward_config <- function(name){
+    fullname <- paste0("ForwardDiff.", name)
 
-    if (is.null(chunk_size)) {
-        return(JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x))
+    config <- function(f, x, chunk_size = NULL, diffresult = NULL){
+        ## ad_setup() is not necessary,
+        ## unless you want to pass some arguments to it.
+        ad_setup()
+
+        ## deal with diffresult first
+
+        if (!is.null(diffresult) && identical(fullname, "ForwardDiff.HessianConfig")) {
+            if (is.null(chunk_size)) {
+                return(JuliaCall::julia_call(fullname, f, diffresult, x))
+            }
+            JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
+            chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
+            return(JuliaCall::julia_call(fullname, f, diffresult, x, chunk))
+        }
+
+        if (is.null(chunk_size)) {
+            return(JuliaCall::julia_call(fullname, f, x))
+        }
+        JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
+        chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
+        JuliaCall::julia_call(fullname, f, x, chunk)
     }
-    JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
-    chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
-    JuliaCall::julia_call("ForwardDiff.GradientConfig", f, x, chunk)
+
+    config
 }
 
 #' @rdname ForwardDiff
 #' @export
-forward.jacobian.config <- function(f, x, chunk_size = NULL){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
+forward.grad.config <- forward_config("GradientConfig")
 
-    if (is.null(chunk_size)) {
-        return(JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x))
+#' @rdname ForwardDiff
+#' @export
+forward.jacobian.config <- forward_config("JacobianConfig")
+
+#' @rdname ForwardDiff
+#' @export
+forward.hessian.config <- forward_config("HessianConfig")
+
+######### ForwardDiff
+
+forward_diff <- function(name, config_method){
+    fullname <- paste0("ForwardDiff.", name)
+    fullmutatename <- paste0(fullname, "!")
+    force(config_method)
+
+    diff <- function(f, x, cfg = NULL, check = TRUE, diffresult = NULL){
+        ## ad_setup() is not necessary,
+        ## unless you want to pass some arguments to it.
+        ad_setup()
+
+        ## deal with diffresult first
+
+        if (!is.null(diffresult)) {
+            if (isFALSE(check)) {
+                check <- JuliaCall::julia_call("Val{false}")
+
+                if (is.null(cfg)) cfg <- config_method(f, x)
+
+                return(JuliaCall::julia_call(fullmutatename, diffresult, f, x, cfg, check))
+            }
+
+            if (is.null(cfg)) {
+                return(JuliaCall::julia_call(fullmutatename, diffresult, f, x))
+            }
+
+            return(JuliaCall::julia_call(fullmutatename, diffresult, f, x, cfg))
+        }
+
+        if (isFALSE(check)) {
+            check <- JuliaCall::julia_call("Val{false}")
+
+            if (is.null(cfg)) cfg <- config_method(f, x)
+
+            return(JuliaCall::julia_call(fullname, f, x, cfg, check))
+        }
+
+        if (is.null(cfg)) {
+            return(JuliaCall::julia_call(fullname, f, x))
+        }
+
+        JuliaCall::julia_call(fullname, f, x, cfg)
     }
-    JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
-    chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
-    JuliaCall::julia_call("ForwardDiff.JacobianConfig", f, x, chunk)
+
+    diff
 }
 
 #' @rdname ForwardDiff
 #' @export
-forward.hessian.config <- function(f, x, chunk_size = NULL){
-    ## ad_setup() is not necessary,
-    ## unless you want to pass some arguments to it.
-    ad_setup()
+forward.grad <- forward_diff("gradient", forward.grad.config)
 
-    if (is.null(chunk_size)) {
-        return(JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x))
-    }
-    JuliaCall::julia_assign("_chunk_size", as.integer(chunk_size))
-    chunk <- JuliaCall::julia_eval("ForwardDiff.Chunk{_chunk_size}()")
-    JuliaCall::julia_call("ForwardDiff.HessianConfig", f, x, chunk)
-}
+#' @rdname ForwardDiff
+#' @export
+forward.jacobian <- forward_diff("jacobian", forward.jacobian.config)
+
+#' @rdname ForwardDiff
+#' @export
+forward.hessian <- forward_diff("hessian", forward.hessian.config)

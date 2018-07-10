@@ -112,7 +112,7 @@
 
 * Thinking about APIs related to `DiffResults` at <https://github.com/JuliaDiff/DiffResults.jl> which can save the differentiation results and can get the differentiation results of multiple orders simultaneously.
 
-# May 27
+## May 27
 
 * Clean up the `ReverseDiff` API to use the wrapper functions.
 * Remove the tape arguments in the wrapper functions of Config APIs of `ReverseDiff`. As I understand, it doesn't make a big difference, and it also doesn't appear in documentations, examples and tests.
@@ -122,7 +122,7 @@
 * Make corresponding adjustments for documentation of APIs.
 * Simplify codes related to `ad_setup()` a little bit.
 
-# May 28
+## May 28
 
 * Use `NULL` for `cfg` arguments in the APIs of `reverse.grad`, `reverse.jacobiann` and `reverse.hessian`. This can improve the performance of the functions a little, since the `Config` object is not needed in the `AbstractTape`-related methods.
 * APIs of `ReverseDiff` can deal with functions with multiple arguments. Use idea of `positionize` to turn idiomatic R functions with named arguments into functions with positional arguments which `ReverseDiff` is easy to deal with. Related to issue #15.
@@ -132,18 +132,18 @@
 * Identify some issues related to generics on `JuliaObject`, namely, `%*%`, `determinant` and `as.vector`.
 * Since `%*%` is only S4 generic but not S3 generic, it is difficult to overload this method for `JuliaObject`. Temporarily define `%x%` method to deal with this problem. And incorporate the method into tests.
 
-# May 29
+## May 29
 
 * Finish implementation of tests for Hessian and Jacobian of `ReverseDiff`.
 * Try to make tests pass.
 * Identify various issues with `matrix` function.
 
-# May 30
+## May 30
 
 * Trying to make tests pass.
 * Thinking about wrapping `DiffResults` related APIs.
 
-# June 2
+## June 2
 
 * Use `%m%` instead of `%x%` as `%x%` already means Kronecker product in R.
 * Identify issues of multiplication between matrix and vector.
@@ -155,7 +155,7 @@
   `colMeans`, `rowSums` and `rowMeans` for `JuliaObject`.
 * Try to support multiple index for `JuliaObject` in `JuliaCall`, which is related to `autodiffr`.
 
-# June 3
+## June 3
 
 * Implementation of `determinant`, `mean` and `solve` generics for `JuliaObject` in `JuliaCall`.
 * Implementation of `c.JuliaObject` because of a new problem identified in `det`.
@@ -168,7 +168,7 @@
 * Implementation of more testing functions in `DiffTests.R`.
 * Add more tests back.
 
-# June 4
+## June 4
 
 * Identify problems in the new implemented `c.JuliaObject` and fix it.
 * Fix small issues in `autodiffr`.
@@ -182,7 +182,7 @@
   `as.vector`, `dim<-`, and `aperm`.
 * Use `array` instead of `Jmatrix`.
 
-# June 5 - June 13
+## June 5 - June 13
 
 * Initial implementation of interface functions. Currently `grad`, `jacobian` and `hessian` are in place,
   but `deriv` is not.
@@ -193,7 +193,7 @@
 * Basic shiny apps to compare automatic differentiation methods and numerical methods.
 * Fix many small issues in `autodiffr`.
 
-# June 14 - June 22
+## June 14 - June 22
 
 * Make `autodiffr` interface functions more robust to things like length-1 vectors and 1x1 matrices.
   The interface functions can now treat scalars as length-1 vectors and 1x1 matrices as scalar if necessary.
@@ -208,7 +208,7 @@
 * Fix issues related to handling of multi-argument functions.
 * Fix many small issues in `autodiffr`.
 
-# June 23 - July 1
+## June 23 - July 1
 
 * Experimentation in `JuliaCall` about using `Rcpp` with `JuliaCall`.
 * Experimentation in `autodiffr` about
@@ -219,7 +219,7 @@
 * Bug fixes and performance improvements for the `Rcpp` interface of `JuliaCall`.
 * Have a simple `Rcpp` example in `autodiffr`.
 
-# July 2
+## July 2
 
 * Bug correction in `JuliaCall` for `as.vector.JuliaObject`.
 * Prepare new release for `JuliaCall` on `CRAN`.
@@ -227,19 +227,34 @@
   an automatic adaptation tool for normal R functions to be more suitable for AD.
 * Identify problems of AD caused by `as.numeric` (equivalent to `as.double`).
 
-# July 3
+## July 3
 
 * Fix bugs in `as.double.JuliaObject` in `JuliaCall`.
 * Identify an issue in Julia package `ReverseDiff.jl` caused by `Base.float`
   at <https://github.com/JuliaDiff/ReverseDiff.jl/issues/107>.
 * Incorporate a temporary incomplete fix into `autodiffr` for problems with `as.double`.
 
-# July 4
+## July 4
 
 * Add helpful error information in `JuliaCall` to help users setup `autodiffr`.
 * Prepare new release for `JuliaCall`.
 
-# July 5
+## July 5
 
 * New release of `JuliaCall` on `CRAN`.
 * Have `autodiffr` depending on the new release of `JuliaCall`.
+* Start working on wrapping APIS related to `DiffResults`.
+
+## July 6
+
+* Thoroughly refactor of wrapper functions of `ReverseDiff` and `ForwardDiff`.
+* Incorporate the API of `DiffResults` into wrapper functions of `ReverseDiff` and `ForwardDiff`.
+
+## July 7
+
+* Finish the basic implementation and documentation of wrappers of `DiffResults`-related APIs.
+* Update README and Github page.
+
+## July 8
+
+* Add tests for wrappers of `DiffResults`-related APIs.

@@ -14,23 +14,23 @@
 \alias{reverse.compile}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
-reverse.grad(f_or_tape, input, cfg = NULL)
+reverse.grad(f_or_tape, input, cfg = NULL, diffresult = NULL)
 
-reverse.jacobian(f_or_tape, input, cfg = NULL)
+reverse.jacobian(f_or_tape, input, cfg = NULL, diffresult = NULL)
 
-reverse.hessian(f_or_tape, input, cfg = NULL)
+reverse.hessian(f_or_tape, input, cfg = NULL, diffresult = NULL)
 
-reverse.grad.config(input)
+reverse.grad.config(input, diffresult = NULL)
 
-reverse.jacobian.config(input)
+reverse.jacobian.config(input, diffresult = NULL)
 
-reverse.hessian.config(input)
+reverse.hessian.config(input, diffresult = NULL)
 
-reverse.grad.tape(f, input, cfg = reverse.grad.config(input))
+reverse.grad.tape(f, input, cfg = NULL)
 
-reverse.jacobian.tape(f, input, cfg = reverse.jacobian.config(input))
+reverse.jacobian.tape(f, input, cfg = NULL)
 
-reverse.hessian.tape(f, input, cfg = reverse.hessian.config(input))
+reverse.hessian.tape(f, input, cfg = NULL)
 
 reverse.compile(tape)
 }
@@ -45,6 +45,8 @@ If you want to calulate the derivative of a function, you can considering using 
 used by reverse mode automatic differentiation.
 \code{ReverseDiff}'s API methods will allocate the Config object automatically by default,
 but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.}
+
+\item{diffresult}{Optional DiffResult object to store the derivative information.}
 
 \item{f}{the function you want to calulate the gradient, jacobian and hessian.
 Note that \code{f(x)} should be a scalar for \code{grad} and \code{hessian},

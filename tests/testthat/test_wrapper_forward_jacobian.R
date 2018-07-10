@@ -9,7 +9,7 @@ test_that("hardcoded test", {
     autodiffr:::test_setup()
 
     #############################
-    # rosenbrock hardcoded test #
+    #      hardcoded test       #
     #############################
 
     f <- function(x){
@@ -38,6 +38,11 @@ test_that("hardcoded test", {
         expect_equal(j, forward.jacobian(f, x, cfg))
 
         expect_equal(j, forward.jacobian(f, x))
+
+        out <- JacobianResult(y = rep(0, 4), rep(0, 3))
+        forward.jacobian(f, x, cfg, diffresult = out)
+        expect_equal(out$value, v)
+        expect_equal(out$jacobian, j)
     }
 
     cfgx <- forward.jacobian.config(sin, x)
@@ -81,6 +86,11 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
             out <- forward.jacobian(f, X, cfg)
 
             expect_equal(out, j)
+
+            # out <- JacobianResult(X, v)
+            # forward.jacobian(f, X, cfg, diffresult = out)
+            # expect_equal(out$value, v)
+            # expect_equal(out$jacobian, j)
         }
     }
 })

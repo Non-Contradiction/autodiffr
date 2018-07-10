@@ -21,14 +21,17 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
 <meta property="og:title" content="Function reference" />
+
 
 
 <!-- mathjax -->
@@ -97,6 +100,7 @@
     <table class="ref-index">
 
     <colgroup>
+      
       <col class="alias" />
       <col class="title" />
     </colgroup>
@@ -109,23 +113,89 @@
         </th>
       </tr>
       <tr>
-        <!--  -->
+        
+        <td>
+          <p><code><a href="DiffResults.html">GradientResult()</a></code> <code><a href="DiffResults.html">JacobianResult()</a></code> <code><a href="DiffResults.html">HessianResult()</a></code> </p>
+        </td>
+        <td><p>Create <code>DiffResult</code> Object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ForwardDiff.html">forward.deriv()</a></code> <code><a href="ForwardDiff.html">forward.grad.config()</a></code> <code><a href="ForwardDiff.html">forward.jacobian.config()</a></code> <code><a href="ForwardDiff.html">forward.hessian.config()</a></code> <code><a href="ForwardDiff.html">forward.grad()</a></code> <code><a href="ForwardDiff.html">forward.jacobian()</a></code> <code><a href="ForwardDiff.html">forward.hessian()</a></code> </p>
+        </td>
+        <td><p>Wrapper functions for API of <code>ForwardDiff.jl</code>.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ReverseDiff.html">reverse.grad()</a></code> <code><a href="ReverseDiff.html">reverse.jacobian()</a></code> <code><a href="ReverseDiff.html">reverse.hessian()</a></code> <code><a href="ReverseDiff.html">reverse.grad.config()</a></code> <code><a href="ReverseDiff.html">reverse.jacobian.config()</a></code> <code><a href="ReverseDiff.html">reverse.hessian.config()</a></code> <code><a href="ReverseDiff.html">reverse.grad.tape()</a></code> <code><a href="ReverseDiff.html">reverse.jacobian.tape()</a></code> <code><a href="ReverseDiff.html">reverse.hessian.tape()</a></code> <code><a href="ReverseDiff.html">reverse.compile()</a></code> </p>
+        </td>
+        <td><p>Wrapper functions for API of <code>ReverseDiff.jl</code>.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="TESTING_FUNCS.html">TESTING_FUNCS</a></code> </p>
+        </td>
+        <td><p>Testing functions.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ad.variant.html">ad.variant()</a></code> </p>
+        </td>
+        <td><p>Create Variant Functions (more) Suitable for AD.</p></td>
+      </tr><tr>
+        
         <td>
           <p><code><a href="ad_setup.html">ad_setup()</a></code> </p>
         </td>
         <td><p>Do initial setup for package autodiffr.</p></td>
       </tr><tr>
-        <!--  -->
+        
+        <td>
+          <p><code><a href="autodiff.html">jacobian()</a></code> <code><a href="autodiff.html">hessian()</a></code> <code><a href="autodiff.html">grad()</a></code> <code><a href="autodiff.html">deriv()</a></code> </p>
+        </td>
+        <td><p>Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.</p></td>
+      </tr><tr>
+        
         <td>
           <p><code><a href="autodiffr.html">autodiffr</a></code> </p>
         </td>
         <td><p>autodiffr.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
-          <p><code><a href="grad.html">grad()</a></code> </p>
+          <p><code><a href="colSums.html">rSums()</a></code> <code><a href="colSums.html">rMeans()</a></code> <code><a href="colSums.html">cSums()</a></code> <code><a href="colSums.html">cMeans()</a></code> </p>
         </td>
-        <td><p>Calculate the gradient of a function.</p></td>
+        <td><p>Row and Column Sums and Means Compatable with JuliaObject</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="diagm.html">diagm()</a></code> </p>
+        </td>
+        <td><p>Construct a diagonal matrix</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="grapes-m-grapes.html">`%m%`</a></code> </p>
+        </td>
+        <td><p>Matrix Multiplication Compatable with JuliaObject.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="map.html">map()</a></code> </p>
+        </td>
+        <td><p>Apply a Function to Multiple List or Vector Arguments</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ones.html">ones()</a></code> </p>
+        </td>
+        <td><p>Create an array of all ones with the same element type and dims as <code>x</code>.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="zeros.html">zeros()</a></code> </p>
+        </td>
+        <td><p>Create an array of all zeros with the same element type and dims as <code>x</code>.</p></td>
       </tr>
     </tbody>
     </table>

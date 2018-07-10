@@ -28,6 +28,16 @@ test_that("test on rosenbrock function", {
         cfg <- forward.grad.config(f, x, chunk_size = c)
 
         expect_equal(g, forward.grad(f, x, cfg))
+
+        out <- GradientResult(x)
+        forward.grad(f, x, cfg, diffresult = out)
+        expect_equal(out$value, v)
+        expect_equal(out$grad, g)
+
+        out <- GradientResult(x)
+        forward.grad(f, x, diffresult = out)
+        expect_equal(out$value, v)
+        expect_equal(out$grad, g)
     }
 
     cfgx <- forward.grad.config(sin, x)
@@ -65,6 +75,11 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
             cfg <- forward.grad.config(f, X, chunk_size = c)
 
             expect_equal(g, forward.grad(f, X, cfg))
+
+            out <- GradientResult(X)
+            forward.grad(f, X, cfg, diffresult = out)
+            expect_equal(out$value, v)
+            expect_equal(out$grad, g)
         }
     }
 })

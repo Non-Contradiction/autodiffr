@@ -29,13 +29,6 @@ version of `autodiffr` by
 devtools::install_github("Non-Contradiction/autodiffr")
 ```
 
-It’s recommended at this stage to also use the development version of
-`JuliaCall` by
-
-``` r
-devtools::install_github("Non-Contradiction/JuliaCall")
-```
-
 ## Basic Usage
 
 ``` r

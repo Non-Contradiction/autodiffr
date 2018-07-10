@@ -19,13 +19,23 @@ test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
 
     expect_equal(reverse.jacobian(f, x), test)
 
+    result <- JacobianResult(y = test_val, x)
+    reverse.jacobian(f, x, diffresult = result)
+    expect_equal(result$value, test_val)
+    expect_equal(result$jacobian, test)
+
     print("....with JacobianConfig")
 
     cfg <- reverse.jacobian.config(x)
 
     expect_equal(reverse.jacobian(f, x, cfg), test)
 
-    print("....with GradientTape")
+    result <- JacobianResult(y = test_val, x)
+    reverse.jacobian(f, x, cfg, diffresult = result)
+    expect_equal(result$value, test_val)
+    expect_equal(result$jacobian, test)
+
+    print("....with JacobianTape")
 
     seedx <- rand(x)
     tp <- reverse.jacobian.tape(f, seedx)
@@ -33,6 +43,11 @@ test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
     ## additional check of is_tape function
     expect_true(autodiffr:::is_tape(tp))
     expect_equal(reverse.jacobian(tp, x), test)
+
+    result <- JacobianResult(y = test_val, x)
+    reverse.jacobian(tp, x, diffresult = result)
+    expect_equal(result$value, test_val)
+    expect_equal(result$jacobian, test)
 
     if (!use_compiled_tape) {
         print("....Compiled tape is not tested.")
@@ -47,6 +62,11 @@ test_unary_jacobian <- function(f, x, use_compiled_tape = FALSE){
         ## additional check of is_tape function
         expect_true(autodiffr:::is_tape(ctp))
         expect_equal(reverse.jacobian(ctp, x), test)
+
+        result <- JacobianResult(y = test_val, x)
+        reverse.jacobian(ctp, x, diffresult = result)
+        expect_equal(result$value, test_val)
+        expect_equal(result$jacobian, test)
     }
 }
 
