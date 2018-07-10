@@ -1,0 +1,242 @@
+---
+title: "Chebyquad"
+author: "Changcheng Li"
+date: "2018/7/10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Test problem -- Chebyquad
+
+This problem was given prominence in the optimization literature by @Fletcher65.
+
+First let us define our Chebyquad function. Note that this is for the **vector** x.
+This version is expressed as the sum of squares of a vector of function values,
+which provide a nonlinear least squares problem. Note that
+`crossprod()` may cause difficulties as it is not written in **R**. 
+
+
+```{r}
+require(autodiffr)
+ad_setup()
+cyq.f <- function (x) {
+  rv<-cyq.res(x)
+  f <- sum(rv*rv)
+}
+
+cyq.res <- function (x) {
+# Fletcher's chebyquad function m = n -- residuals 
+   n<-length(x)
+   res<-zeros(x) # need to use zeros() to do initialization instead of rep() otherwise autodiffr will break.
+   ## This is because later on res[i] <- rr, 
+   ## if res is a normal R vector and rr is some Julia Number used by autodiffr, 
+   ## then R doesn't know what to do.
+   for (i in 1:n) { #loop over resids
+     rr<-0.0
+     for (k in 1:n) {
+	z7<-1.0
+	z2<-2.0*x[k]-1.0
+        z8<-z2
+        j<-1
+        while (j<i) {
+            z6<-z7
+            z7<-z8
+            z8<-2*z2*z7-z6 # recurrence to compute Chebyshev polynomial
+            j<-j+1
+        } # end recurrence loop
+        rr<-rr+z8
+      } # end loop on k
+      rr<-rr/n
+      if (2*trunc(i/2) == i) { rr <- rr + 1.0/(i*i - 1) }
+      res[i]<-rr
+    } # end loop on i
+    res
+}
+```
+
+Let us choose a single value for the number of parameters, and for illustration
+use $n = 4$. 
+
+```{r}
+## cyq.setup
+n <- 4
+  lower<-rep(-10.0, n)
+  upper<-rep(10.0, n) 
+  x<-1:n
+  x<-x/(n+1.0) # Initial value suggested by Fletcher
+```
+
+For safety, let us check the function and a numerical approximation to the gradient.
+
+```{r}
+require(numDeriv)
+cat("Initial parameters:")
+print(x)
+cat("Initial value of the function is ",cyq.f(x),"\n")
+gn <- numDeriv::grad(cyq.f, x) # using numDeriv
+cat("Approximation to gradient at initial point:")
+print(gn)
+```
+
+Using a modular approach to the problem, first specifying it
+via **residuals** and computing the function as a sum of squares, we can
+also generate the gradient. 
+
+```{r}
+# Ref: Fletcher, R. (1965) Function minimization without calculating derivatives -- a review,
+#         Computer J., 8, 33-41.
+
+# Note we do not have all components here e.g., .jsd, .h
+
+cyq.jac<- function (x) {
+#  Chebyquad Jacobian matrix
+   n<-length(x)
+   cj<-matrix(0.0, n, n)
+   for (i in 1:n) { # loop over rows
+     for (k in 1:n) { # loop over columns (parameters)
+       z5<-0.0
+       cj[i,k]<-2.0
+       z8<-2.0*x[k]-1.0 
+       z2<-z8
+       z7<-1.0
+       j<- 1
+       while (j<i) { # recurrence loop
+         z4<-z5
+         z5<-cj[i,k]
+         cj[i,k]<-4.0*z8+2.0*z2*z5-z4
+         z6<-z7
+         z7<-z8
+         z8<-2.0*z2*z7-z6
+         j<- j+1
+       } # end recurrence loop
+       cj[i,k]<-cj[i,k]/n
+     } # end loop on k
+   } # end loop on i
+   cj
+}
+
+
+cyq.g <- function (x) {
+   cj<-cyq.jac(x)
+   rv<-cyq.res(x)
+   gg<- 2.0 * as.vector(rv %*% cj)
+}
+
+
+# check gradient function cyq.g
+
+gajn <- cyq.g(x)
+print(gajn)
+```
+We can now try to see if `autodiffr` matches this gradient. 
+However, the following code gives an error in Julia.
+
+```{r, eval=TRUE}
+# Do not evaluate, as this fails # Now it should work
+ cyq.ag <- autodiffr::grad(cyq.f)
+gaag <- cyq.ag(x)
+print(gaag)
+```
+
+As a workaround, we can get the Chebyquad function from the package `funconstrain`.
+The `funconstrain`
+offering does NOT require a call to the residuals, but has a single
+level **R** function.
+
+```{r, eval=TRUE, echo=TRUE}
+require(funconstrain)
+cat("funconstrain loaded\n")
+cheb <- chebyquad() # Seem to need the brackets or doesn't return pieces
+print(str(cheb))
+cyq2.f <- cheb$fn
+## Note that funconstrain offers the starting value
+## x0b <- cheb$x0(n=4) # Need the size of the vector
+## x0b
+## cyq2.f(x0b)
+## same as
+print(cyq2.f(x))
+## Try the gradient
+cyq2.ag <- autodiffr::grad(cyq2.f) # Need autodiffr:: specified for knitr
+## print(cyq2.g)
+cat("Gradient at x")
+g2ag <- cyq2.ag(x)
+print(g2ag)
+
+require(microbenchmark)
+
+cat("cyq.f timing:\n")
+tcyq.f <- microbenchmark(cyq.f(x))
+tcyq.f
+cat("cyq2.f timing:\n")
+tcyq2.f <- microbenchmark(cyq2.f(x))
+tcyq2.f
+tcyq.g <- microbenchmark(cyq.g(x))
+tcyq.g
+tcyq.g <- microbenchmark(cyq.g(x))
+tcyq.g
+
+cyq2.g <- cheb$gr
+tcyq2.g <- microbenchmark(cyq2.g(x), unit="us" )
+# microseconds
+tcyq2.g
+
+# These are very slow
+tcyq.ag <- microbenchmark(cyq.ag(x), unit="us" )
+# microseconds
+tcyq.ag
+tcyq2.ag <- microbenchmark(cyq2.ag(x), unit="us" )
+# microseconds
+tcyq2.ag
+
+# These are quicker, but still slow
+cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
+# microseconds
+tcyq.optimized_ag
+tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
+# microseconds
+tcyq2.optimized_ag
+
+## The slowness of the optimized method is partly because the overhead of the JuliaCall and autodiffr package.
+## After interface functions become stable, I will try to carry on some performance optimizations,
+## which is a goal of the project at last phase.
+## For example, even we only have a very simple function, the timing is high because of the overhead.
+foobar <- function(x) sum(x)
+foobar.ag <- autodiffr::grad(foobar, xsize = runif(length(x)), use_tape = TRUE)
+tfoobar.ag <- microbenchmark(foobar.ag(x), unit="us" )
+tfoobar.ag
+
+## Suppose we are dealing with input of larger size, the overhead stays roughly the same,
+## so the overhead should matters not that much as in the case n = 4.
+## For example, if n = 25, the diffrence of performance in ratio is not that much.
+## cyq.setup
+n <- 25
+lower<-rep(-10.0, n)
+upper<-rep(10.0, n) 
+x<-1:n
+x<-x/(n+1.0) # Initial value suggested by Fletcher
+
+tcyq.g <- microbenchmark(cyq.g(x), unit = "us")
+tcyq.g
+
+tcyq2.g <- microbenchmark(cyq2.g(x), unit="us" )
+# microseconds
+tcyq2.g
+
+## The bad thing is that if the input size changes, we need to make an optimized gradient again.
+cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
+# microseconds
+tcyq.optimized_ag
+tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
+# microseconds
+tcyq2.optimized_ag
+
+## Also note it is better to check the correctness when generating optimized gradient,
+all.equal(cyq.g(x), cyq.optimized_ag(x))
+all.equal(cyq.g(x), cyq2.optimized_ag(x))
+```
