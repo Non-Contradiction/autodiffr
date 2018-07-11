@@ -203,6 +203,5 @@ reverse.compile <- function(tape){
 }
 
 is_tape <- function(tape) {
-    JuliaCall::julia_command("function is_tape(x) issubtype(typeof(x), ReverseDiff.AbstractTape) end;")
     JuliaCall::julia_call("is_tape", tape)
 }

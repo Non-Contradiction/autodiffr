@@ -21,6 +21,9 @@ ad_setup <- function(...) {
         .AD$julia$library("ForwardDiff")
         .AD$julia$library("ReverseDiff")
 
+        ## Need to define is_tape function for ReverseDiff
+        JuliaCall::julia_command("function is_tape(x) issubtype(typeof(x), ReverseDiff.AbstractTape) end;")
+
         # JuliaCall::julia_command("for R in (:Bool, :BigFloat)
         #                             @eval begin
         #                                 Base.promote_rule(::Type{$R}, ::Type{ForwardDiff.Dual{T,V,N}}) where {T,V<:Real,N} = ForwardDiff.Dual{T,promote_type($R, V),N}
