@@ -1,0 +1,25 @@
+---
+title: "Display Memory in R"
+author: "John Nash"
+date: "2018/7/11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+We want to disply the current memory.
+
+```{r}
+dmem <- function(){ 
+    system("free > ./tt.txt")
+    writeLines(readLines("./tt.txt"))
+    unlink("./tt.txt")
+}
+# put through file to force display in knitr
+
+dmem()
+```
