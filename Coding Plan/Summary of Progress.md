@@ -257,4 +257,15 @@
 
 ## July 8
 
-* Add tests for wrappers of `DiffResults`-related APIs.
+* Finish tests for wrappers of `DiffResults`-related APIs.
+* Add `y` argument in `JacobianResult` to deal with the case that output doesn't have same shape with `x`.
+* Correct some small bugs in `DiffResults`-related APIs.
+
+## July 9
+
+* Have functions to extract derivative information from `DiffResult`.
+* Prepare to separate functions to calculate derivatives and make derivative functions in user interface functions.
+
+## July 10
+
+* Improve performance in wrapper functions of `ReverseDiff`.
