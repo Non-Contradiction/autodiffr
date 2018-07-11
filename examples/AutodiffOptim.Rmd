@@ -109,6 +109,7 @@ which provide a nonlinear least squares problem. Note that
 ```{r}
 require(autodiffr)
 ad_setup()
+
 cyq.f <- function (x) {
   rv<-cyq.res(x)
   f <- sum(rv*rv)
@@ -117,7 +118,10 @@ cyq.f <- function (x) {
 cyq.res <- function (x) {
 # Fletcher's chebyquad function m = n -- residuals 
    n<-length(x)
-   res<-rep(0,n) # initialize
+   res<-zeros(x) # need to use zeros() to do initialization instead of rep() otherwise autodiffr will break.
+   ## This is because later on res[i] <- rr, 
+   ## if res is a normal R vector and rr is some Julia Number used by autodiffr, 
+   ## then R doesn't know what to do.
    for (i in 1:n) { #loop over resids
      rr<-0.0
      for (k in 1:n) {
@@ -218,8 +222,8 @@ print(gajn)
 We can now try to see if `autodiffr` matches this gradient. 
 However, the following code gives an error in Julia.
 
-```{r, eval=FALSE}
-# Do not evaluate, as this fails
+```{r, eval=TRUE}
+# Do not evaluate, as this fails # Now it should work
  cyq.ag <- autodiffr::grad(cyq.f)
 gaag <- cyq.ag(x)
 print(gaag)
@@ -259,18 +263,91 @@ tcyq2.f <- microbenchmark(cyq2.f(x))
 tcyq2.f
 tcyq.g <- microbenchmark(cyq.g(x))
 tcyq.g
+tcyq.g <- microbenchmark(cyq.g(x))
+tcyq.g
+
+cyq2.g <- cheb$gr
+tcyq2.g <- microbenchmark(cyq2.g(x), unit="us" )
+# microseconds
+tcyq2.g
+
+# These are very slow
+tcyq.ag <- microbenchmark(cyq.ag(x), unit="us" )
+# microseconds
+tcyq.ag
 tcyq2.ag <- microbenchmark(cyq2.ag(x), unit="us" )
 # microseconds
 tcyq2.ag
 
+# These are quicker, but still slow
+cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
+# microseconds
+tcyq.optimized_ag
+tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
+# microseconds
+tcyq2.optimized_ag
+
+## The slowness of the optimized method is partly because the overhead of the JuliaCall and autodiffr package.
+## After interface functions become stable, I will try to carry on some performance optimizations,
+## which is a goal of the project at last phase.
+## For example, even we only have a very simple function, the timing is high because of the overhead.
+foobar <- function(x) sum(x)
+foobar.ag <- autodiffr::grad(foobar, xsize = runif(length(x)), use_tape = TRUE)
+tfoobar.ag <- microbenchmark(foobar.ag(x), unit="us" )
+tfoobar.ag
+
+## Suppose we are dealing with input of larger size, the overhead stays roughly the same,
+## so the overhead should matters not that much as in the case n = 4.
+## For example, if n = 25, the diffrence of performance in ratio is not that much.
+## cyq.setup
+n <- 25
+lower<-rep(-10.0, n)
+upper<-rep(10.0, n) 
+x<-1:n
+x<-x/(n+1.0) # Initial value suggested by Fletcher
+
+tcyq.g <- microbenchmark(cyq.g(x), unit = "us")
+tcyq.g
+
+tcyq2.g <- microbenchmark(cyq2.g(x), unit="us" )
+# microseconds
+tcyq2.g
+
+## The bad thing is that if the input size changes, we need to make an optimized gradient again.
+cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
+# microseconds
+tcyq.optimized_ag
+tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
+# microseconds
+tcyq2.optimized_ag
+
+## Also note it is better to check the correctness when generating optimized gradient,
+all.equal(cyq.g(x), cyq.optimized_ag(x))
+all.equal(cyq.g(x), cyq2.optimized_ag(x))
+
+## Benchmarking times without user interface wrappers
+tape1 <- reverse.grad.tape(cyq.f, runif(length(x)))
+microbenchmark(reverse.grad(tape1, x), unit="us" )
+
+tape2 <- reverse.grad.tape(cyq2.f, runif(length(x)))
+microbenchmark(reverse.grad(tape2, x), unit="us" )
+
+## Benchmarking times without autodiffr wrappers
+JuliaCall::julia_command("using ReverseDiff")
+tape1 <- reverse.grad.tape(cyq.f, runif(length(x)))
+microbenchmark(JuliaCall::julia_call("ReverseDiff.gradient!", tape1, x), unit="us" )
+
+tape2 <- reverse.grad.tape(cyq2.f, runif(length(x)))
+microbenchmark(JuliaCall::julia_call("ReverseDiff.gradient!", tape2, x), unit="us" )
 ```
 
-Chebyquad Questions: 
 
- - How fast is the calculation? Try different ways and produce a table.
- 
- - Why is JN's cyq.ag NOT working? Does it have something to do with calling cyq.res to compute cyq.f?
-   NO. crossprod() seems to be somehow invoked even though not explicit.
+
+
  
 ## Test problem -- Hobbs weed infestation
 
@@ -659,11 +736,6 @@ system.time(ogr2(runif(100)))
 
 system.time(ogr2(runif(100)))
 ```
-
-
-
-
-
 
 ## Bibliography
 
