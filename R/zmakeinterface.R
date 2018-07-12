@@ -133,7 +133,7 @@ makeHessianFunc <- funcInterface("hessian")
 #' @export
 makeGradFunc <- funcInterface("grad")
 
-#' @rdname autodiff
+#' @rdname autodifffunc
 #' @export
 makeDerivFunc <- makeGradFunc
 

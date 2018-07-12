@@ -5,6 +5,7 @@
 \alias{makeJacobianFunc}
 \alias{makeHessianFunc}
 \alias{makeGradFunc}
+\alias{makeDerivFunc}
 \title{Create (Optimized) Gradient, Jacobian and Hessian Functions using Automatic Differentiation.}
 \usage{
 makeJacobianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
@@ -14,6 +15,9 @@ makeHessianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
 
 makeGradFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
+
+makeDerivFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
 }
 \arguments{
