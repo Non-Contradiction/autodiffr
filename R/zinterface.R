@@ -54,7 +54,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
         mode <- match.arg(mode)
 
-        D[[mode]](target, scalar2vector(x)))
+        D[[mode]](target, scalar2vector(x))
     }
 
     f
