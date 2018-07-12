@@ -14,16 +14,7 @@ test_that("test of grad", {
         print(paste0("  ...testing ", n))
         test <- grad(f, X)
         for (mode in c("reverse", "forward")) {
-            for (xsize in list(NULL, X)) {
-                for (chunk_size in list(NULL, 1, 2)) {
-                    for (use_tape in c(TRUE, FALSE)) {
-                        expect_equal(test,
-                                     grad(f, X, mode = mode,
-                                          xsize = xsize, chunk_size = chunk_size,
-                                          use_tape = use_tape))
-                    }
-                }
-            }
+            expect_equal(test, grad(f, X, mode = mode))
         }
     }
 })
@@ -42,16 +33,7 @@ test_that("test of hessian", {
         print(paste0("  ...testing ", n))
         test <- hessian(f, X)
         for (mode in c("reverse", "forward")) {
-            for (xsize in list(NULL, X)) {
-                for (chunk_size in list(NULL, 1, 2)) {
-                    for (use_tape in c(TRUE, FALSE)) {
-                        expect_equal(test,
-                                     hessian(f, X, mode = mode,
-                                             xsize = xsize, chunk_size = chunk_size,
-                                             use_tape = use_tape))
-                    }
-                }
-            }
+            expect_equal(test, hessian(f, X, mode = mode))
         }
     }
 })
@@ -70,16 +52,7 @@ test_that("test of hessian", {
 #         print(paste0("  ...testing ", n))
 #         test <- jacobian(f, X)
 #         for (mode in c("reverse", "forward")) {
-#             for (xsize in list(NULL, X)) {
-#                 for (chunk_size in list(NULL, 1, 2)) {
-#                     for (use_tape in c(TRUE, FALSE)) {
-#                         expect_equal(test,
-#                                      jacobian(f, X, mode = mode,
-#                                               xsize = xsize, chunk_size = chunk_size,
-#                                               use_tape = use_tape))
-#                     }
-#                 }
-#             }
+#                         expect_equal(test, jacobian(f, X, mode = mode))
 #         }
 #     }
 # })
@@ -98,25 +71,10 @@ test_that("test on scalar2scalar function", {
         print(paste0("  ...testing ", n))
         test <- grad(f, X)
         for (mode in c("reverse", "forward")) {
-            for (xsize in list(NULL, X)) {
-                for (chunk_size in list(NULL, 1, 2)) {
-                    for (use_tape in c(TRUE, FALSE)) {
-                        print(paste0("  ......mode ", mode,
-                                     " xsize ", xsize,
-                                     " chunk_size ", chunk_size,
-                                     " use_tape ", use_tape))
+            print(paste0("  ......mode ", mode))
 
-                        expect_equal(test,
-                                     grad(f, X, mode = mode,
-                                          xsize = xsize, chunk_size = chunk_size,
-                                          use_tape = use_tape))
-                        expect_equal(test,
-                                     jacobian(f, X, mode = mode,
-                                              xsize = xsize, chunk_size = chunk_size,
-                                              use_tape = use_tape)[1])
-                    }
-                }
-            }
+            expect_equal(test, grad(f, X, mode = mode))
+            expect_equal(test, jacobian(f, X, mode = mode)[1])
         }
     }
 })
@@ -159,21 +117,8 @@ test_that("test on multi-argument function", {
     for (X in list(1, 2, list(b = 1), list(b = 2), list(1, 2), list(2, 1), list(a = 1, 2), list(a = 2, 1), list(a = 1, b = 2))) {
         test <- ans(X)
         for (mode in c("reverse", "forward")) {
-            for (xsize in list(NULL, X)) {
-                for (chunk_size in list(NULL, 1, 2)) {
-                    for (use_tape in c(TRUE, FALSE)) {
-                        print(paste0("  ......mode ", mode,
-                                     " X ", as.character(X),
-                                     " chunk_size ", chunk_size,
-                                     " use_tape ", use_tape))
-
-                        expect_equal(test,
-                                     grad(f, X, mode = mode,
-                                          xsize = xsize, chunk_size = chunk_size,
-                                          use_tape = use_tape))
-                    }
-                }
-            }
+            print(paste0("  ......mode ", mode))
+            expect_equal(test, grad(f, X, mode = mode))
         }
     }
 })
