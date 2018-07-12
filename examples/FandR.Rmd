@@ -11,7 +11,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-`autodiffr` is now a work-in-progress. You can install it by:
+Whatever system you use, you need to install Julia.
+
+Go to C:\Users\john\AppData\Local\Julia-0.6.4 and choose the correct download,
+and install as appropriate.
+
+Note that later we will probably need to adjust some or other PATH variables, and
+possibly set up links to ensure **R** can find Julia.
+
+
+`autodiffr` can  be installed by:
 
 ```{r, eval=FALSE}
 devtools::install_github("Non-Contradiction/autodiffr")
@@ -30,6 +39,19 @@ note that the first time it will take some time, but the next time it should be 
 library(autodiffr)
 ad_setup()
 ```
+
+On Windows 7 VM, this fails "Julia is not found", so we need to set path.
+
+Julia.exe is in C:\Users\john\AppData\Local\Julia-0.6.4 after installation
+( 32 bit -- the extra steps were not necessary as far as I can tell)
+
+On Linux ... ??
+
+On Macintosh (which OS??) ...
+
+
+## Testing `autodiffr`
+
 
 And we can use package `numDeriv` to compare with `autodiffr`.
 
