@@ -268,4 +268,10 @@
 
 ## July 10
 
+* Investigate into the performance problem in `autodiffr`.
 * Improve performance in wrapper functions of `ReverseDiff`.
+
+## July 11
+
+* Improve the overhead of user interface functions in `JuliaCall`.
+* Investigate into overhead problem in `JuliaCall`, have several plans to improve performance further.
