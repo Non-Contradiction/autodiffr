@@ -1,6 +1,6 @@
-context("Test on User Interface Functions")
+context("Test on User Interface Functions to Create Differentiate Functions")
 
-test_that("test of grad", {
+test_that("test of grad func", {
     skip_on_cran()
     ad_setup()
 
@@ -18,9 +18,9 @@ test_that("test of grad", {
                 for (chunk_size in list(NULL, 1, 2)) {
                     for (use_tape in c(TRUE, FALSE)) {
                         expect_equal(test,
-                                     grad(f, X, mode = mode,
-                                          xsize = xsize, chunk_size = chunk_size,
-                                          use_tape = use_tape))
+                                     makeGradFunc(f, mode = mode,
+                                                  x = xsize, chunk_size = chunk_size,
+                                                  use_tape = use_tape)(X))
                     }
                 }
             }
@@ -28,7 +28,7 @@ test_that("test of grad", {
     }
 })
 
-test_that("test of hessian", {
+test_that("test of hessian func", {
     skip_on_cran()
     ad_setup()
 
@@ -46,9 +46,9 @@ test_that("test of hessian", {
                 for (chunk_size in list(NULL, 1, 2)) {
                     for (use_tape in c(TRUE, FALSE)) {
                         expect_equal(test,
-                                     hessian(f, X, mode = mode,
-                                             xsize = xsize, chunk_size = chunk_size,
-                                             use_tape = use_tape))
+                                     makeHessianFunc(f, mode = mode,
+                                                     x = xsize, chunk_size = chunk_size,
+                                                     use_tape = use_tape)(X))
                     }
                 }
             }
@@ -56,7 +56,7 @@ test_that("test of hessian", {
     }
 })
 
-# test_that("test of jacobian", {
+# test_that("test of jacobian func", {
 #     skip_on_cran()
 #     ad_setup()
 #
@@ -74,9 +74,10 @@ test_that("test of hessian", {
 #                 for (chunk_size in list(NULL, 1, 2)) {
 #                     for (use_tape in c(TRUE, FALSE)) {
 #                         expect_equal(test,
-#                                      jacobian(f, X, mode = mode,
-#                                               xsize = xsize, chunk_size = chunk_size,
-#                                               use_tape = use_tape))
+#                         expect_equal(test,
+#                                      makeJacobianFunc(f, mode = mode,
+#                                               x = xsize, chunk_size = chunk_size,
+#                                               use_tape = use_tape)(X))
 #                     }
 #                 }
 #             }
@@ -107,13 +108,13 @@ test_that("test on scalar2scalar function", {
                                      " use_tape ", use_tape))
 
                         expect_equal(test,
-                                     grad(f, X, mode = mode,
-                                          xsize = xsize, chunk_size = chunk_size,
-                                          use_tape = use_tape))
+                                     makeGradFunc(f, mode = mode,
+                                          x = xsize, chunk_size = chunk_size,
+                                          use_tape = use_tape)(X))
                         expect_equal(test,
-                                     jacobian(f, X, mode = mode,
-                                              xsize = xsize, chunk_size = chunk_size,
-                                              use_tape = use_tape)[1])
+                                     makeJacobianFunc(f, mode = mode,
+                                                      x = xsize, chunk_size = chunk_size,
+                                                      use_tape = use_tape)(X)[1])
                     }
                 }
             }
@@ -168,9 +169,9 @@ test_that("test on multi-argument function", {
                                      " use_tape ", use_tape))
 
                         expect_equal(test,
-                                     grad(f, X, mode = mode,
-                                          xsize = xsize, chunk_size = chunk_size,
-                                          use_tape = use_tape))
+                                     makeGradFunc(f, mode = mode,
+                                                  x = xsize, chunk_size = chunk_size,
+                                                  use_tape = use_tape)(X))
                     }
                 }
             }
