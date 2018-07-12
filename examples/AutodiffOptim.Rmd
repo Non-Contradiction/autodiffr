@@ -737,5 +737,45 @@ system.time(ogr2(runif(100)))
 system.time(ogr2(runif(100)))
 ```
 
+## A problem with discontinuous gradient
+
+Problems with discontinuous gradient may give gradient methods difficulty.
+
+Here is a problem where the gradient is discontinuous, but not at the minimum.
+
+```{r}
+## discontin.R, a test function with discontinuous gradient
+
+disc.f <- function(x){
+   nn <- length(x)
+   val <- 0.0
+   for (ii in 1:nn){
+       tt <- (x[ii] - ii)
+       if (abs(tt) < ii) {
+           ff <- tt*tt
+       } else {
+           ff <- abs(tt)
+       }
+       val <- val + ff*ff
+    }
+    val
+}
+
+require(optimx)
+x0 <- runif(4)
+x0
+sol0 <- optimr(x0, disc.f, method="nmkb")
+sol0
+require(autodiffr)
+ad_setup()
+disc.ag <- autodiffr::grad(disc.f)
+sol1 <- optimr(x0, disc.f, disc.ag, method="Rvmmin", control=list(trace=1))
+sol1
+```
+
+?? Do we want to try discontinuity at solution? Discontinuous function value?
+
+
+
 ## Bibliography
 
