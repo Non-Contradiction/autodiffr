@@ -64,7 +64,7 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
         ## when x is null, need to return an unoptimized function
 
         if (is.null(x)) {
-            return(function(...) do.call(interface, c(list(...), dot)))
+            return(function(x, ...) do.call(interface, c(list(func, x), list(...), dot)))
         }
 
         target0 <- function(...){
