@@ -18,6 +18,9 @@
 #' @param compiled whether or not to use compiled tape for reverse mode automatic differentiation.
 #'   Note that tape compiling can take a lot of time and
 #'   this parameter is only effective when `use_tape = TRUE`.
+#' @param debugged Whether to activate debug mode.
+#'   With the debug mode, users can have more informative error messages.
+#'   Without the debug mode, functions will be more performant.
 #'
 #' @return if `x` is not given, the returned function will be a general function to calculate derivatives,
 #'  which accepts other arguments to `func` besides `x`;
@@ -52,7 +55,7 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
     f <- function(func, ..., mode = c("reverse", "forward"),
                   x = NULL, chunk_size = NULL,
-                  use_tape = FALSE, compiled = FALSE){
+                  use_tape = FALSE, compiled = FALSE, debugged = TRUE){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -64,7 +67,7 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
         ## when x is null, need to return an unoptimized function
 
         if (is.null(x)) {
-            return(function(x, ...) do.call(interface, c(list(func, x), list(...), dot)))
+            return(function(x, ...) do.call(interface, c(list(func, x), list(...), dot, debugged = debugged)))
         }
 
         target0 <- function(...){
@@ -100,14 +103,14 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
             }
 
             config <- Config$forward(target, scalar2vector(x), chunk_size = chunk_size)
-            return(function(x) D$forward(target, scalar2vector(x), cfg = config))
+            return(function(x) D$forward(target, scalar2vector(x), cfg = config, debugged = debugged))
         }
 
         if (isFALSE(use_tape)) {
             ## If not use_tape,
             ## the only possible optimization in rev mode is also construction of Config objects
             config <- Config$reverse(scalar2vector(x))
-            return(function(x) D$reverse(target, scalar2vector(x), cfg = config))
+            return(function(x) D$reverse(target, scalar2vector(x), cfg = config, debugged = debugged))
         }
 
         ## use_tape,
@@ -115,7 +118,7 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
         if (isTRUE(compiled)) {
             tape <- reverse.compile(tape)
         }
-        return(function(x) D$reverse(tape, scalar2vector(x)))
+        return(function(x) D$reverse(tape, scalar2vector(x), debugged = debugged))
     }
 
     f

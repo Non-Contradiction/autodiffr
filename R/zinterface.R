@@ -6,6 +6,9 @@
 #' @param x the input(s) where derivative is (are) taken.
 #' @param mode whether to use forward or reverse mode automatic differentiation.
 #' @param ... other arguments passed to the target function `func`.
+#' @param debugged Whether to activate debug mode.
+#'   With the debug mode, users can have more informative error messages.
+#'   Without the debug mode, the functions will be more performant.
 #'
 #' @return if `x` is given, then return will be derivatives;
 #'   if `x` is not given, then return will be a function to calculate derivatives.
@@ -27,7 +30,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
         D <- list(forward = multi.forward.hessian, reverse = reverse.hessian)
     }
 
-    f <- function(func, x, ..., mode = c("reverse", "forward")){
+    f <- function(func, x, ..., mode = c("reverse", "forward"), debugged = TRUE){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -54,7 +57,7 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
         mode <- match.arg(mode)
 
-        D[[mode]](target, scalar2vector(x))
+        D[[mode]](target, scalar2vector(x), debugged = debugged)
     }
 
     f

@@ -9,16 +9,20 @@
 \title{Create (Optimized) Gradient, Jacobian and Hessian Functions using Automatic Differentiation.}
 \usage{
 makeJacobianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
+  debugged = TRUE)
 
 makeHessianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
+  debugged = TRUE)
 
 makeGradFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
+  debugged = TRUE)
 
 makeDerivFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
+  debugged = TRUE)
 }
 \arguments{
 \item{func}{the target function to calculate gradient, jacobian or hessian.}
@@ -43,6 +47,10 @@ And this parameter is only effective when \code{mode = "reverse"}.}
 \item{compiled}{whether or not to use compiled tape for reverse mode automatic differentiation.
 Note that tape compiling can take a lot of time and
 this parameter is only effective when \code{use_tape = TRUE}.}
+
+\item{debugged}{Whether to activate debug mode.
+With the debug mode, users can have more informative error messages.
+Without the debug mode, functions will be more performant.}
 }
 \value{
 if \code{x} is not given, the returned function will be a general function to calculate derivatives,
