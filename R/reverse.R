@@ -66,12 +66,12 @@ reverse_diff <- function(name){
         ## deal with diffresult first
         if (!is.null(diffresult)) {
             if (!is.null(cfg) && !is_tape(f_or_tape))
-                return(JuliaCall::julia_call(fullmutatename, diffresult, f_or_tape, input, cfg))
-            return(JuliaCall::julia_call(fullmutatename, diffresult, f_or_tape, input))
+                return(.AD[[fullmutatename]](diffresult, f_or_tape, input, cfg))
+            return(.AD[[fullmutatename]](diffresult, f_or_tape, input))
         }
 
         if (is_tape(f_or_tape)) {
-            r <- JuliaCall::julia_call(fullmutatename, f_or_tape, input)
+            r <- .AD[[fullmutatename]](f_or_tape, input)
         }
         else {
             if (is_list) {
@@ -79,10 +79,10 @@ reverse_diff <- function(name){
             }
 
             if (is.null(cfg)) {
-                r <- JuliaCall::julia_call(fullname, f_or_tape, input)
+                r <- .AD[[fullname]](f_or_tape, input)
             }
             else {
-                r <- JuliaCall::julia_call(fullname, f_or_tape, input, cfg)
+                r <- .AD[[fullname]](f_or_tape, input, cfg)
             }
         }
 

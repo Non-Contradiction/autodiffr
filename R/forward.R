@@ -115,14 +115,14 @@ forward_diff <- function(name, config_method){
 
                 if (is.null(cfg)) cfg <- config_method(f, x)
 
-                return(JuliaCall::julia_call(fullmutatename, diffresult, f, x, cfg, check))
+                return(.AD[[fullmutatename]](diffresult, f, x, cfg, check))
             }
 
             if (is.null(cfg)) {
-                return(JuliaCall::julia_call(fullmutatename, diffresult, f, x))
+                return(.AD[[fullmutatename]](diffresult, f, x))
             }
 
-            return(JuliaCall::julia_call(fullmutatename, diffresult, f, x, cfg))
+            return(.AD[[fullmutatename]](diffresult, f, x, cfg))
         }
 
         if (isFALSE(check)) {
@@ -130,14 +130,14 @@ forward_diff <- function(name, config_method){
 
             if (is.null(cfg)) cfg <- config_method(f, x)
 
-            return(JuliaCall::julia_call(fullname, f, x, cfg, check))
+            return(.AD[[fullname]](f, x, cfg, check))
         }
 
         if (is.null(cfg)) {
-            return(JuliaCall::julia_call(fullname, f, x))
+            return(.AD[[fullname]](f, x))
         }
 
-        JuliaCall::julia_call(fullname, f, x, cfg)
+        .AD[[fullname]](f, x, cfg)
     }
 
     diff

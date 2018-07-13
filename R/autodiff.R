@@ -38,6 +38,8 @@ ad_setup <- function(...) {
         JuliaCall::julia_command("using Suppressor")
         JuliaCall::julia_command("@suppress begin function Base.float{V,D,O}(t::ReverseDiff.TrackedReal{V,D,O}) t end end")
 
+        apiFuncs()
+
         .AD$inited <- TRUE
     }
 }
