@@ -177,7 +177,9 @@ reverse_tape <- function(name){
             return(JuliaCall::julia_call(fullname, f, input))
         }
 
-        JuliaCall::julia_call(fullname, f, input, cfg)
+        r <- JuliaCall::julia_call(fullname, f, input, cfg)
+        r$type <- "AbstractTape"
+        r
     }
 
     tape_func
@@ -202,9 +204,14 @@ reverse.compile <- function(tape){
     ## unless you want to pass some arguments to it.
     ad_setup()
 
-    JuliaCall::julia_call("ReverseDiff.compile", tape)
+    r <- JuliaCall::julia_call("ReverseDiff.compile", tape)
+    r$type <- "AbstractTape"
+    r
 }
 
 is_tape <- function(tape) {
+    if (is.environment(tape) && is.character(tape$type)) {
+        return(identical("AbstractTape", tape$type))
+    }
     JuliaCall::julia_call("is_tape", tape)
 }
