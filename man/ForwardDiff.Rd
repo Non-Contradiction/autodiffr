@@ -19,11 +19,14 @@ forward.jacobian.config(f, x, chunk_size = NULL, diffresult = NULL)
 
 forward.hessian.config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.grad(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
+forward.grad(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
+  debugged = TRUE)
 
-forward.jacobian(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
+forward.jacobian(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
+  debugged = TRUE)
 
-forward.hessian(f, x, cfg = NULL, check = TRUE, diffresult = NULL)
+forward.hessian(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
+  debugged = TRUE)
 }
 \arguments{
 \item{f}{the function you want to calulate the derivative, gradient and etc.
@@ -55,6 +58,10 @@ but you can drastically reduce memory usage if you preallocate them yourself.}
 \item{check}{whether to allow tag checking.
 Set check to \code{FALSE} to disable tag checking for \code{ForwardDiff}.
 This can lead to perturbation confusion, so should be used with care.}
+
+\item{debugged}{Whether to use the wrapper functions under debug mode.
+With the debug mode, users can have more informative error messages.
+Without the debug mode, the wrapper functions will be more performant.}
 }
 \value{
 \code{forward.deriv}, \code{forward.grad}, \code{forward.jacobian} and \code{forward.hessian} return

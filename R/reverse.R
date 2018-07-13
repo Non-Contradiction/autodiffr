@@ -27,6 +27,9 @@
 #'   `ReverseDiff`'s API methods will allocate the Config object automatically by default,
 #'   but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.
 #' @param diffresult Optional DiffResult object to store the derivative information.
+#' @param debugged Whether to use the wrapper functions under debug mode.
+#'   With the debug mode, users can have more informative error messages.
+#'   Without the debug mode, the wrapper functions will be more performant.
 #'
 #' @return `reverse.grad`, `reverse.jacobian` and `reverse.hessian` return
 #'   the gradient, jacobian and hessian of `f` or `tape` correspondingly evaluated at `input`.

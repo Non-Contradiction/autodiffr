@@ -30,6 +30,9 @@
 #'   <http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1>
 #'   for more details.
 #' @param diffresult Optional DiffResult object to store the derivative information.
+#' @param debugged Whether to use the wrapper functions under debug mode.
+#'   With the debug mode, users can have more informative error messages.
+#'   Without the debug mode, the wrapper functions will be more performant.
 #'
 #' @return `forward.deriv`, `forward.grad`, `forward.jacobian` and `forward.hessian` return
 #'   the derivative, gradient, jacobian and hessian of `f` correspondingly evaluated at `x`.

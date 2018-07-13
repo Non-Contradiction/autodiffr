@@ -14,11 +14,14 @@
 \alias{reverse.compile}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
-reverse.grad(f_or_tape, input, cfg = NULL, diffresult = NULL)
+reverse.grad(f_or_tape, input, cfg = NULL, diffresult = NULL,
+  debugged = TRUE)
 
-reverse.jacobian(f_or_tape, input, cfg = NULL, diffresult = NULL)
+reverse.jacobian(f_or_tape, input, cfg = NULL, diffresult = NULL,
+  debugged = TRUE)
 
-reverse.hessian(f_or_tape, input, cfg = NULL, diffresult = NULL)
+reverse.hessian(f_or_tape, input, cfg = NULL, diffresult = NULL,
+  debugged = TRUE)
 
 reverse.grad.config(input, diffresult = NULL)
 
@@ -47,6 +50,10 @@ used by reverse mode automatic differentiation.
 but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.}
 
 \item{diffresult}{Optional DiffResult object to store the derivative information.}
+
+\item{debugged}{Whether to use the wrapper functions under debug mode.
+With the debug mode, users can have more informative error messages.
+Without the debug mode, the wrapper functions will be more performant.}
 
 \item{f}{the function you want to calulate the gradient, jacobian and hessian.
 Note that \code{f(x)} should be a scalar for \code{grad} and \code{hessian},
