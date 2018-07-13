@@ -135,7 +135,7 @@ However, the following code gives an error in Julia.
 
 ```{r, eval=TRUE}
 # Do not evaluate, as this fails # Now it should work
- cyq.ag <- autodiffr::grad(cyq.f)
+ cyq.ag <- autodiffr::makeGradFunc(cyq.f)
 gaag <- cyq.ag(x)
 print(gaag)
 ```
@@ -158,7 +158,7 @@ cyq2.f <- cheb$fn
 ## same as
 print(cyq2.f(x))
 ## Try the gradient
-cyq2.ag <- autodiffr::grad(cyq2.f) # Need autodiffr:: specified for knitr
+cyq2.ag <- autodiffr::makeGradFunc(cyq2.f) # Need autodiffr:: specified for knitr
 ## print(cyq2.g)
 cat("Gradient at x")
 g2ag <- cyq2.ag(x)
@@ -191,8 +191,8 @@ tcyq2.ag <- microbenchmark(cyq2.ag(x), unit="us" )
 tcyq2.ag
 
 # These are quicker, but still slow
-cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
-cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq.optimized_ag <- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE)
 tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
 # microseconds
 tcyq.optimized_ag
@@ -205,7 +205,7 @@ tcyq2.optimized_ag
 ## which is a goal of the project at last phase.
 ## For example, even we only have a very simple function, the timing is high because of the overhead.
 foobar <- function(x) sum(x)
-foobar.ag <- autodiffr::grad(foobar, xsize = runif(length(x)), use_tape = TRUE)
+foobar.ag <- autodiffr::makeGradFunc(foobar, x = runif(length(x)), use_tape = TRUE)
 tfoobar.ag <- microbenchmark(foobar.ag(x), unit="us" )
 tfoobar.ag
 
@@ -227,8 +227,8 @@ tcyq2.g <- microbenchmark(cyq2.g(x), unit="us" )
 tcyq2.g
 
 ## The bad thing is that if the input size changes, we need to make an optimized gradient again.
-cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
-cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq.optimized_ag <- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE)
 tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
 # microseconds
 tcyq.optimized_ag
@@ -236,9 +236,22 @@ tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
 # microseconds
 tcyq2.optimized_ag
 
+## Some benchmarking based on the new debugged argument.
+cyq.optimized_ag_debugoff <- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE, debugged = FALSE)
+cyq2.optimized_ag_debugoff <- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE, debugged = FALSE)
+tcyq.optimized_ag_debugoff <- microbenchmark(cyq.optimized_ag_debugoff(x), unit="us" )
+# microseconds
+tcyq.optimized_ag_debugoff
+tcyq2.optimized_ag_debugoff <- microbenchmark(cyq2.optimized_ag_debugoff(x), unit="us" )
+# microseconds
+tcyq2.optimized_ag_debugoff
+
 ## Also note it is better to check the correctness when generating optimized gradient,
 all.equal(cyq.g(x), cyq.optimized_ag(x))
 all.equal(cyq.g(x), cyq2.optimized_ag(x))
+
+all.equal(cyq.g(x), cyq.optimized_ag_debugoff(x))
+all.equal(cyq.g(x), cyq2.optimized_ag_debugoff(x))
 
 ## Benchmarking times without user interface wrappers
 tape1 <- reverse.grad.tape(cyq.f, runif(length(x)))
