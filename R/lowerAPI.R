@@ -1,8 +1,8 @@
 lowerAPICreate <- function(n){
     force(n)
     rawFunc <- JuliaCall::julia_eval(n)
-    f <- function(..., debugged = TRUE) {
-        if (isFALSE(debugged)) {
+    f <- function(..., debug = TRUE) {
+        if (isFALSE(debug)) {
             return(rawFunc(...))
         }
         JuliaCall::julia_call(n, ...)

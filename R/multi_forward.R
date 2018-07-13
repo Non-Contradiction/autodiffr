@@ -29,9 +29,9 @@ multi.forward.D <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     singleD <- singleDs[[fname]]
 
-    f <- function(func, x, cfg = correspond_null(x), diffresult = NULL, debugged = TRUE){
+    f <- function(func, x, cfg = correspond_null(x), diffresult = NULL, debug = TRUE){
         if (!is.list(x)) {
-            return(singleD(func, x, cfg, diffresult = diffresult, debugged = debugged))
+            return(singleD(func, x, cfg, diffresult = diffresult, debug = debug))
         }
 
         # deal with diffresult first
@@ -43,7 +43,7 @@ multi.forward.D <- function(fname = c("grad", "jacobian", "hessian")){
 
         funcs <- lapply(1:length(x), subfunc, func = func, x = x)
 
-        results <- lapply(1:length(x), function(i) singleD(funcs[[i]], x[[i]], cfg[[i]], debugged = debugged))
+        results <- lapply(1:length(x), function(i) singleD(funcs[[i]], x[[i]], cfg[[i]], debug = debug))
 
         names(results) <- names(x)
 

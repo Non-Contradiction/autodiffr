@@ -27,7 +27,7 @@
 #'   `ReverseDiff`'s API methods will allocate the Config object automatically by default,
 #'   but you can preallocate them yourself and reuse them for subsequent calls to reduce memory usage.
 #' @param diffresult Optional DiffResult object to store the derivative information.
-#' @param debugged Whether to use the wrapper functions under debug mode.
+#' @param debug Whether to use the wrapper functions under debug mode.
 #'   With the debug mode, users can have more informative error messages.
 #'   Without the debug mode, the wrapper functions will be more performant.
 #'
@@ -48,7 +48,7 @@ reverse_diff <- function(name){
     fullname <- paste0("ReverseDiff.", name)
     fullmutatename <- paste0("ReverseDiff.", name, "!")
 
-    diff <- function(f_or_tape, input, cfg = NULL, diffresult = NULL, debugged = TRUE){
+    diff <- function(f_or_tape, input, cfg = NULL, diffresult = NULL, debug = TRUE){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -69,12 +69,12 @@ reverse_diff <- function(name){
         ## deal with diffresult first
         if (!is.null(diffresult)) {
             if (!is.null(cfg) && !is_tape(f_or_tape))
-                return(.AD[[fullmutatename]](diffresult, f_or_tape, input, cfg, debugged = debugged))
-            return(.AD[[fullmutatename]](diffresult, f_or_tape, input, debugged = debugged))
+                return(.AD[[fullmutatename]](diffresult, f_or_tape, input, cfg, debug = debug))
+            return(.AD[[fullmutatename]](diffresult, f_or_tape, input, debug = debug))
         }
 
         if (is_tape(f_or_tape)) {
-            r <- .AD[[fullmutatename]](f_or_tape, input, debugged = debugged)
+            r <- .AD[[fullmutatename]](f_or_tape, input, debug = debug)
         }
         else {
             if (is_list) {
@@ -82,10 +82,10 @@ reverse_diff <- function(name){
             }
 
             if (is.null(cfg)) {
-                r <- .AD[[fullname]](f_or_tape, input, debugged = debugged)
+                r <- .AD[[fullname]](f_or_tape, input, debug = debug)
             }
             else {
-                r <- .AD[[fullname]](f_or_tape, input, cfg, debugged = debugged)
+                r <- .AD[[fullname]](f_or_tape, input, cfg, debug = debug)
             }
         }
 

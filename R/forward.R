@@ -30,7 +30,7 @@
 #'   <http://www.juliadiff.org/ForwardDiff.jl/stable/user/advanced.html#Configuring-Chunk-Size-1>
 #'   for more details.
 #' @param diffresult Optional DiffResult object to store the derivative information.
-#' @param debugged Whether to use the wrapper functions under debug mode.
+#' @param debug Whether to use the wrapper functions under debug mode.
 #'   With the debug mode, users can have more informative error messages.
 #'   Without the debug mode, the wrapper functions will be more performant.
 #'
@@ -105,7 +105,7 @@ forward_diff <- function(name, config_method){
     fullmutatename <- paste0(fullname, "!")
     force(config_method)
 
-    diff <- function(f, x, cfg = NULL, check = TRUE, diffresult = NULL, debugged = TRUE){
+    diff <- function(f, x, cfg = NULL, check = TRUE, diffresult = NULL, debug = TRUE){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -118,14 +118,14 @@ forward_diff <- function(name, config_method){
 
                 if (is.null(cfg)) cfg <- config_method(f, x)
 
-                return(.AD[[fullmutatename]](diffresult, f, x, cfg, check, debugged = debugged))
+                return(.AD[[fullmutatename]](diffresult, f, x, cfg, check, debug = debug))
             }
 
             if (is.null(cfg)) {
-                return(.AD[[fullmutatename]](diffresult, f, x, debugged = debugged))
+                return(.AD[[fullmutatename]](diffresult, f, x, debug = debug))
             }
 
-            return(.AD[[fullmutatename]](diffresult, f, x, cfg, debugged = debugged))
+            return(.AD[[fullmutatename]](diffresult, f, x, cfg, debug = debug))
         }
 
         if (isFALSE(check)) {
@@ -133,14 +133,14 @@ forward_diff <- function(name, config_method){
 
             if (is.null(cfg)) cfg <- config_method(f, x)
 
-            return(.AD[[fullname]](f, x, cfg, check, debugged = debugged))
+            return(.AD[[fullname]](f, x, cfg, check, debug = debug))
         }
 
         if (is.null(cfg)) {
-            return(.AD[[fullname]](f, x, debugged = debugged))
+            return(.AD[[fullname]](f, x, debug = debug))
         }
 
-        .AD[[fullname]](f, x, cfg, debugged = debugged)
+        .AD[[fullname]](f, x, cfg, debug = debug)
     }
 
     diff

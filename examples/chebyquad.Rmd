@@ -236,9 +236,9 @@ tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
 # microseconds
 tcyq2.optimized_ag
 
-## Some benchmarking based on the new debugged argument.
-cyq.optimized_ag_debugoff <- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE, debugged = FALSE)
-cyq2.optimized_ag_debugoff <- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE, debugged = FALSE)
+## Some benchmarking based on the new debug argument.
+cyq.optimized_ag_debugoff <- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE, debug = FALSE)
+cyq2.optimized_ag_debugoff <- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE, debug = FALSE)
 tcyq.optimized_ag_debugoff <- microbenchmark(cyq.optimized_ag_debugoff(x), unit="us" )
 # microseconds
 tcyq.optimized_ag_debugoff

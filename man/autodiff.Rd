@@ -8,13 +8,13 @@
 \alias{deriv}
 \title{Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.}
 \usage{
-jacobian(func, x, ..., mode = c("reverse", "forward"), debugged = TRUE)
+jacobian(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 
-hessian(func, x, ..., mode = c("reverse", "forward"), debugged = TRUE)
+hessian(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 
-grad(func, x, ..., mode = c("reverse", "forward"), debugged = TRUE)
+grad(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 
-deriv(func, x, ..., mode = c("reverse", "forward"), debugged = TRUE)
+deriv(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 }
 \arguments{
 \item{func}{the target function to calculate gradient, jacobian or hessian.}
@@ -25,7 +25,7 @@ deriv(func, x, ..., mode = c("reverse", "forward"), debugged = TRUE)
 
 \item{mode}{whether to use forward or reverse mode automatic differentiation.}
 
-\item{debugged}{Whether to activate debug mode.
+\item{debug}{Whether to activate debug mode.
 With the debug mode, users can have more informative error messages.
 Without the debug mode, the functions will be more performant.}
 }

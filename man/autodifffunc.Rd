@@ -10,19 +10,19 @@
 \usage{
 makeJacobianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debugged = TRUE)
+  debug = TRUE)
 
 makeHessianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debugged = TRUE)
+  debug = TRUE)
 
 makeGradFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debugged = TRUE)
+  debug = TRUE)
 
 makeDerivFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
   chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debugged = TRUE)
+  debug = TRUE)
 }
 \arguments{
 \item{func}{the target function to calculate gradient, jacobian or hessian.}
@@ -48,7 +48,7 @@ And this parameter is only effective when \code{mode = "reverse"}.}
 Note that tape compiling can take a lot of time and
 this parameter is only effective when \code{use_tape = TRUE}.}
 
-\item{debugged}{Whether to activate debug mode.
+\item{debug}{Whether to activate debug mode.
 With the debug mode, users can have more informative error messages.
 Without the debug mode, functions will be more performant.}
 }
