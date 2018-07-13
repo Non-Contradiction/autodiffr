@@ -102,7 +102,7 @@ forward_diff <- function(name, config_method){
     fullmutatename <- paste0(fullname, "!")
     force(config_method)
 
-    diff <- function(f, x, cfg = NULL, check = TRUE, diffresult = NULL){
+    diff <- function(f, x, cfg = NULL, check = TRUE, diffresult = NULL, debugged = TRUE){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -115,14 +115,14 @@ forward_diff <- function(name, config_method){
 
                 if (is.null(cfg)) cfg <- config_method(f, x)
 
-                return(.AD[[fullmutatename]](diffresult, f, x, cfg, check))
+                return(.AD[[fullmutatename]](diffresult, f, x, cfg, check, debugged = debugged))
             }
 
             if (is.null(cfg)) {
-                return(.AD[[fullmutatename]](diffresult, f, x))
+                return(.AD[[fullmutatename]](diffresult, f, x, debugged = debugged))
             }
 
-            return(.AD[[fullmutatename]](diffresult, f, x, cfg))
+            return(.AD[[fullmutatename]](diffresult, f, x, cfg, debugged = debugged))
         }
 
         if (isFALSE(check)) {
@@ -130,14 +130,14 @@ forward_diff <- function(name, config_method){
 
             if (is.null(cfg)) cfg <- config_method(f, x)
 
-            return(.AD[[fullname]](f, x, cfg, check))
+            return(.AD[[fullname]](f, x, cfg, check, debugged = debugged))
         }
 
         if (is.null(cfg)) {
-            return(.AD[[fullname]](f, x))
+            return(.AD[[fullname]](f, x, debugged = debugged))
         }
 
-        .AD[[fullname]](f, x, cfg)
+        .AD[[fullname]](f, x, cfg, debugged = debugged)
     }
 
     diff

@@ -45,7 +45,7 @@ reverse_diff <- function(name){
     fullname <- paste0("ReverseDiff.", name)
     fullmutatename <- paste0("ReverseDiff.", name, "!")
 
-    diff <- function(f_or_tape, input, cfg = NULL, diffresult = NULL){
+    diff <- function(f_or_tape, input, cfg = NULL, diffresult = NULL, debugged = TRUE){
         ## ad_setup() is not necessary,
         ## unless you want to pass some arguments to it.
         ad_setup()
@@ -66,12 +66,12 @@ reverse_diff <- function(name){
         ## deal with diffresult first
         if (!is.null(diffresult)) {
             if (!is.null(cfg) && !is_tape(f_or_tape))
-                return(.AD[[fullmutatename]](diffresult, f_or_tape, input, cfg))
-            return(.AD[[fullmutatename]](diffresult, f_or_tape, input))
+                return(.AD[[fullmutatename]](diffresult, f_or_tape, input, cfg, debugged = debugged))
+            return(.AD[[fullmutatename]](diffresult, f_or_tape, input, debugged = debugged))
         }
 
         if (is_tape(f_or_tape)) {
-            r <- .AD[[fullmutatename]](f_or_tape, input)
+            r <- .AD[[fullmutatename]](f_or_tape, input, debugged = debugged)
         }
         else {
             if (is_list) {
@@ -79,10 +79,10 @@ reverse_diff <- function(name){
             }
 
             if (is.null(cfg)) {
-                r <- .AD[[fullname]](f_or_tape, input)
+                r <- .AD[[fullname]](f_or_tape, input, debugged = debugged)
             }
             else {
-                r <- .AD[[fullname]](f_or_tape, input, cfg)
+                r <- .AD[[fullname]](f_or_tape, input, cfg, debugged = debugged)
             }
         }
 
