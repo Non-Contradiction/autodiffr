@@ -275,3 +275,13 @@
 
 * Improve the overhead of user interface functions in `JuliaCall`.
 * Investigate into overhead problem in `JuliaCall`, have several plans to improve performance further.
+
+## July 12
+
+* Undo the yesterday's performance improvement in `JuliaCall` because it is at the flexibility's expense.
+* Refactor the user interface functions in `autodiffr` into two groups, XX and makeXXFunc.
+  The intention of using functions will be more clear.
+  The documentation of the functions and arguments is also more clear.
+* Incorporate some ideas of improving performance in `JuliaCall` into `autodiffr` first.
+  Have a `debug` argument which can be turned off to allow computations to be more performant.
+* Some small performance optimizations in `autodiffr`.
