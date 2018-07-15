@@ -18,7 +18,7 @@ GradientResult <- function(x){
     r <- JuliaCall::julia_call("DiffResults.GradientResult", x)
     makeActiveBinding("value", function() JuliaCall::julia_call("DiffResults.value", r), r)
     makeActiveBinding("grad", function() JuliaCall::julia_call("DiffResults.gradient", r), r)
-    r$type <- "GradientResult"
+    attr(r, "type") <- "GradientResult"
     r
 }
 
@@ -34,7 +34,7 @@ JacobianResult <- function(x, y = NULL){
     }
     makeActiveBinding("value", function() JuliaCall::julia_call("DiffResults.value", r), r)
     makeActiveBinding("jacobian", function() JuliaCall::julia_call("DiffResults.jacobian", r), r)
-    r$type <- "JacobianResult"
+    attr(r, "type") <- "JacobianResult"
     r
 }
 
@@ -46,20 +46,20 @@ HessianResult <- function(x){
     makeActiveBinding("value", function() JuliaCall::julia_call("DiffResults.value", r), r)
     makeActiveBinding("grad", function() JuliaCall::julia_call("DiffResults.gradient", r), r)
     makeActiveBinding("hessian", function() JuliaCall::julia_call("DiffResults.hessian", r), r)
-    r$type <- "HessianResult"
+    attr(r, "type") <- "HessianResult"
     r
 }
 
 extractDiff <- function(diffresult){
-    if (is.environment(diffresult) && is.character(diffresult$type)) {
-        return(switch(diffresult$type,
-                      GradientResult = list(value = diffresult$value,
-                                            grad = diffresult$grad),
-                      JacobianResult = list(value = diffresult$value,
-                                            jacobian = diffresult$jacobian),
-                      HessianResult = list(value = diffresult$value,
-                                           grad = diffresult$grad,
-                                           hessian = diffresult$hessian),
+    if (is.character(attr(diffresult, "type"))) {
+        return(switch(attr(diffresult, "type"),
+                      GradientResult = list(value = JuliaCall::julia_call("DiffResults.value", diffresult),
+                                            grad = JuliaCall::julia_call("DiffResults.gradient", diffresult)),
+                      JacobianResult = list(value = JuliaCall::julia_call("DiffResults.value", diffresult),
+                                            jacobian = JuliaCall::julia_call("DiffResults.jacobian", diffresult)),
+                      HessianResult = list(value = JuliaCall::julia_call("DiffResults.value", diffresult),
+                                           grad = JuliaCall::julia_call("DiffResults.gradient", diffresult),
+                                           hessian = JuliaCall::julia_call("DiffResults.hessian", diffresult)),
                       diffresult))
     }
     diffresult
