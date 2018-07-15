@@ -9,20 +9,16 @@
 \title{Create (Optimized) Gradient, Jacobian and Hessian Functions using Automatic Differentiation.}
 \usage{
 makeJacobianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debug = TRUE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, debug = TRUE)
 
 makeHessianFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debug = TRUE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, debug = TRUE)
 
 makeGradFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debug = TRUE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, debug = TRUE)
 
 makeDerivFunc(func, ..., mode = c("reverse", "forward"), x = NULL,
-  chunk_size = NULL, use_tape = FALSE, compiled = FALSE,
-  debug = TRUE)
+  chunk_size = NULL, use_tape = FALSE, compiled = FALSE, debug = TRUE)
 }
 \arguments{
 \item{func}{the target function to calculate gradient, jacobian or hessian.}

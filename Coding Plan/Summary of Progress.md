@@ -285,3 +285,12 @@
 * Incorporate some ideas of improving performance in `JuliaCall` into `autodiffr` first.
   Have a `debug` argument which can be turned off to allow computations to be more performant.
 * Some small performance optimizations in `autodiffr`.
+
+## July 13
+
+* Experiment ways to reduce overhead in `JuliaCall` interface.
+
+## July 14
+
+* Experiment ways to reduce overhead in `JuliaCall` interface.
+* Reduce some overhead in `DiffResults`-related wrapper functions.
