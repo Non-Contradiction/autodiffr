@@ -104,7 +104,6 @@ forward_diff <- function(name, config_method){
     fullname <- paste0("ForwardDiff.", name)
     fullmutatename <- paste0(fullname, "!")
     force(config_method)
-    val_false <- JuliaCall::julia_eval("Val{false}()")
 
     diff <- function(f, x, cfg = NULL, check = TRUE, diffresult = NULL, debug = TRUE){
         ## ad_setup() is not necessary,
@@ -115,10 +114,11 @@ forward_diff <- function(name, config_method){
 
         if (!is.null(diffresult)) {
             if (isFALSE(check)) {
+                check <- JuliaCall::julia_eval("Val{false}()")
 
                 if (is.null(cfg)) cfg <- config_method(f, x)
 
-                return(.AD[[fullmutatename]](diffresult, f, x, cfg, val_false, debug = debug))
+                return(.AD[[fullmutatename]](diffresult, f, x, cfg, check, debug = debug))
             }
 
             if (is.null(cfg)) {
@@ -129,10 +129,11 @@ forward_diff <- function(name, config_method){
         }
 
         if (isFALSE(check)) {
+            check <- JuliaCall::julia_eval("Val{false}()")
 
             if (is.null(cfg)) cfg <- config_method(f, x)
 
-            return(.AD[[fullname]](f, x, cfg, val_false, debug = debug))
+            return(.AD[[fullname]](f, x, cfg, check, debug = debug))
         }
 
         if (is.null(cfg)) {
