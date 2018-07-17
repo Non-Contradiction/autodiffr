@@ -294,3 +294,24 @@
 
 * Experiment ways to reduce overhead in `JuliaCall` interface.
 * Reduce some overhead in `DiffResults`-related wrapper functions.
+
+## July 15
+
+* Reduce overhead in `JuliaCall` interface.
+
+## July 16
+
+* Reduce overhead further in `JuliaCall` interface.
+* Adjust `autodiffr` to be compatible with `JuliaCall` in development.
+* Use the optimized version of `JuliaCall` in `autodiffr` to see the performance improvement.
+  The improvement is obvious when the dominant part is overhead,
+  as in the case of unoptimized gradient functions (where the overhead may occur multiple times),
+  or in the case of very fast calculations.
+  But in some other cases it is not that obvious.
+
+## July 17
+
+* Reduce overhead in `JuliaCall` interface.
+* Reduce overhead in `JuliaCall` for `rcopy` and `sexp` of `JuliaObject`,
+  which is another important source of overhead in `autodiffr`.
+* Use the optimized version of `JuliaCall` in `autodiffr` to see the performance improvement.
