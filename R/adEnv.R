@@ -23,6 +23,15 @@ Jsapply <- function(X, FUN){
     map(FUN, X)
 }
 
+Jmatrix <- function(data, nrow = 1, ncol = 1){
+    if (missing(ncol)) {
+        ncol <- if (!missing(nrow)) length(data) / nrow else 1
+    }
+    if (missing(nrow)) nrow <- length(data) / ncol
+
+    array(data, dim = c(nrow, ncol))
+}
+
 decorate <- function(parentEnv){
     newEnv <- new.env(parent = parentEnv)
 
@@ -41,7 +50,7 @@ decorate <- function(parentEnv){
 
     newEnv$sapply <- Jsapply
 
-    newEnv$matrix <- array
+    newEnv$matrix <- Jmatrix
 
     newEnv
 }
