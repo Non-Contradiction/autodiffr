@@ -25,11 +25,18 @@ Jsapply <- function(X, FUN){
 
 Jmatrix <- function(data, nrow = 1, ncol = 1){
     if (missing(ncol)) {
-        ncol <- if (!missing(nrow)) length(data) / nrow else 1
+        if (!missing(nrow)) {
+            ncol <- if (length(data) < nrow) 1 else length(data) / nrow}
     }
     if (missing(nrow)) nrow <- length(data) / ncol
 
     array(data, dim = c(nrow, ncol))
+}
+
+Japply <- function(X, MARGIN, FUN){
+    if (MARGIN == 1) {
+
+    }
 }
 
 decorate <- function(parentEnv){
@@ -51,6 +58,8 @@ decorate <- function(parentEnv){
     newEnv$sapply <- Jsapply
 
     newEnv$matrix <- Jmatrix
+
+    newEnv$apply <- Japply
 
     newEnv
 }
