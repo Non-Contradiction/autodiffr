@@ -315,3 +315,28 @@
 * Reduce overhead in `JuliaCall` for `rcopy` and `sexp` of `JuliaObject`,
   which is another important source of overhead in `autodiffr`.
 * Use the optimized version of `JuliaCall` in `autodiffr` to see the performance improvement.
+
+## July 18
+
+* Some small performance improvements in `JuliaCall`.
+
+## July 19
+
+* Experiments on further performance improvement in `JuliaCall`.
+* Identify problem in `a[i,]` style index for `JuliaObject` in `JuliaCall`.
+* Identify problem in `max` and similar generics for `JuliaObject` in `JuliaCall`.
+* Identify some issues in `ad.variant` in `autodiffr`.
+* Try to fix the problems identified in `JuliaCall` and `autodiffr`.
+
+## July 20
+
+* Experiments on further performance improvement in `JuliaCall`.
+* Some small bug fixes in `JuliaCall`.
+
+## July 21
+
+* Another relatively big performance improvement in `JuliaCall`.
+* Now there is still room for performance optimization in `JuliaCall`, but it would be quite limited.
+  So the performance improvement work in `JuliaCall` in this phase is finished quite satisfactorily.
+  After more bug fixing, `JuliaCall` should have another release
+  and `autodiffr` needs to depend on the new version of `JuliaCall`.
