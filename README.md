@@ -42,7 +42,7 @@ library(autodiffr)
 ## Do initial setup
 
 ad_setup()
-#> Julia version 0.6.3 at location /Applications/Julia-0.6.app/Contents/Resources/julia/bin will be used.
+#> Julia version 0.6.4 at location /Applications/Julia-0.6.app/Contents/Resources/julia/bin will be used.
 #> Loading setup script for JuliaCall...
 #> Finish loading setup script for JuliaCall.
 
@@ -58,7 +58,7 @@ grad(f, c(2, 3)) ## deriv(f, c(2, 3))
 #> [1] 4 6
 
 ## Get a gradient function g
-g <- grad(f)
+g <- makeGradFunc(f)
 
 ## Evaluate the gradient function g at [2,3]
 g(c(2, 3))
@@ -71,7 +71,7 @@ hessian(f, c(2, 3))
 #> [2,]    0    2
 
 ## Get a hessian function h
-h <- hessian(f)
+h <- makeHessianFunc(f)
 
 ## Evaluate the hessian function h at [2,3]
 h(c(2, 3))
@@ -89,7 +89,7 @@ jacobian(f, c(2, 3))
 #> [2,]    0    6
 
 ## Get a jacobian function j
-j <- jacobian(f)
+j <- makeJacobianFunc(f)
 
 ## Evaluate the gradient function j at [2,3]
 j(c(2, 3))
@@ -111,7 +111,7 @@ grad(f, 2, b = 1, c = 1) ## deriv(f, 2, b = 1, c = 1)
 #> [1] 1
 
 ## Get a gradient/derivative function g w.r.t a when b = c = 1 by
-g <- grad(f, b = 1, c = 1)
+g <- makeGradFunc(f, b = 1, c = 1)
 
 ## Evaluate the gradient/derivative function g at a = 2
 g(2)
@@ -126,7 +126,7 @@ grad(f, list(a = 2, b = 3), c = 1)
 #> [1] 12
 
 ## Get a gradient/derivative function g w.r.t a and b when c = 1 by
-g <- grad(f, c = 1)
+g <- makeGradFunc(f, c = 1)
 
 ## Evaluate the gradient/derivative function g at a = 2, b = 3
 g(list(a = 2, b = 3))
