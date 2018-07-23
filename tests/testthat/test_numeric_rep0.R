@@ -43,3 +43,17 @@ test_that("Test on various diff implementations", {
     expect_equal(R2, F4)
 
 })
+
+ff <- function(x) as.double(sum(as.double(x)^2))
+
+test_that("Test on hessian with as.double", {
+    skip_on_cran()
+    ad_setup()
+
+    expect_equal(hessian(ff, c(1, 1), mode = "reverse"),
+                 2 * diag(2))
+
+    expect_equal(hessian(ff, c(1, 1), mode = "forward"),
+                 2 * diag(2))
+
+})
