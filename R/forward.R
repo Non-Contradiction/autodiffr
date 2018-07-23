@@ -113,7 +113,7 @@ forward_diff <- function(name, config_method){
         ## deal with diffresult first
 
         if (!is.null(diffresult)) {
-            if (isFALSE(check)) {
+            if (!check) {
                 check <- JuliaCall::julia_eval("Val{false}()")
 
                 if (is.null(cfg)) cfg <- config_method(f, x)
@@ -128,7 +128,7 @@ forward_diff <- function(name, config_method){
             return(.AD[[fullmutatename]](diffresult, f, x, cfg, debug = debug))
         }
 
-        if (isFALSE(check)) {
+        if (!check) {
             check <- JuliaCall::julia_eval("Val{false}()")
 
             if (is.null(cfg)) cfg <- config_method(f, x)

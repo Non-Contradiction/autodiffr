@@ -106,7 +106,7 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
             return(function(x) D$forward(target, scalar2vector(x), cfg = config, debug = debug))
         }
 
-        if (isFALSE(use_tape)) {
+        if (!use_tape) {
             ## If not use_tape,
             ## the only possible optimization in rev mode is also construction of Config objects
             config <- Config$reverse(scalar2vector(x))
@@ -139,4 +139,3 @@ makeGradFunc <- funcInterface("grad")
 #' @rdname autodifffunc
 #' @export
 makeDerivFunc <- makeGradFunc
-
