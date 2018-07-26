@@ -4,10 +4,10 @@ scalar2vector <- function(x){
     }
     else {
         if (length(x) > 1) {
-            x
+            as.numeric(x)
         }
         else {
-            JuliaCall::julia_call("vcat", x, need_return = "Julia")
+            JuliaCall::julia_call("vcat", as.numeric(x), need_return = "Julia")
         }
     }
 }
