@@ -651,7 +651,7 @@ eigen(hcnstar)$values
 ```
 
 
-## ## Test problem -- Wood 4 parameter function
+## Test problem -- Wood 4 parameter function
 
 This is reported by @more80 as coming from @colville68. The problem in 
 4 parameters seems to have a false solution far from the accepted one.
@@ -738,6 +738,13 @@ print(wdefault)
 
 wagah <- opm(x0, fn=wood.f, gr=wood.ag, hess=wood.ah, method=meths, control=list(trace=0))
 print(wagah)
+
+## Timings
+
+thand <- microbenchmark(wood.h(x0))
+tad <- microbenchmark(wood.ah(x0))
+print(thand)
+print(tad)
 ```
 
 
