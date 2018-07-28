@@ -1,0 +1,755 @@
+---
+title: "JNCyq"
+author: "John C. Nash"
+date: "2018/7/10"
+output: pdf_document
+bibliography: opt.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+`autodiffr` is an **R** package to perform automatic differentiation of
+**R** functions by calling the automatic differentiation tools in the 
+**Julia** programming language. The document **FandR** (??ref) describes
+how to install `autodiffr`.
+
+Here we will illustrate how `autodiffr` can be used to provide gradients
+or other derivative information for use in optimization problems for which
+**R** is being used to attempt solutions.
+
+## Problem setup
+
+Most methods for optimization require
+
+ - an objective function that is to be minimized or maximized. Because the 
+ mimimum of $f(x)$ is the maximum of $-f(x)$, we will only talk of 
+ minimizing functions. Though the mathematics of this are trivial, the
+ care and attention to avoid errors when translating a maximization 
+ problem to one involving minimization require serious effort and 
+ continuous checking.
+ - a starting set of values for the parameters to be optimized (and
+ perhaps also for any exogenous data and/or fixed parameters)
+
+
+We need to load the `autodiffr` package and then initiate it.
+NOTE: This is quite slow the first time it is run. WORSE: It is
+always treated as a "first time" when called in knitr during the
+processing of a vignette from an Rmd-type file.
+
+```{r}
+library(autodiffr)
+ad_setup()
+```
+And we can use package `numDeriv` to compare with `autodiffr`.
+
+```{r}
+require(numDeriv)
+```
+
+
+## Test problem -- ViaRes
+
+This is simply to test how we can get the gradient of a function that is defined as the 
+sum of squares of residuals, BUT the residuals are computed in a subsidiary function 
+that must be called.
+
+At July 2, 2018, this gives an error that stops knitr, so evaluation is turned off
+in the following example.
+
+```{r}
+require(autodiffr)
+ad_setup() # to ensure it is established
+
+ores <- function(x){
+    x # Function will be the parameters. ofn is sum of squares
+}
+
+ofn0 <- function(x){ # original ofn
+   res <- ores(x) # returns a vector of residual values
+   val <- as.numeric(crossprod(res)) # as.numeric because crossprod is a matrix
+   val
+}
+
+ofn <- function(x){ # But autodiffr does not understand crossprod()
+   res <- ores(x) # returns a vector of residual values
+   val <- sum(res*res) # NOT crossprod()
+   val
+}
+```
+
+Note that this works with `eval=TRUE`, but Chebyquad still failing.
+
+```{r, eval=TRUE}
+## Now try to generate the gradient function
+ogr <- autodiffr::grad(ofn)
+
+# print(ogr) # this will be more or less meaningless link to Julia function
+x0 <- c(1,2,3)
+print(ofn(x0)) # should be 14
+print(ofn0(x0)) # should be 14
+ogr0<-ogr(x0) # should be 2, 4, 6
+ogr0
+```
+
+
+## Test problem -- Chebyquad
+
+This problem was given prominence in the optimization literature by @Fletcher65.
+
+First let us define our Chebyquad function. Note that this is for the **vector** x.
+This version is expressed as the sum of squares of a vector of function values,
+which provide a nonlinear least squares problem. Note that
+`crossprod()` may cause difficulties as it is not written in **R**. 
+Furthermore, use of rep() seems to give Julia errors in derived functions.
+
+
+```{r}
+require(autodiffr)
+ad_setup()
+
+cyq.f <- function (x) {
+  rv<-cyq.res(x)
+  f <- sum(rv*rv)
+}
+
+cyq.res <- function (x) {
+# Fletcher's chebyquad function m = n -- residuals 
+   n<-length(x)
+   res<-zeros(n) # initialize. Note rep(0,n) ==> Julia error.
+   for (i in 1:n) { #loop over resids
+     rr<-0.0
+     for (k in 1:n) {
+	z7<-1.0
+	z2<-2.0*x[k]-1.0
+        z8<-z2
+        j<-1
+        while (j<i) {
+            z6<-z7
+            z7<-z8
+            z8<-2*z2*z7-z6 # recurrence to compute Chebyshev polynomial
+            j<-j+1
+        } # end recurrence loop
+        rr<-rr+z8
+      } # end loop on k
+      rr<-rr/n
+      if (2*trunc(i/2) == i) { rr <- rr + 1.0/(i*i - 1) }
+      res[i]<-rr
+    } # end loop on i
+    res
+}
+```
+
+Let us choose a single value for the number of parameters, and for illustration
+use $n = 4$. 
+
+```{r}
+## cyq.setup
+n <- 4
+  lower<-rep(-10.0, n)
+  upper<-rep(10.0, n) 
+  x<-1:n
+  x<-x/(n+1.0) # Initial value suggested by Fletcher
+```
+
+For safety, let us check the function and a numerical approximation to the gradient.
+
+```{r}
+require(numDeriv)
+cat("Initial parameters:")
+print(x)
+cat("Initial value of the function is ",cyq.f(x),"\n")
+gn <- numDeriv::grad(cyq.f, x) # using numDeriv
+cat("Approximation to gradient at initial point:")
+print(gn)
+```
+
+Using a modular approach to the problem, first specifying it
+via **residuals** and computing the function as a sum of squares, we can
+also generate the gradient. 
+
+```{r}
+# Ref: Fletcher, R. (1965) Function minimization without calculating derivatives -- a review,
+#         Computer J., 8, 33-41.
+
+# Note we do not have all components here e.g., .jsd, .h
+
+cyq.jac<- function (x) {
+#  Chebyquad Jacobian matrix
+   n<-length(x)
+   cj<-matrix(0.0, n, n)
+   for (i in 1:n) { # loop over rows
+     for (k in 1:n) { # loop over columns (parameters)
+       z5<-0.0
+       cj[i,k]<-2.0
+       z8<-2.0*x[k]-1.0 
+       z2<-z8
+       z7<-1.0
+       j<- 1
+       while (j<i) { # recurrence loop
+         z4<-z5
+         z5<-cj[i,k]
+         cj[i,k]<-4.0*z8+2.0*z2*z5-z4
+         z6<-z7
+         z7<-z8
+         z8<-2.0*z2*z7-z6
+         j<- j+1
+       } # end recurrence loop
+       cj[i,k]<-cj[i,k]/n
+     } # end loop on k
+   } # end loop on i
+   cj
+}
+
+
+cyq.g <- function (x) {
+   cj<-cyq.jac(x)
+   rv<-cyq.res(x)
+   gg<- 2.0 * as.vector(rv %*% cj)
+}
+
+
+# check gradient function cyq.g
+
+gajn <- cyq.g(x)
+print(gajn)
+```
+We can now try to see if `autodiffr` matches this gradient. 
+However, the following code gives an error in Julia.
+
+```{r, eval=FALSE}
+# Do not evaluate, as this fails
+ cyq.ag <- autodiffr::grad(cyq.f)
+gaag <- cyq.ag(x)
+print(gaag)
+memory.profile()
+```
+
+As a workaround, we can get the Chebyquad function from the package `funconstrain`.
+The `funconstrain`
+offering does NOT require a call to the residuals, but has a single
+level **R** function.
+
+```{r, eval=TRUE, echo=TRUE}
+require(funconstrain)
+cat("funconstrain loaded\n")
+cheb <- chebyquad() # Seem to need the brackets or doesn't return pieces
+print(str(cheb))
+cyq2.f <- cheb$fn
+## Note that funconstrain offers the starting value
+## x0b <- cheb$x0(n=4) # Need the size of the vector
+## x0b
+## cyq2.f(x0b)
+## same as
+print(cyq2.f(x))
+## Try the gradient
+cyq2.ag <- autodiffr::grad(cyq2.f) # Need autodiffr:: specified for knitr
+## print(cyq2.g)
+cat("Gradient at x")
+g2ag <- cyq2.ag(x)
+print(g2ag)
+```
+
+```{r}
+require(microbenchmark)
+
+cat("cyq.f timing:\n")
+tcyq.f <- microbenchmark(cyq.f(x))
+tcyq.f
+cat("cyq2.f timing:\n")
+tcyq2.f <- microbenchmark(cyq2.f(x))
+tcyq2.f
+tcyq.g <- microbenchmark(cyq.g(x))
+tcyq.g
+tcyq2.ag <- microbenchmark(cyq2.ag(x), unit="us" )
+# microseconds
+tcyq2.ag
+# memory.profile()
+```
+
+```{r}
+# These are quicker, but still slow
+cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
+```
+
+```{r}
+cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+```
+
+```{r}
+```
+
+```{r}
+tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
+# microseconds
+tcyq.optimized_ag
+```
+
+```{r}
+tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
+# microseconds
+tcyq2.optimized_ag
+
+```
+
+```{r}
+## The slowness of the optimized method is partly because the overhead of the JuliaCall and autodiffr package.
+## After interface functions become stable, I will try to carry on some performance optimizations,
+## which is a goal of the project at last phase.
+## For example, even we only have a very simple function, the timing is high because of the overhead.
+foobar <- function(x) sum(x)
+foobar.ag <- autodiffr::grad(foobar, xsize = runif(length(x)), use_tape = TRUE)
+tfoobar.ag <- microbenchmark(foobar.ag(x), unit="us" )
+tfoobar.ag
+
+## Suppose we are dealing with input of larger size, the overhead stays roughly the same,
+## so the overhead should matters not that much as in the case n = 4.
+## For example, if n = 25, the diffrence of performance in ratio is not that much.
+## cyq.setup
+n <- 25
+lower<-rep(-10.0, n)
+upper<-rep(10.0, n) 
+x<-1:n
+x<-x/(n+1.0) # Initial value suggested by Fletcher
+
+```
+
+```{r}
+tcyq.g <- microbenchmark(cyq.g(x), unit = "us")
+tcyq.g
+
+tcyq2.g <- microbenchmark(cyq2.g(x), unit="us" )
+# microseconds
+tcyq2.g
+
+## The bad thing is that if the input size changes, we need to make an optimized gradient again.
+cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
+# microseconds
+tcyq.optimized_ag
+tcyq2.optimized_ag <- microbenchmark(cyq2.optimized_ag(x), unit="us" )
+# microseconds
+tcyq2.optimized_ag
+```
+
+```{r}
+
+## Also note it is better to check the correctness when generating optimized gradient,
+all.equal(cyq.g(x), cyq.optimized_ag(x))
+all.equal(cyq.g(x), cyq2.optimized_ag(x))
+
+## Benchmarking times without user interface wrappers
+tape1 <- reverse.grad.tape(cyq.f, runif(length(x)))
+microbenchmark(reverse.grad(tape1, x), unit="us" )
+
+tape2 <- reverse.grad.tape(cyq2.f, runif(length(x)))
+microbenchmark(reverse.grad(tape2, x), unit="us" )
+```
+
+```{r}
+
+## Benchmarking times without autodiffr wrappers
+JuliaCall::julia_command("using ReverseDiff")
+tape1 <- reverse.grad.tape(cyq.f, runif(length(x)))
+microbenchmark(JuliaCall::julia_call("ReverseDiff.gradient!", tape1, x), unit="us" )
+
+tape2 <- reverse.grad.tape(cyq2.f, runif(length(x)))
+microbenchmark(JuliaCall::julia_call("ReverseDiff.gradient!", tape2, x), unit="us" )
+```
+
+
+ 
+## Test problem -- Hobbs weed infestation
+
+This nonlinear estimation problem was brought to one of the authors (JN) in the
+mid-1970s (See @cnm79). It has just 12 data points and asks for the estimation
+of a 3-parameter logistic growth curve. The present example does not provide for scaling.
+
+```{r}
+hobbs.f<- function(x){ # # Hobbs weeds problem -- function
+    if (abs(12*x[3]) > 500) { # check computability
+       fbad<-.Machine$double.xmax
+       return(fbad)
+    }
+    res<-hobbs.res(x)
+    f<-sum(res*res)
+}
+
+
+hobbs.res<-function(x){ # Hobbs weeds problem -- residual
+# This variant uses looping
+    if(length(x) != 3) stop("hobbs.res -- parameter vector n!=3")
+    y<-c(5.308, 7.24, 9.638, 12.866, 17.069, 23.192, 31.443, 38.558, 50.156, 62.948,
+         75.995, 91.972)
+    t<-1:12
+    if(abs(12*x[3])>50) {
+       res<-rep(Inf,12)
+    } else {
+       res<-x[1]/(1+x[2]*exp(-x[3]*t)) - y
+    }
+}
+
+hobbs.jac<-function(x){ # Jacobian of Hobbs weeds problem
+   jj<-matrix(0.0, 12, 3)
+   t<-1:12
+    yy<-exp(-x[3]*t)
+    zz<-1.0/(1+x[2]*yy)
+     jj[t,1] <- zz
+     jj[t,2] <- -x[1]*zz*zz*yy
+     jj[t,3] <- x[1]*zz*zz*yy*x[2]*t
+     jjret <- jj
+     attr(jjret,"gradient") <- jj
+   return(jjret)
+}
+
+hobbs.g<-function(x){ # gradient of Hobbs weeds problem
+    # NOT EFFICIENT TO CALL AGAIN
+    jj<-hobbs.jac(x)
+    res<-hobbs.res(x)
+    gg<-as.vector(2.*t(jj) %*% res)
+    return(gg)
+}
+
+hobbs.rsd<-function(x) { # Jacobian second derivative
+    rsd<-array(0.0, c(12,3,3))
+    t<-1:12
+    yy<-exp(-x[3]*t)
+    zz<-1.0/(1+x[2]*yy)
+    rsd[t,1,1]<- 0.0
+    rsd[t,2,1]<- -yy*zz*zz
+    rsd[t,1,2]<- -yy*zz*zz
+    rsd[t,2,2]<- 2.0*x[1]*yy*yy*zz*zz*zz
+    rsd[t,3,1]<- t*x[2]*yy*zz*zz
+    rsd[t,1,3]<- t*x[2]*yy*zz*zz
+    rsd[t,3,2]<- t*x[1]*yy*zz*zz*(1-2*x[2]*yy*zz)
+    rsd[t,2,3]<- t*x[1]*yy*zz*zz*(1-2*x[2]*yy*zz)
+##    rsd[t,3,3]<- 2*t*t*x[1]*x[2]*x[2]*yy*yy*zz*zz*zz
+    rsd[t,3,3]<- -t*t*x[1]*x[2]*yy*zz*zz*(1-2*yy*zz*x[2])
+    return(rsd)
+}
+
+
+hobbs.h <- function(x) { ## compute Hessian
+#   cat("Hessian not yet available\n")
+#   return(NULL)
+    H<-matrix(0,3,3)
+    res<-hobbs.res(x)
+    jj<-hobbs.jac(x)
+    rsd<-hobbs.rsd(x)
+##    H<-2.0*(t(res) %*% rsd + t(jj) %*% jj)
+    for (j in 1:3) {
+       for (k in 1:3) {
+          for (i in 1:12) {
+             H[j,k]<-H[j,k]+res[i]*rsd[i,j,k]
+          }
+       }
+    }
+    H<-2*(H + t(jj) %*% jj)
+    return(H)
+}
+
+x0good <- c(200, 50, 0.3)
+x0bad <- c(1,1,1)
+f0good <- hobbs.f(x0good)
+cat("Sum of squares at the GOOD starting point:",f0good,"\n")
+f0bad <- hobbs.f(x0bad)
+cat("Sum of squares at the BAD starting point:",f0bad,"\n")
+res0good <- hobbs.res(x0good)
+## Residuals -- good starting point
+res0good
+
+res0bad <- hobbs.res(x0bad)
+## Residuals -- bad starting point
+res0bad
+
+require(autodiffr)
+ad_setup()
+hobbs.ag <- autodiffr::grad(hobbs.f)
+hobbsag0good <- hobbs.ag(x0good)
+## Gradient by AD -- good starting point
+hobbsag0good
+## Compare hand coded function
+hobbsggood <- hobbs.g(x0good)
+hobbsggood
+## Gradient by AD -- bad starting point
+hobbsag0bad <- hobbs.ag(x0bad)
+hobbsag0bad 
+## Compare hand coded function
+hobbsgbad <- hobbs.g(x0bad)
+hobbsgbad
+## Interestingly, the magnitude of gradient elements greater for "good"
+
+
+hobbs.aj <- autodiffr::jacobian(hobbs.res)
+## Gradient by AD -- good starting point
+hobbsaj0good <- hobbs.aj(x0good)
+hobbsaj0good
+## Compare hand coded function
+hobbsjgood <- hobbs.jac(x0good)
+hobbsjgood
+## Gradient by AD -- bad starting point
+hobbsaj0bad <- hobbs.aj(x0bad)
+hobbsaj0bad 
+## Compare hand coded function
+hobbsjbad <- hobbs.jac(x0bad)
+hobbsjbad
+```
+
+Now let us try this in a solution of nonlinear least squares.
+
+WARNING: Because of some compatibility issues with other **R** software, 
+the jacobian must be available in the "gradient" attribute returned by
+the jacobian function. The purpose of this is to allow the function
+`nlsr::nlfb` to have the same name for the residual and jacobian 
+function. This is used in generating a symbolic jacobian function
+in `nlsr::nlxb`. However, it can catch unwary users (including us!).
+
+```{r, eval=TRUE}
+
+# try in a function
+require(nlsr)
+
+## manual
+smgood <- nlfb(x0good, hobbs.res, hobbs.jac, trace=TRUE)
+## WARNING: we need the jacobian in the "gradient" attribute
+hobbs.ajx <- function(x){
+     jj <- hobbs.aj(x)
+     jjr <- jj
+     attr(jjr, "gradient")<- jj # !!! IMPORTANT
+     jjr
+}
+
+sagood <- nlfb(x0good, hobbs.res, hobbs.ajx, trace=TRUE)
+
+```
+
+## Test problem -- Candlestick
+
+This function was developed by one of us to provide a simple but (for n equal 1 or 2) graphic example of a
+function with an infinity of solutions for $n >= 2$. The function can be seen by graphing it to have 
+a spike in the "middle" of a dish, much like some older candlesticks or candle holders. The multiplicity
+of solutions should make the hessian of a solution singular. For $n = 2$, for example, the minimum lies on a 
+circular locus at the deepest point of the "saucer".
+
+```{r}
+# candlestick function
+# J C Nash 2011-2-3
+cstick.f<-function(x,alpha=1){
+	x<-as.vector(x)
+	r2<-sum(x*x)
+	f<-as.double(r2+alpha/r2)
+	return(f)
+}
+
+cstick.g<-function(x,alpha=1){
+	x<-as.vector(x)
+	r2<-sum(x*x)
+	g1<-2*x
+	g2 <- (-alpha)*2*x/(r2*r2)
+	g<-as.double(g1+g2)
+	return(g)
+}
+
+x <- seq(-100:100)/20.0
+y <- x
+
+for (ii in 1:length(x)){
+    y[ii] <- cstick.f(x[ii])
+}
+plot(x, y, type='l') # ?? does not plot from console??
+x0 <- c(1,2)
+require(optimx)
+sdef0 <- optimr(x0, cstick.f, cstick.g, method="Rvmmin", control=list(trace=1))
+sdef0
+xstar <- sdef0$par
+gstar <- cstick.g(xstar)
+cat("Gradient at proposed solution:")
+print(gstar)
+```
+
+```{r}
+## FIXED??
+## This doesn't seem to work well??
+require(autodiffr)
+ad_setup()
+hc <- autodiffr::hessian(cstick.f)
+hstar<-hc(xstar)
+cat("Hessian at proposed solution:\n")
+print(hstar)
+print(eigen(hstar)$values) 
+## ?? doesn't seem right
+hc(x0)
+require(numDeriv)
+hcn0 <- numDeriv::hessian(cstick.f, x0)
+hcn0
+hcnstar <- numDeriv::hessian(cstick.f, xstar)
+hcnstar
+hcnj0 <- numDeriv::jacobian(cstick.g, x0)
+hcnj0
+hcnjstar <- numDeriv::jacobian(cstick.g, xstar)
+hcnjstar
+eigen(hcnstar)$values
+```
+
+
+## ## Test problem -- Wood 4 parameter function
+
+This is reported by @more80 as coming from @colville68. The problem in 
+4 parameters seems to have a false solution far from the accepted one.
+Is there a good description of this function and the issues it presents?
+
+```{r}
+require(autodiffr)
+ad_setup() # to ensure it is established
+#Example 2: Wood function
+#
+wood.f <- function(x){
+  res <- 100*(x[1]^2-x[2])^2+(1-x[1])^2+90*(x[3]^2-x[4])^2+(1-x[3])^2+
+    10.1*((1-x[2])^2+(1-x[4])^2)+19.8*(1-x[2])*(1-x[4])
+  return(res)
+}
+#gradient:
+wood.g <- function(x){
+  g1 <- 400*x[1]^3-400*x[1]*x[2]+2*x[1]-2
+  g2 <- -200*x[1]^2+220.2*x[2]+19.8*x[4]-40
+  g3 <- 360*x[3]^3-360*x[3]*x[4]+2*x[3]-2
+  g4 <- -180*x[3]^2+200.2*x[4]+19.8*x[2]-40
+  return(c(g1,g2,g3,g4))
+}
+#hessian:
+wood.h <- function(x){
+  h11 <- 1200*x[1]^2-400*x[2]+2;    h12 <- -400*x[1]; h13 <- h14 <- 0
+  h22 <- 220.2; h23 <- 0;    h24 <- 19.8
+  h33 <- 1080*x[3]^2-360*x[4]+2;    h34 <- -360*x[3]
+  h44 <- 200.2
+  H <- matrix(c(h11,h12,h13,h14,h12,h22,h23,h24,
+                h13,h23,h33,h34,h14,h24,h34,h44),ncol=4)
+  return(H)
+}
+#################################################
+x0 <- c(-3,-1,-3,-1) # Wood standard start
+
+cat("Function value at x0=",wood.f(x0),"\n")
+wood.ag <- autodiffr::grad(wood.f)
+cat("Autodiffr gradient value:")
+vwag0<-wood.ag(x0)
+print(vwag0)
+cat("Manually coded:")
+vwg0 <- wood.g(x0)
+print(vwg0)
+cat("Differences:\n")
+print(vwag0-vwg0)
+
+
+cat("Autodiffr hessian of function value:")
+wood.ah <- autodiffr::hessian(wood.f)
+vwah0 <- wood.ah(x0)
+print(vwah0)
+cat("Autodiffr hessian via jacobian of autodiff gradient value:")
+wood.ahjag <- autodiffr::jacobian(wood.ag)
+vwahjag0<-wood.ahjag(x0)
+print(vwahjag0)
+
+cat("Autodiffr hessian via jacobian of manual gradient value:")
+wood.ahj <- autodiffr::jacobian(wood.g)
+vwahj0 <- wood.ah(x0)
+print(vwahj0)
+cat("Manually coded:")
+vwh0<-wood.h(x0)
+print(vwh0)
+cat("Differences from vwh0\n")
+
+cat("vwah0\n")
+print(vwah0-vwh0)
+cat("\n")
+
+cat("vwahj0\n")
+print(vwahj0-vwh0)
+cat("\n")
+
+cat("vwahjag0\n")
+print(vwahjag0-vwh0)
+cat("\n")
+
+## d <- c(1,1,1,1)
+require(optimx)
+meths <- c("snewton", "snewtonm", "nlm")
+wdefault <- opm(x0, fn=wood.f, gr=wood.g, hess=wood.h, method=meths, control=list(trace=0))
+print(wdefault)
+
+wagah <- opm(x0, fn=wood.f, gr=wood.ag, hess=wood.ah, method=meths, control=list(trace=0))
+print(wagah)
+```
+
+
+## Performance issues
+
+Optimization is, by its very nature, about improving things. Thus it is of prime interest
+to seek faster and better ways to optimize functions. In this section we look at some issues
+that may influence the speed, reliability and correctness of optimization calculations.
+
+First, it is critical to note that **R** almost always offers several ways to accomplish the
+same computational result. However, the speed with which the different approaches return a
+result can be wildly different. (?? can JN find the 800% scale factor example??). 
+
+Second, there are many parts of the autodiffr wrapper of Julia's automatic differentiation
+that may use up computing cycles:
+
+- We must translate from one programming language to another in some sense in order to 
+call the appropriate functions in Julia based on **R** functions.
+
+- Results must be properly structured on return to **R**.
+
+- Hand coded derivative expressions, especially hand-optimized ones, can be expected to
+out-perform automatic differentiation results.
+
+NOTE: Performance is interesting, but it is far from the complete picture. We can use
+results from autodiffr to validate hand-coded functions. We can get results that are
+efficient of human time and effort that may be otherwise unavailable. Moreover, the
+results of computing gradients and hessians allow us to conclude that a solution has
+been achieved.
+
+### A small performance comparison using `autodiffr`
+
+```{r}
+rm(list=ls())
+require(autodiffr)
+autodiffr::ad_setup() # to ensure it is established
+
+ores <- function(x){
+    x # Function will be the parameters. ofn is sum of squares
+}
+
+logit <- function(x) exp(x) / (1 + exp(x))
+
+ofn <- function(x){
+    res <- ores(x) # returns a vector of residual values
+    sum(logit(res) ^ 2)
+}
+
+## Now try to generate the gradient function
+ogr <- autodiffr::grad(ofn)
+
+system.time(ogr(runif(100)))
+
+system.time(ogr(runif(100)))
+
+ogr1 <- autodiffr::grad(ofn, xsize = runif(100))
+
+system.time(ogr1(runif(100)))
+
+system.time(ogr1(runif(100)))
+
+ogr2 <- autodiffr::grad(ofn, xsize = runif(100), use_tape = TRUE)
+
+system.time(ogr2(runif(100)))
+
+system.time(ogr2(runif(100)))
+```
+
+## Bibliography
+
