@@ -160,14 +160,122 @@ a reference to libstdc++-6.dll
 knitr::include_graphics("JuliaWin32ErrorBox.png")
 ```
 
-On Linux ... ??
 
 
 
 
 ## Macintosh
 
-??? which version
+### On Macintosh (Hans W Borchers)
+
+Any newer macOS operating system should be sufficient, at least
+version 10.8; here we will use macOS "High Sierra" (that is 10.13.6).
+We assume you have R version 3.4.1 or higher installed, but preferable
+R >= 3.5.1 as the 3.5 series is significantly faster (on Mac), I saw
+speed improvements of a factor of 2 and more in some of my
+applications.
+
+From the 'downloads' page of Julia,
+<https://julialang.org/downloads/>, get the disk image file for Julia
+version 0.6.4 (works also with 0.6.3) and install it on your Mac
+computer in the usual way. You will find more platform-specific
+instructions on <https://julialang.org/downloads/platform.html> but in
+principle it is as easy as this.
+
+If you did not install the Julia image in the `/Applications` folder,
+you need to add the path to the Julia binary to your PATH variable or
+-- what I found easier -- as superuser create a symbolic link in the
+`/usr/local/bin` directory with
+
+    sudo ln -s path/to/julia-0.6.app/Contents/Resources/julia/bin/julia
+/usr/local/bin/julia
+
+To see if Julia is installed correctly, open a Terminal window and
+type in the Julia command `julia`. You will see the usual prelude and
+the Julia prompt.
+
+                   _
+       _       _ _(_)_     |  A fresh approach to technical computing
+      (_)     | (_) (_)    |  Documentation: https://docs.julialang.org
+       _ _   _| |_  __ _   |  Type "?help" for help.
+      | | | | | | |/ _` |  |
+      | | |_| | | | (_| |  |  Version 0.6.4 (2018-07-09 19:09 UTC)
+     _/ |\__'_|_|_|\__'_|  |  Official http://julialang.org/ release
+    |__/                   |  x86_64-apple-darwin14.5.0
+
+The *autodiffr* start-up procedure `ad_setup()` will install necessary
+Julia packages. Because this can take quite a long time, pre-install
+some of these packages directly from Julia, e.g. the important
+`RCall.jl` package.
+
+    $ julia
+    julia> Pkg.add("RCall")
+
+After some minutes about 30 or more packages are installed on your
+computer. You can find them in your Home directory at
+`~/.julia/v0.6/`. If you like, add also the forward and backward
+automatic differentiation packages "ForwardDiff" and "ReverseDiff".
+Some other depending packages will be installed, too.
+
+Now it's time to install the R packages *JuliaCall* and *autodiffr*.
+Both are available on CRAN, but it is better to get their newest
+versions from Github, utilizing the *devtools* package.
+
+    devtools::install_github("Non-Contradiction/JuliaCall")
+    devtools::install_github("Non-Contradiction/autodiffr")
+
+When loading the library *autodiffr* it is still necessary to create a
+process running Julia, to connect to it, to check whether all needed
+Julia packages are installed resp. to install them in case they are
+missing. All this is done by the `ad_setup` function. If everything is
+in place, it will finish in short time, otherwise it may take several
+minutes (the first time it is called).
+
+    library(autodiffr)
+    ## Attaching package: ‘autodiffr’
+    ## The following object is masked from ‘package:stats’:
+    ##     deriv
+
+    ad_setup()
+    ## Julia version 0.6.4 at location [...]/julia/bin will be used.
+    ## Loading setup script for JuliaCall...
+    Finish loading setup script for JuliaCall.
+    INFO: Precompiling module DiffResults.
+    INFO: Precompiling module ForwardDiff.
+    INFO: Precompiling module ReverseDiff.
+
+The first time `ad_setup()` is called on your system, these three
+Julia modules / packages are being precompiled, later on this will not
+happen again, except when the julia packages get installed anew (e.g.,
+a new version has appeared). Please note that `ad_setup` is required
+whenever you load the *autodiffr* package into R.
+
+Now automatic differentiation is ready to get applied. As a test,
+define an R function and take its gradient (or Jacobian or Hessian).
+For instance, the following function will have a quite well known
+derivative.
+
+    f <- function(x) exp(x)
+    exp(1.0); grad(f, 1.0)
+    ## [1] 2.718281828459045
+    ## [1] 2.718281828459045
+
+We see the result is accurate to the last digit. Compare this with a
+numerical derivative, such as is provided through the *numDeriv*
+package.
+
+    numDeriv::grad(f, 1.0)
+    ## [1] 2.718281828442632
+
+Function names `grad`, `jacobian`, `hessian` are used in the
+*numDeriv* (and *pracma*) package as well, so have to be qualified
+when used in parallel with the *autodiffr* package.
+
+IMPORTANT: Do *not* install the upcoming Julia 0.7 as there are
+breaking changes between the 0.6 and 0.7/1.0 versions. After Julia 0.7
+has become official and all relevant Julia packages have been updated
+to the new version, *autodiffr* will be adapted and published on CRAN.
+
 
 
 ## Windows
