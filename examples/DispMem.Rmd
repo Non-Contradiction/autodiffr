@@ -13,6 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 We want to disply the current memory.
 
+The purpose of this is so we can gauge the memory use of `autodiffr`. Because it
+uses R and Julia, and likely some system resources, launching a function that
+uses `autodiffr` resources will use memory, and functions within **R** are not
+likely to capture this.
+
 ```{r}
 dmem <- function(){ 
     system("free > ./tt.txt")
