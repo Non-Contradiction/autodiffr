@@ -4,9 +4,13 @@
 \alias{ad_setup}
 \title{Do initial setup for package autodiffr.}
 \usage{
-ad_setup(...)
+ad_setup(reverse = TRUE, forward = TRUE, ...)
 }
 \arguments{
+\item{reverse}{whether to use load reverse mode automatic differentiation.}
+
+\item{forward}{whether to use forward mode automatic differentiation.}
+
 \item{...}{arguments passed to \code{JuliaCall::julia_setup}.}
 }
 \description{

@@ -4,6 +4,8 @@
 #'
 #' \code{ad_setup} does the initial setup for package autodiffr.
 #'
+#' @param reverse whether to use load reverse mode automatic differentiation.
+#' @param forward whether to use forward mode automatic differentiation.
 #' @param ... arguments passed to \code{JuliaCall::julia_setup}.
 #'
 #' @examples
