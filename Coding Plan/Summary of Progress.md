@@ -340,3 +340,38 @@
   So the performance improvement work in `JuliaCall` in this phase is finished quite satisfactorily.
   After more bug fixing, `JuliaCall` should have another release
   and `autodiffr` needs to depend on the new version of `JuliaCall`.
+
+## July 22
+
+* Do not use `isFALSE` in `autodiffr`, as it doesn't exist in R versions earlier than 3.5.
+* Update README for `autodiffr` about the latest usage of interface functions.
+
+## July 23
+
+* Adjust assignment generics for `JuliaObject` in `JuliaCall` to facilitate functionality of `autodiffr`.
+* Implement `is.numeric` and `is.double` generics for `JuliaObject` to deal with issues with
+  automatic differentiation for functions containing `is.numeric`.
+* Add new tests about assignment and `is.numeric` in `autodiffr`.
+
+## July 24
+
+* Correct bugs in implementation of `c.JuliaObject`.
+* Add new test about `c` in `autodiffr`.
+
+## July 25 - July 27
+
+* Remove `R6` dependency of `JuliaCall` to reduce overhead caused by `R6` with `JuliaObject`.
+* Correctly handle the integer input in `autodiffr`.
+* Add tests about the integer input in `autodiffr`.
+* Measure the performance of `autodiffr` with the latest `JuliaCall`.
+
+## July 28 - July 30
+
+* Update in `JuliaCall` for `Julia` 0.7.
+  Now the main functionality of `JuliaCall` should be usable with `Julia` 0.7.
+* Update package management functionality in `JuliaCall` used by `autodiffr` to
+  be compatible with `Julia` 0.7.
+* `ForwardDiff.jl` works on `Julia` 0.7 while The `ReverseDiff.jl` does not.
+  Have `reverse` and `forward` arguments in `ad_setup()` to have the ability to load
+  `ForwardDiff.jl` and `ReverseDiff.jl` separately.
+  `ad_setup(forward = TRUE)` should be okay to use on `Julia` 0.7.

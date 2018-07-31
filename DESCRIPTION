@@ -16,4 +16,4 @@ LazyData: true
 SystemRequirements: Julia >= 0.6.0
 Suggests: testthat
 Imports: JuliaCall (>= 0.14.0)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
