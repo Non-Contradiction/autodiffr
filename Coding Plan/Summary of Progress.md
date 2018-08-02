@@ -223,7 +223,7 @@
 
 * Bug correction in `JuliaCall` for `as.vector.JuliaObject`.
 * Prepare new release for `JuliaCall` on `CRAN`.
-* Have the experimented `ad.variant` function exported in `JuliaCall` which is
+* Have the experimented `ad_variant` function exported in `JuliaCall` which is
   an automatic adaptation tool for normal R functions to be more suitable for AD.
 * Identify problems of AD caused by `as.numeric` (equivalent to `as.double`).
 
@@ -325,7 +325,7 @@
 * Experiments on further performance improvement in `JuliaCall`.
 * Identify problem in `a[i,]` style index for `JuliaObject` in `JuliaCall`.
 * Identify problem in `max` and similar generics for `JuliaObject` in `JuliaCall`.
-* Identify some issues in `ad.variant` in `autodiffr`.
+* Identify some issues in `ad_variant` in `autodiffr`.
 * Try to fix the problems identified in `JuliaCall` and `autodiffr`.
 
 ## July 20
