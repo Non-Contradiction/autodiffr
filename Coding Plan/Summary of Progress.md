@@ -375,3 +375,13 @@
   Have `reverse` and `forward` arguments in `ad_setup()` to have the ability to load
   `ForwardDiff.jl` and `ReverseDiff.jl` separately.
   `ad_setup(forward = TRUE)` should be okay to use on `Julia` 0.7.
+
+## July 31 - August 1
+
+* Fix many deprecation warnings of `JuliaCall` on `Julia` v0.7.
+* Initial implement of `diff.JuliaObject` in `JuliaCall` so `autodiffr` can deal with `diff`.
+* Setup the travis and appveyor CI tests for `JuliaCall` with `Julia` v0.7 on Linux, Mac and Windows.
+* Improve the install dependency script in `JuliaCall` for `Julia` v0.7.
+* Release the new version of `JuliaCall` on CRAN, and have `autodiffr` depend on it.
+* Rename `ad.variant` to `ad_variant`.
+* Rename wrapper functions for `ForwardDiff.jl` and `ReverseDiff.jl`.
