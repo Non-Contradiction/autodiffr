@@ -12,7 +12,7 @@ test_that("test of grad func", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
-        test <- grad(f, X)
+        test <- ad_grad(f, X)
         for (mode in c("reverse", "forward")) {
             for (xsize in list(NULL, X)) {
                 for (chunk_size in list(NULL, 1, 2)) {
@@ -40,7 +40,7 @@ test_that("test of hessian func", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
-        test <- hessian(f, X)
+        test <- ad_hessian(f, X)
         for (mode in c("reverse", "forward")) {
             for (xsize in list(NULL, X)) {
                 for (chunk_size in list(NULL, 1, 2)) {
@@ -68,7 +68,7 @@ test_that("test of hessian func", {
 #         f <- funcs[[i]]
 #         n <- names(funcs)[i]
 #         print(paste0("  ...testing ", n))
-#         test <- jacobian(f, X)
+#         test <- ad_jacobian(f, X)
 #         for (mode in c("reverse", "forward")) {
 #             for (xsize in list(NULL, X)) {
 #                 for (chunk_size in list(NULL, 1, 2)) {
@@ -97,7 +97,7 @@ test_that("test on scalar2scalar function", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
-        test <- grad(f, X)
+        test <- ad_grad(f, X)
         for (mode in c("reverse", "forward")) {
             for (xsize in list(NULL, X)) {
                 for (chunk_size in list(NULL, 1, 2)) {

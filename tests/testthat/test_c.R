@@ -15,6 +15,6 @@ test_that("Test on c function", {
     skip_on_cran()
     ad_setup()
 
-    expect_equal(jacobian(heq, p0), J)
+    expect_equal(ad_jacobian(heq, p0), J)
 
 })

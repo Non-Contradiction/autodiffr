@@ -65,17 +65,17 @@ createInterface <- function(fname = c("grad", "jacobian", "hessian")){
 
 #' @rdname autodiff
 #' @export
-jacobian <- createInterface("jacobian")
+ad_jacobian <- createInterface("jacobian")
 
 #' @rdname autodiff
 #' @export
-hessian <- createInterface("hessian")
+ad_hessian <- createInterface("hessian")
 
 #' @rdname autodiff
 #' @export
-grad <- createInterface("grad")
+ad_grad <- createInterface("grad")
 
 #' @rdname autodiff
 #' @export
-deriv <- grad
+ad_deriv <- ad_grad
 

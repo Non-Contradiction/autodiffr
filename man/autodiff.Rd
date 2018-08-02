@@ -2,19 +2,19 @@
 % Please edit documentation in R/zinterface.R
 \name{autodiff}
 \alias{autodiff}
-\alias{jacobian}
-\alias{hessian}
-\alias{grad}
-\alias{deriv}
+\alias{ad_jacobian}
+\alias{ad_hessian}
+\alias{ad_grad}
+\alias{ad_deriv}
 \title{Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.}
 \usage{
-jacobian(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
+ad_jacobian(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 
-hessian(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
+ad_hessian(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 
-grad(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
+ad_grad(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 
-deriv(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
+ad_deriv(func, x, ..., mode = c("reverse", "forward"), debug = TRUE)
 }
 \arguments{
 \item{func}{the target function to calculate gradient, jacobian or hessian.}

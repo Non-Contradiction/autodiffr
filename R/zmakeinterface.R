@@ -38,19 +38,19 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
         D <- list(forward = multi_forward_grad, reverse = reverse_grad)
         Config <- list(forward = multi_forward_grad_config, reverse = reverse_grad_config)
         Tape <- reverse_grad_tape
-        interface <- grad
+        interface <- ad_grad
     }
     if (fname == "jacobian") {
         D <- list(forward = multi_forward_jacobian, reverse = reverse_jacobian)
         Config <- list(forward = multi_forward_jacobian_config, reverse = reverse_jacobian_config)
         Tape <- reverse_jacobian_tape
-        interface <- jacobian
+        interface <- ad_jacobian
     }
     if (fname == "hessian") {
         D <- list(forward = multi_forward_hessian, reverse = reverse_hessian)
         Config <- list(forward = multi_forward_hessian_config, reverse = reverse_hessian_config)
         Tape <- reverse_hessian_tape
-        interface <- hessian
+        interface <- ad_hessian
     }
 
     f <- function(func, ..., mode = c("reverse", "forward"),
