@@ -33,11 +33,6 @@ devtools::install_github("Non-Contradiction/autodiffr")
 
 ``` r
 library(autodiffr)
-#> 
-#> Attaching package: 'autodiffr'
-#> The following object is masked from 'package:stats':
-#> 
-#>     deriv
 
 ## Do initial setup
 
@@ -54,7 +49,7 @@ ad_setup()
 f <- function(x) sum(x^2L)
 
 ## Calculate gradient of f at [2,3] by
-grad(f, c(2, 3)) ## deriv(f, c(2, 3))
+ad_grad(f, c(2, 3)) ## deriv(f, c(2, 3))
 #> [1] 4 6
 
 ## Get a gradient function g
@@ -65,7 +60,7 @@ g(c(2, 3))
 #> [1] 4 6
 
 ## Calculate hessian of f at [2,3] by
-hessian(f, c(2, 3))
+ad_hessian(f, c(2, 3))
 #>      [,1] [,2]
 #> [1,]    2    0
 #> [2,]    0    2
@@ -83,7 +78,7 @@ h(c(2, 3))
 f <- function(x) x^2
 
 ## Calculate jacobian of f at [2,3] by
-jacobian(f, c(2, 3))
+ad_jacobian(f, c(2, 3))
 #>      [,1] [,2]
 #> [1,]    4    0
 #> [2,]    0    6
@@ -107,7 +102,7 @@ j(c(2, 3))
 f <- function(a = 1, b = 2, c = 3) a * b ^ 2 * c ^ 3
 
 ## Calculate gradient/derivative of f at a = 2, when b = c = 1 by
-grad(f, 2, b = 1, c = 1) ## deriv(f, 2, b = 1, c = 1)
+ad_grad(f, 2, b = 1, c = 1) ## deriv(f, 2, b = 1, c = 1)
 #> [1] 1
 
 ## Get a gradient/derivative function g w.r.t a when b = c = 1 by
@@ -118,7 +113,7 @@ g(2)
 #> [1] 1
 
 ## Calculate gradient/derivative of f at a = 2, b = 3, when c = 1 by
-grad(f, list(a = 2, b = 3), c = 1)
+ad_grad(f, list(a = 2, b = 3), c = 1)
 #> $a
 #> [1] 9
 #> 
