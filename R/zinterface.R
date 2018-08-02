@@ -21,13 +21,13 @@ NULL
 createInterface <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     if (fname == "grad") {
-        D <- list(forward = multi.forward.grad, reverse = reverse.grad)
+        D <- list(forward = multi_forward_grad, reverse = reverse_grad)
     }
     if (fname == "jacobian") {
-        D <- list(forward = multi.forward.jacobian, reverse = reverse.jacobian)
+        D <- list(forward = multi_forward_jacobian, reverse = reverse_jacobian)
     }
     if (fname == "hessian") {
-        D <- list(forward = multi.forward.hessian, reverse = reverse.hessian)
+        D <- list(forward = multi_forward_hessian, reverse = reverse_hessian)
     }
 
     f <- function(func, x, ..., mode = c("reverse", "forward"), debug = TRUE){

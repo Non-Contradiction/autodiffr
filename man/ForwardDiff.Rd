@@ -2,30 +2,30 @@
 % Please edit documentation in R/forward.R
 \name{ForwardDiff}
 \alias{ForwardDiff}
-\alias{forward.deriv}
-\alias{forward.grad.config}
-\alias{forward.jacobian.config}
-\alias{forward.hessian.config}
-\alias{forward.grad}
-\alias{forward.jacobian}
-\alias{forward.hessian}
+\alias{forward_deriv}
+\alias{forward_grad_config}
+\alias{forward_jacobian_config}
+\alias{forward_hessian_config}
+\alias{forward_grad}
+\alias{forward_jacobian}
+\alias{forward_hessian}
 \title{Wrapper functions for API of \code{ForwardDiff.jl}.}
 \usage{
-forward.deriv(f, x)
+forward_deriv(f, x)
 
-forward.grad.config(f, x, chunk_size = NULL, diffresult = NULL)
+forward_grad_config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.jacobian.config(f, x, chunk_size = NULL, diffresult = NULL)
+forward_jacobian_config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.hessian.config(f, x, chunk_size = NULL, diffresult = NULL)
+forward_hessian_config(f, x, chunk_size = NULL, diffresult = NULL)
 
-forward.grad(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
+forward_grad(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
   debug = TRUE)
 
-forward.jacobian(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
+forward_jacobian(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
   debug = TRUE)
 
-forward.hessian(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
+forward_hessian(f, x, cfg = NULL, check = TRUE, diffresult = NULL,
   debug = TRUE)
 }
 \arguments{
@@ -64,9 +64,9 @@ With the debug mode, users can have more informative error messages.
 Without the debug mode, the wrapper functions will be more performant.}
 }
 \value{
-\code{forward.deriv}, \code{forward.grad}, \code{forward.jacobian} and \code{forward.hessian} return
+\code{forward_deriv}, \code{forward_grad}, \code{forward_jacobian} and \code{forward_hessian} return
 the derivative, gradient, jacobian and hessian of \code{f} correspondingly evaluated at \code{x}.
-\code{forward.grad.config}, \code{forward.jacobian.config} and \code{forward.hessian.config}
+\code{forward_grad_config}, \code{forward_jacobian_config} and \code{forward_hessian_config}
 return Config instances based on \code{f`` and}x`,
 which contain all the work buffers required to carry out the forward mode automatic differentiation.
 }

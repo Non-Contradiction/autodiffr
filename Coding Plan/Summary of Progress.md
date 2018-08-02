@@ -38,8 +38,8 @@
 * Add test utility functions to check the results from R wrappers with the results from `Julia`. Apply the change in testing of automatic differentiation of rosenbrock function.
 * Considering adapting tests from `ForwardDiff.jl` and `ReverseDiff.jl`.
 * Make changes in `JuliaCall` to facilitate the development of `autodiffr`.
-* Tests for `forward.deriv` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/DerivativeTest.jl>. Found an issue caused by `JuliaCall`. The problematic test will be commented out until the issue is fixed in `JuliaCall`.
-* Some tests for `forward.grad` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>.
+* Tests for `forward_deriv` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/DerivativeTest.jl>. Found an issue caused by `JuliaCall`. The problematic test will be commented out until the issue is fixed in `JuliaCall`.
+* Some tests for `forward_grad` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>.
 
 ## May 19
 
@@ -124,7 +124,7 @@
 
 ## May 28
 
-* Use `NULL` for `cfg` arguments in the APIs of `reverse.grad`, `reverse.jacobiann` and `reverse.hessian`. This can improve the performance of the functions a little, since the `Config` object is not needed in the `AbstractTape`-related methods.
+* Use `NULL` for `cfg` arguments in the APIs of `reverse_grad`, `reverse_jacobiann` and `reverse_hessian`. This can improve the performance of the functions a little, since the `Config` object is not needed in the `AbstractTape`-related methods.
 * APIs of `ReverseDiff` can deal with functions with multiple arguments. Use idea of `positionize` to turn idiomatic R functions with named arguments into functions with positional arguments which `ReverseDiff` is easy to deal with. Related to issue #15.
 * Incorporate the idea of `positionize` to deal with functions of multiple arguments into all `ReverseDiff` APIs step by step.
 * Correct some bugs in `AbstractTape`-related methods.

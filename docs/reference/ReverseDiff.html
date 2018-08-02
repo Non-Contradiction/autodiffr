@@ -116,25 +116,25 @@ For more details, see <a href='http://www.juliadiff.org/ReverseDiff.jl/api/'>htt
     
     </div>
 
-    <pre class="usage"><span class='fu'>reverse.grad</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+    <pre class="usage"><span class='fu'>reverse_grad</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.jacobian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_jacobian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.hessian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_hessian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.grad.config</span>(<span class='no'>input</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_grad_config</span>(<span class='no'>input</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.jacobian.config</span>(<span class='no'>input</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_jacobian_config</span>(<span class='no'>input</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.hessian.config</span>(<span class='no'>input</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_hessian_config</span>(<span class='no'>input</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.grad.tape</span>(<span class='no'>f</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_grad_tape</span>(<span class='no'>f</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.jacobian.tape</span>(<span class='no'>f</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_jacobian_tape</span>(<span class='no'>f</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.hessian.tape</span>(<span class='no'>f</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_hessian_tape</span>(<span class='no'>f</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>reverse.compile</span>(<span class='no'>tape</span>)</pre>
+<span class='fu'>reverse_compile</span>(<span class='no'>tape</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,7 +147,7 @@ For more details, see <a href='http://www.juliadiff.org/ReverseDiff.jl/api/'>htt
       <th>input</th>
       <td><p>the point where you take the gradient, jacobian and hessian.
 Note that it should be a a vector of length greater than 1.
-If you want to calulate the derivative of a function, you can considering using <code>forward.deriv</code>.</p></td>
+If you want to calulate the derivative of a function, you can considering using <code>forward_deriv</code>.</p></td>
     </tr>
     <tr>
       <th>cfg</th>
@@ -182,12 +182,12 @@ use tape-related APIs.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>reverse.grad</code>, <code>reverse.jacobian</code> and <code>reverse.hessian</code> return
+    <p><code>reverse_grad</code>, <code>reverse_jacobian</code> and <code>reverse_hessian</code> return
 the gradient, jacobian and hessian of <code>f</code> or <code>tape</code> correspondingly evaluated at <code>input</code>.
-<code>reverse.grad.config</code>, <code>reverse.jacobian.config</code> and <code>reverse.hessian.config</code>
+<code>reverse_grad_config</code>, <code>reverse_jacobian_config</code> and <code>reverse_hessian_config</code>
 return Config instances containing the preallocated tape and work buffers used by
 reverse mode automatic differentiation.
-<code>reverse.grad.tape</code>, <code>reverse.jacobian.tape</code> and <code>reverse.hessian.tape</code>
+<code>reverse_grad_tape</code>, <code>reverse_jacobian_tape</code> and <code>reverse_hessian_tape</code>
 return Tape instances containing the the execution trace of the target function
 with the given input values.</p>
     

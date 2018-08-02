@@ -119,7 +119,7 @@ target <- rosen1
 ```
 
 These functions receive a vector input and generates scalar output.
-So `forward.grad` and `reverse.grad` can be used to calculate their gradients and `forward.hessian` and `reverse.hessian` can be used to calculate their hessians. Besides, it should be possible to calculate the jacobian of the gradient function, which should be the same with the hessian.
+So `forward_grad` and `reverse_grad` can be used to calculate their gradients and `forward_hessian` and `reverse_hessian` can be used to calculate their hessians. Besides, it should be possible to calculate the jacobian of the gradient function, which should be the same with the hessian.
 
 The basic usage is as follows:
 
@@ -127,17 +127,17 @@ The basic usage is as follows:
 X <- runif(5)
 X
 
-forward.grad(target, X)
+forward_grad(target, X)
 
-reverse.grad(target, X)
+reverse_grad(target, X)
 
-forward.jacobian(function(x) forward.grad(target, x), X)
+forward_jacobian(function(x) forward_grad(target, x), X)
 
-reverse.jacobian(function(x) reverse.grad(target, x), X)
+reverse_jacobian(function(x) reverse_grad(target, x), X)
 
-forward.hessian(target, X)
+forward_hessian(target, X)
 
-reverse.hessian(target, X)
+reverse_hessian(target, X)
 ```
 
 And we can compare the results with `numDeriv`:
@@ -175,27 +175,27 @@ srosen0
 If gradient or hessian of the same target function need to be caculated repeatedly on inputs of the same shape, like input vectors of same length or input matrices with the same number of rows and columns, then users can caculate config objects before to improve the performance:
 
 ```{r}
-cfg <- forward.grad.config(target, X)
-forward.grad(target, X, cfg = cfg)
+cfg <- forward_grad_config(target, X)
+forward_grad(target, X, cfg = cfg)
 
-cfg <- reverse.grad.config(X)
-reverse.grad(target, X, cfg = cfg)
+cfg <- reverse_grad_config(X)
+reverse_grad(target, X, cfg = cfg)
 
-cfg <- forward.hessian.config(target, X)
-forward.hessian(target, X, cfg = cfg)
+cfg <- forward_hessian_config(target, X)
+forward_hessian(target, X, cfg = cfg)
 
-cfg <- reverse.hessian.config(X)
-reverse.hessian(target, X, cfg = cfg)
+cfg <- reverse_hessian_config(X)
+reverse_hessian(target, X, cfg = cfg)
 ```
 
 And users can also choose a chunk size when using config objects for forward mode automatic differentiation, choosing appropriate sample size can improve performance further.
 
 ```{r}
-cfg1 <- forward.grad.config(target, X, chunk_size = 1)
-forward.grad(target, X, cfg = cfg1)
+cfg1 <- forward_grad_config(target, X, chunk_size = 1)
+forward_grad(target, X, cfg = cfg1)
 
-cfg1 <- forward.hessian.config(target, X, chunk_size = 1)
-forward.hessian(target, X, cfg = cfg1)
+cfg1 <- forward_hessian_config(target, X, chunk_size = 1)
+forward_hessian(target, X, cfg = cfg1)
 ```
 
 #### Use of tape object in reverse mode automatic differentiation
@@ -203,11 +203,11 @@ forward.hessian(target, X, cfg = cfg1)
 In reverse mode automatic differentiation, if the target function are defined without any branching, like `if`, `ifelse`, `while` and etc, then it is possible to use `tape` to further improve performance:
 
 ```{r}
-tp <- reverse.grad.tape(target, X)
-reverse.grad(tp, X)
+tp <- reverse_grad_tape(target, X)
+reverse_grad(tp, X)
 
-tp <- reverse.hessian.tape(target, X)
-reverse.hessian(tp, X)
+tp <- reverse_hessian_tape(target, X)
+reverse_hessian(tp, X)
 ```
 
 ## User interface functions provided by `autodiffr`

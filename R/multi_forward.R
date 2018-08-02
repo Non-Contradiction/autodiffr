@@ -1,10 +1,10 @@
-singleDs <- list(grad = forward.grad,
-                 jacobian = forward.jacobian,
-                 hessian = forward.hessian)
+singleDs <- list(grad = forward_grad,
+                 jacobian = forward_jacobian,
+                 hessian = forward_hessian)
 
-singleCfgs <- list(grad = forward.grad.config,
-                   jacobian = forward.jacobian.config,
-                   hessian = forward.hessian.config)
+singleCfgs <- list(grad = forward_grad_config,
+                   jacobian = forward_jacobian_config,
+                   hessian = forward_hessian_config)
 
 ## for list x, need to have a function to construct sub-functions
 
@@ -25,7 +25,7 @@ correspond_null <- function(x){
     NULL
 }
 
-multi.forward.D <- function(fname = c("grad", "jacobian", "hessian")){
+multi_forward_D <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     singleD <- singleDs[[fname]]
 
@@ -53,7 +53,7 @@ multi.forward.D <- function(fname = c("grad", "jacobian", "hessian")){
     f
 }
 
-multi.forward.config <- function(fname = c("grad", "jacobian", "hessian")){
+multi_forward_config <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     singleCfg <- singleCfgs[[fname]]
 
@@ -81,10 +81,10 @@ multi.forward.config <- function(fname = c("grad", "jacobian", "hessian")){
     f
 }
 
-multi.forward.grad <- multi.forward.D("grad")
-multi.forward.jacobian <- multi.forward.D("jacobian")
-multi.forward.hessian <- multi.forward.D("hessian")
+multi_forward_grad <- multi_forward_D("grad")
+multi_forward_jacobian <- multi_forward_D("jacobian")
+multi_forward_hessian <- multi_forward_D("hessian")
 
-multi.forward.grad.config <- multi.forward.config("grad")
-multi.forward.jacobian.config <- multi.forward.config("jacobian")
-multi.forward.hessian.config <- multi.forward.config("hessian")
+multi_forward_grad_config <- multi_forward_config("grad")
+multi_forward_jacobian_config <- multi_forward_config("jacobian")
+multi_forward_hessian_config <- multi_forward_config("hessian")
