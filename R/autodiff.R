@@ -6,6 +6,11 @@
 #'
 #' @param reverse whether to use load reverse mode automatic differentiation.
 #' @param forward whether to use forward mode automatic differentiation.
+#' @param JULIA_HOME the file folder which contains julia binary,
+#'     if not set, it will try to look at global option JULIA_HOME,
+#'     if the global option is not set,
+#'     it will then look at the environmental variable JULIA_HOME,
+#'     if still not found, julia in path will be used.
 #' @param ... arguments passed to \code{JuliaCall::julia_setup}.
 #'
 #' @examples
@@ -14,9 +19,9 @@
 #' }
 #'
 #' @export
-ad_setup <- function(reverse = TRUE, forward = TRUE, ...) {
+ad_setup <- function(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, ...) {
     if (!isTRUE(.AD$inited)) {
-        .AD$julia <- JuliaCall::julia_setup(...)
+        .AD$julia <- JuliaCall::julia_setup(JULIA_HOME = JULIA_HOME, ...)
 
         .AD$julia$install_package_if_needed("DiffResults")
         .AD$julia$library("DiffResults")

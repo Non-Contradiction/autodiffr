@@ -4,9 +4,15 @@
 \alias{ad_setup}
 \title{Do initial setup for package autodiffr.}
 \usage{
-ad_setup(reverse = TRUE, forward = TRUE, ...)
+ad_setup(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, ...)
 }
 \arguments{
+\item{JULIA_HOME}{the file folder which contains julia binary,
+if not set, it will try to look at global option JULIA_HOME,
+if the global option is not set,
+it will then look at the environmental variable JULIA_HOME,
+if still not found, julia in path will be used.}
+
 \item{reverse}{whether to use load reverse mode automatic differentiation.}
 
 \item{forward}{whether to use forward mode automatic differentiation.}
