@@ -40,7 +40,9 @@ is largely provided in most *nix systems, including Mac OS.
 Installation on Linux has some dependencies that may 
 cause trouble. Some distros may not have the necessary 
 versions of libraries, and cannot run `autodiffr`.
-We will try to suggest what these may be.
+We will try to suggest what these may be, but since there
+are many distros, with variations on their library infrastructure,
+this list will be haphazard.
 Moreover, as with the version of Julia, we may need correct
 versions of some system libraries.
 
@@ -50,13 +52,14 @@ is, 32 bit distros have not been tried.
 We have verified that the following distros support `autodiffr`
 
 - Linux Mint 18.3 Sylvia
+- Ubuntu 18.04
 - Debian Stretch (??particular version no.)
 
 
 The following distros do not appear to work:
 
-- Bunsenlabs Deuterium 64 bit. (??libstdc++.so.6 does not have GLIBC ???version)
-= Elementary OS Freya 0.3.2 (?? same reason)
+- Bunsenlabs Deuterium 64 bit. (libstdc++.so.6 does not have GLIBC in a sufficiently recent version). This is based on Debian Jessie, and it is likely that distros in that family will not support `autodiffr`.
+- Elementary OS Freya 0.3.2 (same complaint about GLIBC)
 
 ### Virtualbox special needs - Debian or Ubuntu based distros
 
@@ -159,8 +162,6 @@ a reference to libstdc++-6.dll
 ```{r myscrshot, echo=FALSE, eval=FALSE, fig.cap="ErrBox", out.width = '100%'}
 knitr::include_graphics("JuliaWin32ErrorBox.png")
 ```
-
-
 
 
 
