@@ -52,8 +52,13 @@ is, 32 bit distros have not been tried.
 We have verified that the following distros support `autodiffr`
 
 - Linux Mint 18.3 Sylvia
-- Ubuntu 18.04
-- Debian Stretch (??particular version no.)
+- Ubuntu 18.04 (HWB? Did you test)
+- Debian Stretch (9.5)
+- Linux Mint 19 Mate "Tara" (To get `devtools` to install, it was necessary to
+install the Debian/Ubuntu "Bionic" packages libssl-dev and libcurl4-openssl-dev.
+Installing R package `codetools` was done following a note when Rcpp was 
+installed as a devtools dependency. Then JuliaCall and autodiffr were installed
+with install_github().)
 
 
 The following distros do not appear to work:
