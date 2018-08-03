@@ -12,37 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Introduction
 
 Whatever system you use, you need to install Julia.
-
 Go to https://julialang.org/downloads and choose the correct download,
-and install as appropriate. On JN's Windows 7 Virtual Machine under
-VirtualBox, AVG antivirus (Free version) had to be disabled (protection
-turned off) to enable install, which was to 
-C:\Users\john\AppData\Local\Julia-0.6.4. In the bin\ subdirectory, there
-is julia.exe and this can be run in a terminal, or double-clicked to open.
-Julia runs, and can be terminated by `exit()` or `quit()`. Remember to 
-re-enable antivirus. 
-
-Note that later we will probably need to adjust some or other PATH variables, and
-possibly set up links to ensure **R** can find Julia.
-
-To get Julia to start in R, C:\Users\john\AppData\Local\Julia-0.6.4\bin needs
-to be in the PATH. Then a CMD box will start Julia with the command `julia`.
-However, after require(autodiffr), the ad_setup() call gives an error
-
-Julia version 0.6.4 at location C:\Users\john\AppData\Local\JULIA-~1.4\bin will be used.
-Error in juliacall_initialize(.julia$dll_file) : 
-  C:\Users\john\AppData\Local\JULIA-~1.4\bin\libjulia.dll - The specified procedure could not be found.
-
-Thus for Windows, there must be another setting somewhere needed.
-
-May be due to R 3.4.4??
-
-### Linux
-
-?? need to check path
-
-?? symlink
-
+and install as appropriate. 
+Note that `autodiffr` mainly works with Julia v0.6.x, and only partly works with Julia v0.7 currently (as Julia v0.7 is in beta).
+After having a correct Julia installation,
 `autodiffr` can  be installed by:
 
 ```{r, eval=FALSE}
@@ -58,32 +31,10 @@ devtools::install_github("Non-Contradiction/JuliaCall")
 And after the installation is finished, just do the following steps,
 note that the first time it will take some time, but the next time it should be better.
 
-Julia.exe is in C:\Users\john\AppData\Local\Julia-0.6.4 after installation
-( 32 bit -- the extra steps were not necessary as far as I can tell)
-C:\Users\john\AppData\Local\Julia-0.6.4\bin was added to the PATH.
-
-CMD box then runs julia fine.
-
-
-
 ```{r}
 library(autodiffr)
 ad_setup()
 ```
-
-Error in juliacall_initialize(.julia$dll_file) : C:\Users\john\AppData\Local\JULIA-~1.4\bin\libjulia.dll - The specified procedure could not be found.
-
-There is a msg box that gives the entry point that could not be found, with 
-a reference to libstdc++-6.dll
-
-```{r myscrshot, echo=FALSE, fig.cap="ErrBox", out.width = '100%'}
-knitr::include_graphics("JuliaWin32ErrorBox.png")
-```
-
-On Linux ... ??
-
-On Macintosh (which OS??) ...
-
 
 ## Testing `autodiffr`
 
@@ -119,7 +70,7 @@ target <- rosen1
 ```
 
 These functions receive a vector input and generates scalar output.
-So `forward.grad` and `reverse.grad` can be used to calculate their gradients and `forward.hessian` and `reverse.hessian` can be used to calculate their hessians. Besides, it should be possible to calculate the jacobian of the gradient function, which should be the same with the hessian.
+So `forward_grad` and `reverse_grad` can be used to calculate their gradients and `forward_hessian` and `reverse_hessian` can be used to calculate their hessians. Besides, it should be possible to calculate the jacobian of the gradient function, which should be the same with the hessian.
 
 The basic usage is as follows:
 
@@ -127,17 +78,17 @@ The basic usage is as follows:
 X <- runif(5)
 X
 
-forward.grad(target, X)
+forward_grad(target, X)
 
-reverse.grad(target, X)
+reverse_grad(target, X)
 
-forward.jacobian(function(x) forward.grad(target, x), X)
+forward_jacobian(function(x) forward_grad(target, x), X)
 
-reverse.jacobian(function(x) reverse.grad(target, x), X)
+reverse_jacobian(function(x) reverse_grad(target, x), X)
 
-forward.hessian(target, X)
+forward_hessian(target, X)
 
-reverse.hessian(target, X)
+reverse_hessian(target, X)
 ```
 
 And we can compare the results with `numDeriv`:
@@ -155,7 +106,7 @@ We can see the result is similar, and results from `autodiffr` should be more ac
 ### Creating a function for the gradient
 
 ```{r}
-grosen <- autodiffr::grad(target)
+grosen <- autodiffr::makeGradFunc(target)
 grosen
 grosen(X)
 ## use in optimization
@@ -175,27 +126,27 @@ srosen0
 If gradient or hessian of the same target function need to be caculated repeatedly on inputs of the same shape, like input vectors of same length or input matrices with the same number of rows and columns, then users can caculate config objects before to improve the performance:
 
 ```{r}
-cfg <- forward.grad.config(target, X)
-forward.grad(target, X, cfg = cfg)
+cfg <- forward_grad_config(target, X)
+forward_grad(target, X, cfg = cfg)
 
-cfg <- reverse.grad.config(X)
-reverse.grad(target, X, cfg = cfg)
+cfg <- reverse_grad_config(X)
+reverse_grad(target, X, cfg = cfg)
 
-cfg <- forward.hessian.config(target, X)
-forward.hessian(target, X, cfg = cfg)
+cfg <- forward_hessian_config(target, X)
+forward_hessian(target, X, cfg = cfg)
 
-cfg <- reverse.hessian.config(X)
-reverse.hessian(target, X, cfg = cfg)
+cfg <- reverse_hessian_config(X)
+reverse_hessian(target, X, cfg = cfg)
 ```
 
 And users can also choose a chunk size when using config objects for forward mode automatic differentiation, choosing appropriate sample size can improve performance further.
 
 ```{r}
-cfg1 <- forward.grad.config(target, X, chunk_size = 1)
-forward.grad(target, X, cfg = cfg1)
+cfg1 <- forward_grad_config(target, X, chunk_size = 1)
+forward_grad(target, X, cfg = cfg1)
 
-cfg1 <- forward.hessian.config(target, X, chunk_size = 1)
-forward.hessian(target, X, cfg = cfg1)
+cfg1 <- forward_hessian_config(target, X, chunk_size = 1)
+forward_hessian(target, X, cfg = cfg1)
 ```
 
 #### Use of tape object in reverse mode automatic differentiation
@@ -203,11 +154,11 @@ forward.hessian(target, X, cfg = cfg1)
 In reverse mode automatic differentiation, if the target function are defined without any branching, like `if`, `ifelse`, `while` and etc, then it is possible to use `tape` to further improve performance:
 
 ```{r}
-tp <- reverse.grad.tape(target, X)
-reverse.grad(tp, X)
+tp <- reverse_grad_tape(target, X)
+reverse_grad(tp, X)
 
-tp <- reverse.hessian.tape(target, X)
-reverse.hessian(tp, X)
+tp <- reverse_hessian_tape(target, X)
+reverse_hessian(tp, X)
 ```
 
 ## User interface functions provided by `autodiffr`
@@ -219,61 +170,61 @@ reverse.hessian(tp, X)
 If users want to caculate the gradient, hessian or jacobian directly:
 
 ```{r}
-autodiffr::grad(target, X, mode = "forward")
+autodiffr::ad_grad(target, X, mode = "forward")
 
-autodiffr::grad(target, X, mode = "reverse")
+autodiffr::ad_grad(target, X, mode = "reverse")
 
-autodiffr::hessian(target, X, mode = "forward")
+autodiffr::ad_hessian(target, X, mode = "forward")
 
-autodiffr::hessian(target, X, mode = "reverse")
+autodiffr::ad_hessian(target, X, mode = "reverse")
 ```
 
-It's easy to have a gradient, hessian, or jacobian function just by ommiting the `x` argument:
+It's easy to have a gradient, hessian, or jacobian function:
 
 ```{r}
-autodiffr::grad(target, mode = "forward")(X)
+autodiffr::makeGradFunc(target, mode = "forward")(X)
 
-autodiffr::grad(target, mode = "reverse")(X)
+autodiffr::makeGradFunc(target, mode = "reverse")(X)
 
-autodiffr::hessian(target, mode = "forward")(X)
+autodiffr::makeHessianFunc(target, mode = "forward")(X)
 
-autodiffr::hessian(target, mode = "reverse")(X)
+autodiffr::makeHessianFunc(target, mode = "reverse")(X)
 ```
 
 ### Advanced usage
 
 If users want to have a gradient, hessian, or jacobian function specalised for inputs of the fixed shape (like length of the input vector or numbers of rows and columns of the input matrix), 
-then it is possible to have an optimized function by providing `xsize` argument:
+then it is possible to have an optimized function by providing `x` argument:
 
 ```{r}
-g1 <- autodiffr::grad(target, mode = "forward", xsize = runif(length(X)))
+g1 <- autodiffr::makeGradFunc(target, mode = "forward", x = runif(length(X)))
 g1(X)
 
-g2 <- autodiffr::grad(target, mode = "reverse", xsize = runif(length(X)))
+g2 <- autodiffr::makeGradFunc(target, mode = "reverse", x = runif(length(X)))
 g2(X)
 
-h1 <- autodiffr::hessian(target, mode = "forward", xsize = runif(length(X)))
+h1 <- autodiffr::makeHessianFunc(target, mode = "forward", x = runif(length(X)))
 h1(X)
 
-h2 <- autodiffr::hessian(target, mode = "reverse", xsize = runif(length(X)))
+h2 <- autodiffr::makeHessianFunc(target, mode = "reverse", x = runif(length(X)))
 h2(X)
 ```
 
-Beyond the `xsize` argument, users can also provide `chunk_size` for forward mode automatic differentiation.
+Beyond the `x` argument, users can also provide `chunk_size` for forward mode automatic differentiation.
 From `?ForwardDiff` users can see instrustions on how to choose chunk size.
 And users can use `use_tape` for reverse mode automatic differentiation, which may increase the performance of gradient, hessian or jacobian functions a lot.
 
 ```{r}
-g1 <- autodiffr::grad(target, mode = "forward", xsize = runif(length(X)), chunk_size = 1)
+g1 <- autodiffr::makeGradFunc(target, mode = "forward", x = runif(length(X)), chunk_size = 1)
 g1(X)
 
-g2 <- autodiffr::grad(target, mode = "reverse", xsize = runif(length(X)), use_tape = TRUE)
+g2 <- autodiffr::makeGradFunc(target, mode = "reverse", x = runif(length(X)), use_tape = TRUE)
 g2(X)
 
-h1 <- autodiffr::hessian(target, mode = "forward", xsize = runif(length(X)), chunk_size = 1)
+h1 <- autodiffr::makeHessianFunc(target, mode = "forward", x = runif(length(X)), chunk_size = 1)
 h1(X)
 
-h2 <- autodiffr::hessian(target, mode = "reverse", xsize = runif(length(X)), use_tape = TRUE)
+h2 <- autodiffr::makeHessianFunc(target, mode = "reverse", x = runif(length(X)), use_tape = TRUE)
 h2(X)
 ```
 
@@ -289,9 +240,9 @@ f <- function(x){
     }
 }
 
-gF <- autodiffr::grad(f, mode = "forward", xsize = rep(2,3), chunk_size = 1)
+gF <- autodiffr::makeGradFunc(f, mode = "forward", x = rep(2,3), chunk_size = 1)
 
-gR <- autodiffr::grad(f, mode = "reverse", xsize = rep(2,3), use_tape = TRUE)
+gR <- autodiffr::makeGradFunc(f, mode = "reverse", x = rep(2,3), use_tape = TRUE)
 
 gF(rep(1,3)) ## correct result
 

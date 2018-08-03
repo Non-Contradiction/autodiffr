@@ -4,9 +4,9 @@ os:
   - linux
   - osx
 
-matrix:
-  allow_failures:
-    - os: linux
+# matrix:
+#   allow_failures:
+#     - os: linux
 
 addons:
   apt:
@@ -32,11 +32,11 @@ before_install:
   - export PATH="$HOME/julia/bin:$PATH"
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export R_LD_LIBRARY_PATH="$(R RHOME)/lib:$HOME/julia/lib/julia"; fi
 
-install:
-  - R -e "install.packages(\"devtools\", repos=\"http://cran.rstudio.com/\")"
-  - R -e 'devtools::install_deps(dep = T)'
-  - R -e "install.packages(\"remotes\", repos=\"http://cran.rstudio.com/\")"
-  - R -e "remotes::install_github(\"Non-Contradiction/JuliaCall\")"
+# install:
+#   - R -e "install.packages(\"devtools\", repos=\"http://cran.rstudio.com/\")"
+#   - R -e 'devtools::install_deps(dep = T)'
+#   - R -e "install.packages(\"remotes\", repos=\"http://cran.rstudio.com/\")"
+#   - R -e "remotes::install_github(\"Non-Contradiction/JuliaCall\")"
 
 script:
   - R CMD build .

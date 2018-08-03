@@ -12,49 +12,49 @@ rand <- function(x){
 }
 
 test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE){
-    test <- forward.hessian(f, x, forward.hessian.config(f, x, chunk_size = 1))
-    testgrad <- forward.grad(f, x)
+    test <- forward_hessian(f, x, forward_hessian_config(f, x, chunk_size = 1))
+    testgrad <- forward_grad(f, x)
     testval <- f(x)
 
     print("....without HessianConfig")
 
-    expect_equal(reverse.hessian(f, x), test)
+    expect_equal(reverse_hessian(f, x), test)
 
     result <- HessianResult(x)
-    reverse.hessian(f, x, diffresult = result)
+    reverse_hessian(f, x, diffresult = result)
     expect_equal(result$value, testval)
     expect_equal(result$grad, testgrad)
     expect_equal(result$hessian, test)
 
     print("....with HessianConfig")
 
-    cfg <- reverse.hessian.config(x)
+    cfg <- reverse_hessian_config(x)
 
-    expect_equal(reverse.hessian(f, x, cfg), test)
+    expect_equal(reverse_hessian(f, x, cfg), test)
 
     result <- HessianResult(x)
-    cfg <- reverse.hessian.config(x, diffresult = result)
-    reverse.hessian(f, x, cfg, diffresult = result)
+    cfg <- reverse_hessian_config(x, diffresult = result)
+    reverse_hessian(f, x, cfg, diffresult = result)
     expect_equal(result$value, testval)
     expect_equal(result$grad, testgrad)
     expect_equal(result$hessian, test)
 
     if (!use_tape) {
-        print("....Tape is not tested.")
+        print("..._tape is not tested.")
         return(0)
     }
 
     print("....with HessianTape")
 
     seedx <- rand(x)
-    tp <- reverse.hessian.tape(f, seedx)
+    tp <- reverse_hessian_tape(f, seedx)
 
     ## additional check of is_tape function
     expect_true(autodiffr:::is_tape(tp))
-    expect_equal(reverse.hessian(tp, x), test)
+    expect_equal(reverse_hessian(tp, x), test)
 
     result <- HessianResult(x)
-    reverse.hessian(tp, x, diffresult = result)
+    reverse_hessian(tp, x, diffresult = result)
     expect_equal(result$value, testval)
     expect_equal(result$grad, testgrad)
     expect_equal(result$hessian, test)
@@ -67,14 +67,14 @@ test_unary_hessian <- function(f, x, use_tape = TRUE, use_compiled_tape = FALSE)
     print("....with compiled HessianTape")
 
     if (length(tp$tape) <= 10000) { # otherwise compile time can be crazy
-        ctp <- reverse.compile(tp)
+        ctp <- reverse_compile(tp)
 
         ## additional check of is_tape function
         expect_true(autodiffr:::is_tape(ctp))
-        expect_equal(reverse.hessian(ctp, x), test)
+        expect_equal(reverse_hessian(ctp, x), test)
 
         result <- HessianResult(x)
-        reverse.hessian(ctp, x, diffresult = result)
+        reverse_hessian(ctp, x, diffresult = result)
         expect_equal(result$value, testval)
         expect_equal(result$grad, testgrad)
         expect_equal(result$hessian, test)

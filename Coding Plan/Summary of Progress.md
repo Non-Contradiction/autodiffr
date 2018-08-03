@@ -38,8 +38,8 @@
 * Add test utility functions to check the results from R wrappers with the results from `Julia`. Apply the change in testing of automatic differentiation of rosenbrock function.
 * Considering adapting tests from `ForwardDiff.jl` and `ReverseDiff.jl`.
 * Make changes in `JuliaCall` to facilitate the development of `autodiffr`.
-* Tests for `forward.deriv` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/DerivativeTest.jl>. Found an issue caused by `JuliaCall`. The problematic test will be commented out until the issue is fixed in `JuliaCall`.
-* Some tests for `forward.grad` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>.
+* Tests for `forward_deriv` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/DerivativeTest.jl>. Found an issue caused by `JuliaCall`. The problematic test will be commented out until the issue is fixed in `JuliaCall`.
+* Some tests for `forward_grad` based on <https://github.com/JuliaDiff/ForwardDiff.jl/blob/master/test/GradientTest.jl>.
 
 ## May 19
 
@@ -124,7 +124,7 @@
 
 ## May 28
 
-* Use `NULL` for `cfg` arguments in the APIs of `reverse.grad`, `reverse.jacobiann` and `reverse.hessian`. This can improve the performance of the functions a little, since the `Config` object is not needed in the `AbstractTape`-related methods.
+* Use `NULL` for `cfg` arguments in the APIs of `reverse_grad`, `reverse_jacobiann` and `reverse_hessian`. This can improve the performance of the functions a little, since the `Config` object is not needed in the `AbstractTape`-related methods.
 * APIs of `ReverseDiff` can deal with functions with multiple arguments. Use idea of `positionize` to turn idiomatic R functions with named arguments into functions with positional arguments which `ReverseDiff` is easy to deal with. Related to issue #15.
 * Incorporate the idea of `positionize` to deal with functions of multiple arguments into all `ReverseDiff` APIs step by step.
 * Correct some bugs in `AbstractTape`-related methods.
@@ -223,7 +223,7 @@
 
 * Bug correction in `JuliaCall` for `as.vector.JuliaObject`.
 * Prepare new release for `JuliaCall` on `CRAN`.
-* Have the experimented `ad.variant` function exported in `JuliaCall` which is
+* Have the experimented `ad_variant` function exported in `JuliaCall` which is
   an automatic adaptation tool for normal R functions to be more suitable for AD.
 * Identify problems of AD caused by `as.numeric` (equivalent to `as.double`).
 
@@ -325,7 +325,7 @@
 * Experiments on further performance improvement in `JuliaCall`.
 * Identify problem in `a[i,]` style index for `JuliaObject` in `JuliaCall`.
 * Identify problem in `max` and similar generics for `JuliaObject` in `JuliaCall`.
-* Identify some issues in `ad.variant` in `autodiffr`.
+* Identify some issues in `ad_variant` in `autodiffr`.
 * Try to fix the problems identified in `JuliaCall` and `autodiffr`.
 
 ## July 20
@@ -340,3 +340,48 @@
   So the performance improvement work in `JuliaCall` in this phase is finished quite satisfactorily.
   After more bug fixing, `JuliaCall` should have another release
   and `autodiffr` needs to depend on the new version of `JuliaCall`.
+
+## July 22
+
+* Do not use `isFALSE` in `autodiffr`, as it doesn't exist in R versions earlier than 3.5.
+* Update README for `autodiffr` about the latest usage of interface functions.
+
+## July 23
+
+* Adjust assignment generics for `JuliaObject` in `JuliaCall` to facilitate functionality of `autodiffr`.
+* Implement `is.numeric` and `is.double` generics for `JuliaObject` to deal with issues with
+  automatic differentiation for functions containing `is.numeric`.
+* Add new tests about assignment and `is.numeric` in `autodiffr`.
+
+## July 24
+
+* Correct bugs in implementation of `c.JuliaObject`.
+* Add new test about `c` in `autodiffr`.
+
+## July 25 - July 27
+
+* Remove `R6` dependency of `JuliaCall` to reduce overhead caused by `R6` with `JuliaObject`.
+* Correctly handle the integer input in `autodiffr`.
+* Add tests about the integer input in `autodiffr`.
+* Measure the performance of `autodiffr` with the latest `JuliaCall`.
+
+## July 28 - July 30
+
+* Update in `JuliaCall` for `Julia` 0.7.
+  Now the main functionality of `JuliaCall` should be usable with `Julia` 0.7.
+* Update package management functionality in `JuliaCall` used by `autodiffr` to
+  be compatible with `Julia` 0.7.
+* `ForwardDiff.jl` works on `Julia` 0.7 while The `ReverseDiff.jl` does not.
+  Have `reverse` and `forward` arguments in `ad_setup()` to have the ability to load
+  `ForwardDiff.jl` and `ReverseDiff.jl` separately.
+  `ad_setup(forward = TRUE)` should be okay to use on `Julia` 0.7.
+
+## July 31 - August 1
+
+* Fix many deprecation warnings of `JuliaCall` on `Julia` v0.7.
+* Initial implement of `diff.JuliaObject` in `JuliaCall` so `autodiffr` can deal with `diff`.
+* Setup the travis and appveyor CI tests for `JuliaCall` with `Julia` v0.7 on Linux, Mac and Windows.
+* Improve the install dependency script in `JuliaCall` for `Julia` v0.7.
+* Release the new version of `JuliaCall` on CRAN, and have `autodiffr` depend on it.
+* Rename `ad.variant` to `ad_variant`.
+* Rename wrapper functions for `ForwardDiff.jl` and `ReverseDiff.jl`.

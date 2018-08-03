@@ -21,7 +21,7 @@
 #' @param f_or_tape the target function `f` or the tape recording execution trace of `f`.
 #' @param input the point where you take the gradient, jacobian and hessian.
 #'   Note that it should be a a vector of length greater than 1.
-#'   If you want to calulate the derivative of a function, you can considering using `forward.deriv`.
+#'   If you want to calulate the derivative of a function, you can considering using `forward_deriv`.
 #' @param cfg Config objects which contains the preallocated tape and work buffers
 #'   used by reverse mode automatic differentiation.
 #'   `ReverseDiff`'s API methods will allocate the Config object automatically by default,
@@ -31,12 +31,12 @@
 #'   With the debug mode, users can have more informative error messages.
 #'   Without the debug mode, the wrapper functions will be more performant.
 #'
-#' @return `reverse.grad`, `reverse.jacobian` and `reverse.hessian` return
+#' @return `reverse_grad`, `reverse_jacobian` and `reverse_hessian` return
 #'   the gradient, jacobian and hessian of `f` or `tape` correspondingly evaluated at `input`.
-#'   `reverse.grad.config`, `reverse.jacobian.config` and `reverse.hessian.config`
+#'   `reverse_grad_config`, `reverse_jacobian_config` and `reverse_hessian_config`
 #'   return Config instances containing the preallocated tape and work buffers used by
 #'   reverse mode automatic differentiation.
-#'   `reverse.grad.tape`, `reverse.jacobian.tape` and `reverse.hessian.tape`
+#'   `reverse_grad_tape`, `reverse_jacobian_tape` and `reverse_hessian_tape`
 #'   return Tape instances containing the the execution trace of the target function
 #'   with the given input values.
 #' @md
@@ -103,15 +103,15 @@ reverse_diff <- function(name){
 
 #' @rdname ReverseDiff
 #' @export
-reverse.grad <- reverse_diff("gradient")
+reverse_grad <- reverse_diff("gradient")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian <- reverse_diff("jacobian")
+reverse_jacobian <- reverse_diff("jacobian")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian <- reverse_diff("hessian")
+reverse_hessian <- reverse_diff("hessian")
 
 ####### Constructing Config objects for ReverseDiff
 
@@ -147,15 +147,15 @@ reverse_config <- function(name){
 
 #' @rdname ReverseDiff
 #' @export
-reverse.grad.config <- reverse_config("GradientConfig")
+reverse_grad_config <- reverse_config("GradientConfig")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian.config <- reverse_config("JacobianConfig")
+reverse_jacobian_config <- reverse_config("JacobianConfig")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian.config <- reverse_config("HessianConfig")
+reverse_hessian_config <- reverse_config("HessianConfig")
 
 ####### Constructing Tape objects for ReverseDiff
 
@@ -187,19 +187,19 @@ reverse_tape <- function(name){
 
 #' @rdname ReverseDiff
 #' @export
-reverse.grad.tape <- reverse_tape("GradientTape")
+reverse_grad_tape <- reverse_tape("GradientTape")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.jacobian.tape <- reverse_tape("JacobianTape")
+reverse_jacobian_tape <- reverse_tape("JacobianTape")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.hessian.tape <- reverse_tape("HessianTape")
+reverse_hessian_tape <- reverse_tape("HessianTape")
 
 #' @rdname ReverseDiff
 #' @export
-reverse.compile <- function(tape){
+reverse_compile <- function(tape){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()

@@ -24,30 +24,30 @@ test_that("test on rosenbrock function", {
 
         print(paste0("  ...running hardcoded test with chunk size = ", c))
 
-        cfg <- forward.hessian.config(f, x, chunk_size = c)
-        resultcfg <- forward.hessian.config(f, x, chunk_size = c, diffresult = HessianResult(x))
+        cfg <- forward_hessian_config(f, x, chunk_size = c)
+        resultcfg <- forward_hessian_config(f, x, chunk_size = c, diffresult = HessianResult(x))
 
-        expect_equal(h, forward.hessian(f, x, cfg))
+        expect_equal(h, forward_hessian(f, x, cfg))
 
-        expect_equal(h, forward.hessian(f, x))
+        expect_equal(h, forward_hessian(f, x))
 
         out <- HessianResult(x)
-        forward.hessian(f, x, diffresult = out)
+        forward_hessian(f, x, diffresult = out)
         expect_equal(out$value, v)
         expect_equal(out$grad, g)
         expect_equal(out$hessian, h)
 
         out <- HessianResult(x)
-        forward.hessian(f, x, resultcfg, diffresult = out)
+        forward_hessian(f, x, resultcfg, diffresult = out)
         expect_equal(out$value, v)
         expect_equal(out$grad, g)
         expect_equal(out$hessian, h)
     }
 
-    cfgx <- forward.hessian.config(sin, x)
-    expect_error(forward.hessian(f, x, cfg = cfgx))
-    expect_identical(forward.hessian(f, x, cfg = cfgx, check = FALSE),
-                     forward.hessian(f,x))
+    cfgx <- forward_hessian_config(sin, x)
+    expect_error(forward_hessian(f, x, cfg = cfgx))
+    expect_identical(forward_hessian(f, x, cfg = cfgx, check = FALSE),
+                     forward_hessian(f,x))
 
 })
 
@@ -66,26 +66,26 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         v <- f(X)
-        g <- forward.grad(f, X)
-        h <- forward.hessian(f, X)
+        g <- forward_grad(f, X)
+        h <- forward_hessian(f, X)
         expect_equal(h, JuliaCall::julia_call("Calculus.hessian", f, X), tolerance = 0.001)
 
-        cfg0 <- forward.hessian.config(f, X)
-        expect_equal(h, forward.hessian(f, X, cfg0))
+        cfg0 <- forward_hessian_config(f, X)
+        expect_equal(h, forward_hessian(f, X, cfg0))
 
         for (c in CHUNK_SIZES) {
 
             print(paste0("  ...testing ", n, " with chunk size = ", c))
 
-            cfg <- forward.hessian.config(f, X, chunk_size = c)
-            resultcfg <- forward.hessian.config(f, X, chunk_size = c, diffresult = HessianResult(X))
+            cfg <- forward_hessian_config(f, X, chunk_size = c)
+            resultcfg <- forward_hessian_config(f, X, chunk_size = c, diffresult = HessianResult(X))
 
-            out <- forward.hessian(f, X, cfg)
+            out <- forward_hessian(f, X, cfg)
 
             expect_equal(out, h)
 
             # out <- HessianResult(X)
-            # forward.hessian(f, X, resultcfg, diffresult = out)
+            # forward_hessian(f, X, resultcfg, diffresult = out)
             # expect_equal(out$value, v)
             # expect_equal(out$grad, g)
             # expect_equal(out$hessian, h)

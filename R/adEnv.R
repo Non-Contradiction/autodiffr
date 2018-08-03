@@ -66,12 +66,12 @@ decorate <- function(parentEnv){
 
 #' Create Variant Functions (more) Suitable for AD.
 #'
-#'  `ad.variant` is a helper function which creates variant functions more suitable for automatic differentiation.
+#'  `ad_variant` is a helper function which creates variant functions more suitable for automatic differentiation.
 #'
 #' @param f the original function.
 #' @md
 #' @export
-ad.variant <- function(f){
+ad_variant <- function(f){
     if (is.null(.AD$env)) {
         .AD$env <- decorate(environment(f))
     }

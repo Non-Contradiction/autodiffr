@@ -21,15 +21,15 @@ test_that("Test integer input", {
     skip_on_cran()
     ad_setup()
 
-    expect_equal(grad(penalty_I, 1:4, mode = "forward"),
-                 grad(penalty_I, 1:4, mode = "reverse"))
+    expect_equal(ad_grad(penalty_I, 1:4, mode = "forward"),
+                 ad_grad(penalty_I, 1:4, mode = "reverse"))
 
-    expect_equal(grad(penalty_I, 1L, mode = "forward"),
-                 grad(penalty_I, 1L, mode = "reverse"))
+    expect_equal(ad_grad(penalty_I, 1L, mode = "forward"),
+                 ad_grad(penalty_I, 1L, mode = "reverse"))
 
-    expect_equal(grad(penalty_I, list(p = 1:4), mode = "forward"),
-                 grad(penalty_I, list(p = 1:4), mode = "reverse"))
+    expect_equal(ad_grad(penalty_I, list(p = 1:4), mode = "forward"),
+                 ad_grad(penalty_I, list(p = 1:4), mode = "reverse"))
 
-    expect_equal(grad(penalty_I, list(p = 1L), mode = "forward"),
-                 grad(penalty_I, list(p = 1L), mode = "reverse"))
+    expect_equal(ad_grad(penalty_I, list(p = 1L), mode = "forward"),
+                 ad_grad(penalty_I, list(p = 1L), mode = "reverse"))
 })

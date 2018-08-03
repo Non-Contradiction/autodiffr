@@ -22,23 +22,23 @@ logit <- function(x) exp(x) / (1 + exp(x))
 
 ofn <- function(x){
     res <- ores(x) # returns a vector of residual values
-    sum(logit(x) ^ 2)
+    sum(logit(res) ^ 2)
 }
 
 ## Now try to generate the gradient function
-ogr <- grad(ofn)
+ogr <- makeGradFunc(ofn)
 
 system.time(ogr(runif(100)))
 
 system.time(ogr(runif(100)))
 
-ogr1 <- grad(ofn, xsize = runif(100))
+ogr1 <- makeGradFunc(ofn, x = runif(100))
 
 system.time(ogr1(runif(100)))
 
 system.time(ogr1(runif(100)))
 
-ogr2 <- grad(ofn, xsize = runif(100), use_tape = TRUE)
+ogr2 <- makeGradFunc(ofn, x = runif(100), use_tape = TRUE)
 
 system.time(ogr2(runif(100)))
 

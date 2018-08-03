@@ -12,59 +12,59 @@ rand <- function(x){
 }
 
 test_unary_gradient <- function(f, x, use_tape = TRUE){
-    test <- forward.grad(f, x)
+    test <- forward_grad(f, x)
     testval <- f(x)
 
     print("....without GradientConfig")
 
-    expect_equal(reverse.grad(f, x), test)
+    expect_equal(reverse_grad(f, x), test)
 
     result <- GradientResult(x)
-    reverse.grad(f, x, diffresult = result)
+    reverse_grad(f, x, diffresult = result)
     expect_equal(result$value, testval)
     expect_equal(result$grad, test)
 
     print("....with GradientConfig")
 
-    cfg <- reverse.grad.config(x)
+    cfg <- reverse_grad_config(x)
 
-    expect_equal(reverse.grad(f, x, cfg), test)
+    expect_equal(reverse_grad(f, x, cfg), test)
 
     result <- GradientResult(x)
-    reverse.grad(f, x, cfg, diffresult = result)
+    reverse_grad(f, x, cfg, diffresult = result)
     expect_equal(result$value, testval)
     expect_equal(result$grad, test)
 
     if (!use_tape) {
-        print("....Tape-related methods are not tested...")
+        print("..._tape-related methods are not tested...")
         return(0)
     }
 
     print("....with GradientTape")
 
     seedx <- rand(x)
-    tp <- reverse.grad.tape(f, seedx)
+    tp <- reverse_grad_tape(f, seedx)
 
     ## additional check of is_tape function
     expect_true(autodiffr:::is_tape(tp))
-    expect_equal(reverse.grad(tp, x), test)
+    expect_equal(reverse_grad(tp, x), test)
 
     result <- GradientResult(x)
-    reverse.grad(tp, x, diffresult = result)
+    reverse_grad(tp, x, diffresult = result)
     expect_equal(result$value, testval)
     expect_equal(result$grad, test)
 
     print("....with compiled GradientTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
-        ctp <- reverse.compile(tp)
+        ctp <- reverse_compile(tp)
 
         ## additional check of is_tape function
         expect_true(autodiffr:::is_tape(ctp))
-        expect_equal(reverse.grad(ctp, x), test)
+        expect_equal(reverse_grad(ctp, x), test)
 
         result <- GradientResult(x)
-        reverse.grad(ctp, x, diffresult = result)
+        reverse_grad(ctp, x, diffresult = result)
         expect_equal(result$value, testval)
         expect_equal(result$grad, test)
     }
@@ -72,13 +72,13 @@ test_unary_gradient <- function(f, x, use_tape = TRUE){
 
 test_ternary_gradient <- function(f, a, b, c){
     test_val <- f(a, b, c)
-    test_a <- forward.grad(function(x) f(x, b, c), a)
-    test_b <- forward.grad(function(x) f(a, x, c), b)
-    test_c <- forward.grad(function(x) f(a, b, x), c)
+    test_a <- forward_grad(function(x) f(x, b, c), a)
+    test_b <- forward_grad(function(x) f(a, x, c), b)
+    test_c <- forward_grad(function(x) f(a, b, x), c)
 
     print("....without GradientConfig")
 
-    r <- reverse.grad(f, list(a, b, c))
+    r <- reverse_grad(f, list(a, b, c))
     ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
     expect_equal(ga, test_a)
     expect_equal(gb, test_b)
@@ -86,9 +86,9 @@ test_ternary_gradient <- function(f, a, b, c){
 
     print("....with GradientConfig")
 
-    cfg <- reverse.grad.config(list(a, b, c))
+    cfg <- reverse_grad_config(list(a, b, c))
 
-    r <- reverse.grad(f, list(a, b, c), cfg)
+    r <- reverse_grad(f, list(a, b, c), cfg)
     ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
 
     expect_equal(ga, test_a)
@@ -100,12 +100,12 @@ test_ternary_gradient <- function(f, a, b, c){
     seeda <- rand(a)
     seedb <- rand(b)
     seedc <- rand(c)
-    tp <- reverse.grad.tape(f, list(seeda, seedb, seedc))
+    tp <- reverse_grad_tape(f, list(seeda, seedb, seedc))
 
     ## additional check of is_tape function
     expect_true(autodiffr:::is_tape(tp))
 
-    r <- reverse.grad(tp, list(a, b, c))
+    r <- reverse_grad(tp, list(a, b, c))
     ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
 
     expect_equal(ga, test_a)
@@ -115,12 +115,12 @@ test_ternary_gradient <- function(f, a, b, c){
     print("....with compiled GradientTape")
 
     if (length(tp$tape) <= COMPILED_TAPE_LIMIT) { # otherwise compile time can be crazy
-        ctp <- reverse.compile(tp)
+        ctp <- reverse_compile(tp)
 
         ## additional check of is_tape function
         expect_true(autodiffr:::is_tape(tp))
 
-        r <- reverse.grad(ctp, list(a, b, c))
+        r <- reverse_grad(ctp, list(a, b, c))
         ga <- r[[1]]; gb <- r[[2]]; gc <- r[[3]]
 
         expect_equal(ga, test_a)

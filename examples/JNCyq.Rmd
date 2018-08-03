@@ -85,7 +85,7 @@ Note that this works with `eval=TRUE`, but Chebyquad still failing.
 
 ```{r, eval=TRUE}
 ## Now try to generate the gradient function
-ogr <- autodiffr::grad(ofn)
+ogr <- autodiffr::makeGradFunc(ofn)
 
 # print(ogr) # this will be more or less meaningless link to Julia function
 x0 <- c(1,2,3)
@@ -119,7 +119,7 @@ cyq.f <- function (x) {
 cyq.res <- function (x) {
 # Fletcher's chebyquad function m = n -- residuals 
    n<-length(x)
-   res<-zeros(n) # initialize. Note rep(0,n) ==> Julia error.
+   res<-zeros(x) # initialize. Note rep(0,n) ==> Julia error.
    for (i in 1:n) { #loop over resids
      rr<-0.0
      for (k in 1:n) {
@@ -222,7 +222,7 @@ However, the following code gives an error in Julia.
 
 ```{r, eval=FALSE}
 # Do not evaluate, as this fails
- cyq.ag <- autodiffr::grad(cyq.f)
+ cyq.ag <- autodiffr::makeGradFunc(cyq.f)
 gaag <- cyq.ag(x)
 print(gaag)
 memory.profile()
@@ -239,6 +239,7 @@ cat("funconstrain loaded\n")
 cheb <- chebyquad() # Seem to need the brackets or doesn't return pieces
 print(str(cheb))
 cyq2.f <- cheb$fn
+cyq2.g <- cheb$gr
 ## Note that funconstrain offers the starting value
 ## x0b <- cheb$x0(n=4) # Need the size of the vector
 ## x0b
@@ -246,7 +247,7 @@ cyq2.f <- cheb$fn
 ## same as
 print(cyq2.f(x))
 ## Try the gradient
-cyq2.ag <- autodiffr::grad(cyq2.f) # Need autodiffr:: specified for knitr
+cyq2.ag <- autodiffr::makeGradFunc(cyq2.f) # Need autodiffr:: specified for knitr
 ## print(cyq2.g)
 cat("Gradient at x")
 g2ag <- cyq2.ag(x)
@@ -272,11 +273,11 @@ tcyq2.ag
 
 ```{r}
 # These are quicker, but still slow
-cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq.optimized_ag <- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE)
 ```
 
 ```{r}
-cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE)
 ```
 
 ```{r}
@@ -301,7 +302,7 @@ tcyq2.optimized_ag
 ## which is a goal of the project at last phase.
 ## For example, even we only have a very simple function, the timing is high because of the overhead.
 foobar <- function(x) sum(x)
-foobar.ag <- autodiffr::grad(foobar, xsize = runif(length(x)), use_tape = TRUE)
+foobar.ag <- autodiffr::makeGradFunc(foobar, x = runif(length(x)), use_tape = TRUE)
 tfoobar.ag <- microbenchmark(foobar.ag(x), unit="us" )
 tfoobar.ag
 
@@ -326,8 +327,8 @@ tcyq2.g <- microbenchmark(cyq2.g(x), unit="us" )
 tcyq2.g
 
 ## The bad thing is that if the input size changes, we need to make an optimized gradient again.
-cyq.optimized_ag <- autodiffr::grad(cyq.f, xsize = runif(length(x)), use_tape = TRUE)
-cyq2.optimized_ag <- autodiffr::grad(cyq2.f, xsize = runif(length(x)), use_tape = TRUE)
+cyq.optimized_ag <- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE)
+cyq2.optimized_ag <- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE)
 tcyq.optimized_ag <- microbenchmark(cyq.optimized_ag(x), unit="us" )
 # microseconds
 tcyq.optimized_ag
@@ -343,21 +344,21 @@ all.equal(cyq.g(x), cyq.optimized_ag(x))
 all.equal(cyq.g(x), cyq2.optimized_ag(x))
 
 ## Benchmarking times without user interface wrappers
-tape1 <- reverse.grad.tape(cyq.f, runif(length(x)))
-microbenchmark(reverse.grad(tape1, x), unit="us" )
+tape1 <- reverse_grad_tape(cyq.f, runif(length(x)))
+microbenchmark(reverse_grad(tape1, x), unit="us" )
 
-tape2 <- reverse.grad.tape(cyq2.f, runif(length(x)))
-microbenchmark(reverse.grad(tape2, x), unit="us" )
+tape2 <- reverse_grad_tape(cyq2.f, runif(length(x)))
+microbenchmark(reverse_grad(tape2, x), unit="us" )
 ```
 
 ```{r}
 
 ## Benchmarking times without autodiffr wrappers
 JuliaCall::julia_command("using ReverseDiff")
-tape1 <- reverse.grad.tape(cyq.f, runif(length(x)))
+tape1 <- reverse_grad_tape(cyq.f, runif(length(x)))
 microbenchmark(JuliaCall::julia_call("ReverseDiff.gradient!", tape1, x), unit="us" )
 
-tape2 <- reverse.grad.tape(cyq2.f, runif(length(x)))
+tape2 <- reverse_grad_tape(cyq2.f, runif(length(x)))
 microbenchmark(JuliaCall::julia_call("ReverseDiff.gradient!", tape2, x), unit="us" )
 ```
 
@@ -468,7 +469,7 @@ res0bad
 
 require(autodiffr)
 ad_setup()
-hobbs.ag <- autodiffr::grad(hobbs.f)
+hobbs.ag <- autodiffr::makeGradFunc(hobbs.f)
 hobbsag0good <- hobbs.ag(x0good)
 ## Gradient by AD -- good starting point
 hobbsag0good
@@ -484,7 +485,7 @@ hobbsgbad
 ## Interestingly, the magnitude of gradient elements greater for "good"
 
 
-hobbs.aj <- autodiffr::jacobian(hobbs.res)
+hobbs.aj <- autodiffr::makeJacobianFunc(hobbs.res)
 ## Gradient by AD -- good starting point
 hobbsaj0good <- hobbs.aj(x0good)
 hobbsaj0good
@@ -576,7 +577,7 @@ print(gstar)
 ## This doesn't seem to work well??
 require(autodiffr)
 ad_setup()
-hc <- autodiffr::hessian(cstick.f)
+hc <- autodiffr::makeHessianFunc(cstick.f)
 hstar<-hc(xstar)
 cat("Hessian at proposed solution:\n")
 print(hstar)
@@ -634,7 +635,7 @@ wood.h <- function(x){
 x0 <- c(-3,-1,-3,-1) # Wood standard start
 
 cat("Function value at x0=",wood.f(x0),"\n")
-wood.ag <- autodiffr::grad(wood.f)
+wood.ag <- autodiffr::makeGradFunc(wood.f)
 cat("Autodiffr gradient value:")
 vwag0<-wood.ag(x0)
 print(vwag0)
@@ -646,16 +647,16 @@ print(vwag0-vwg0)
 
 
 cat("Autodiffr hessian of function value:")
-wood.ah <- autodiffr::hessian(wood.f)
+wood.ah <- autodiffr::makeHessianFunc(wood.f)
 vwah0 <- wood.ah(x0)
 print(vwah0)
 cat("Autodiffr hessian via jacobian of autodiff gradient value:")
-wood.ahjag <- autodiffr::jacobian(wood.ag)
+wood.ahjag <- autodiffr::makeJacobianFunc(wood.ag)
 vwahjag0<-wood.ahjag(x0)
 print(vwahjag0)
 
 cat("Autodiffr hessian via jacobian of manual gradient value:")
-wood.ahj <- autodiffr::jacobian(wood.g)
+wood.ahj <- autodiffr::makeJacobianFunc(wood.g)
 vwahj0 <- wood.ah(x0)
 print(vwahj0)
 cat("Manually coded:")
@@ -732,19 +733,19 @@ ofn <- function(x){
 }
 
 ## Now try to generate the gradient function
-ogr <- autodiffr::grad(ofn)
+ogr <- autodiffr::makeGradFunc(ofn)
 
 system.time(ogr(runif(100)))
 
 system.time(ogr(runif(100)))
 
-ogr1 <- autodiffr::grad(ofn, xsize = runif(100))
+ogr1 <- autodiffr::makeGradFunc(ofn, x = runif(100))
 
 system.time(ogr1(runif(100)))
 
 system.time(ogr1(runif(100)))
 
-ogr2 <- autodiffr::grad(ofn, xsize = runif(100), use_tape = TRUE)
+ogr2 <- autodiffr::makeGradFunc(ofn, x = runif(100), use_tape = TRUE)
 
 system.time(ogr2(runif(100)))
 

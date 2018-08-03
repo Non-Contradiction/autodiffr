@@ -12,9 +12,9 @@ test_that("test of grad", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
-        test <- grad(f, X)
+        test <- ad_grad(f, X)
         for (mode in c("reverse", "forward")) {
-            expect_equal(test, grad(f, X, mode = mode))
+            expect_equal(test, ad_grad(f, X, mode = mode))
         }
     }
 })
@@ -31,9 +31,9 @@ test_that("test of hessian", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
-        test <- hessian(f, X)
+        test <- ad_hessian(f, X)
         for (mode in c("reverse", "forward")) {
-            expect_equal(test, hessian(f, X, mode = mode))
+            expect_equal(test, ad_hessian(f, X, mode = mode))
         }
     }
 })
@@ -50,9 +50,9 @@ test_that("test of hessian", {
 #         f <- funcs[[i]]
 #         n <- names(funcs)[i]
 #         print(paste0("  ...testing ", n))
-#         test <- jacobian(f, X)
+#         test <- ad_jacobian(f, X)
 #         for (mode in c("reverse", "forward")) {
-#                         expect_equal(test, jacobian(f, X, mode = mode))
+#                         expect_equal(test, ad_jacobian(f, X, mode = mode))
 #         }
 #     }
 # })
@@ -69,12 +69,12 @@ test_that("test on scalar2scalar function", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
-        test <- grad(f, X)
+        test <- ad_grad(f, X)
         for (mode in c("reverse", "forward")) {
             print(paste0("  ......mode ", mode))
 
-            expect_equal(test, grad(f, X, mode = mode))
-            expect_equal(test, jacobian(f, X, mode = mode)[1])
+            expect_equal(test, ad_grad(f, X, mode = mode))
+            expect_equal(test, ad_jacobian(f, X, mode = mode)[1])
         }
     }
 })
@@ -118,7 +118,7 @@ test_that("test on multi-argument function", {
         test <- ans(X)
         for (mode in c("reverse", "forward")) {
             print(paste0("  ......mode ", mode))
-            expect_equal(test, grad(f, X, mode = mode))
+            expect_equal(test, ad_grad(f, X, mode = mode))
         }
     }
 })

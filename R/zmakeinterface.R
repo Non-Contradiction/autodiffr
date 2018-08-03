@@ -35,22 +35,22 @@ NULL
 funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
     fname <- match.arg(fname)
     if (fname == "grad") {
-        D <- list(forward = multi.forward.grad, reverse = reverse.grad)
-        Config <- list(forward = multi.forward.grad.config, reverse = reverse.grad.config)
-        Tape <- reverse.grad.tape
-        interface <- grad
+        D <- list(forward = multi_forward_grad, reverse = reverse_grad)
+        Config <- list(forward = multi_forward_grad_config, reverse = reverse_grad_config)
+        Tape <- reverse_grad_tape
+        interface <- ad_grad
     }
     if (fname == "jacobian") {
-        D <- list(forward = multi.forward.jacobian, reverse = reverse.jacobian)
-        Config <- list(forward = multi.forward.jacobian.config, reverse = reverse.jacobian.config)
-        Tape <- reverse.jacobian.tape
-        interface <- jacobian
+        D <- list(forward = multi_forward_jacobian, reverse = reverse_jacobian)
+        Config <- list(forward = multi_forward_jacobian_config, reverse = reverse_jacobian_config)
+        Tape <- reverse_jacobian_tape
+        interface <- ad_jacobian
     }
     if (fname == "hessian") {
-        D <- list(forward = multi.forward.hessian, reverse = reverse.hessian)
-        Config <- list(forward = multi.forward.hessian.config, reverse = reverse.hessian.config)
-        Tape <- reverse.hessian.tape
-        interface <- hessian
+        D <- list(forward = multi_forward_hessian, reverse = reverse_hessian)
+        Config <- list(forward = multi_forward_hessian_config, reverse = reverse_hessian_config)
+        Tape <- reverse_hessian_tape
+        interface <- ad_hessian
     }
 
     f <- function(func, ..., mode = c("reverse", "forward"),
@@ -116,7 +116,7 @@ funcInterface <- function(fname = c("grad", "jacobian", "hessian")){
         ## use_tape,
         tape <- Tape(target, scalar2vector(x))
         if (isTRUE(compiled)) {
-            tape <- reverse.compile(tape)
+            tape <- reverse_compile(tape)
         }
         return(function(x) D$reverse(tape, scalar2vector(x), debug = debug))
     }

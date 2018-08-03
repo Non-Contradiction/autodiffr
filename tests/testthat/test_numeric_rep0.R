@@ -30,16 +30,16 @@ test_that("Test on various diff implementations", {
     skip_on_cran()
     ad_setup()
 
-    R2 <- jacobian(f2, x, mode = "reverse")
-    F2 <- jacobian(f2, x, mode = "forward")
+    R2 <- ad_jacobian(f2, x, mode = "reverse")
+    F2 <- ad_jacobian(f2, x, mode = "forward")
     expect_equal(R2, F2)
-    R3 <- jacobian(f3, x, mode = "reverse")
+    R3 <- ad_jacobian(f3, x, mode = "reverse")
     expect_equal(R2, R3)
-    F3 <- jacobian(f3, x, mode = "forward")
+    F3 <- ad_jacobian(f3, x, mode = "forward")
     expect_equal(R2, F3)
-    R4 <- jacobian(f4, x, mode = "reverse")
+    R4 <- ad_jacobian(f4, x, mode = "reverse")
     expect_equal(R2, R4)
-    F4 <- jacobian(f4, x, mode = "forward")
+    F4 <- ad_jacobian(f4, x, mode = "forward")
     expect_equal(R2, F4)
 
 })
@@ -50,10 +50,10 @@ test_that("Test on hessian with as.double", {
     skip_on_cran()
     ad_setup()
 
-    expect_equal(hessian(ff, c(1, 1), mode = "reverse"),
+    expect_equal(ad_hessian(ff, c(1, 1), mode = "reverse"),
                  2 * diag(2))
 
-    expect_equal(hessian(ff, c(1, 1), mode = "forward"),
+    expect_equal(ad_hessian(ff, c(1, 1), mode = "forward"),
                  2 * diag(2))
 
 })

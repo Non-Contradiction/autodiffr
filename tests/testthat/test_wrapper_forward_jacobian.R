@@ -33,22 +33,22 @@ test_that("hardcoded test", {
 
         print(paste0("  ...running hardcoded test with chunk size = ", c))
 
-        cfg <- forward.jacobian.config(f, x, chunk_size = c)
+        cfg <- forward_jacobian_config(f, x, chunk_size = c)
 
-        expect_equal(j, forward.jacobian(f, x, cfg))
+        expect_equal(j, forward_jacobian(f, x, cfg))
 
-        expect_equal(j, forward.jacobian(f, x))
+        expect_equal(j, forward_jacobian(f, x))
 
         out <- JacobianResult(y = rep(0, 4), rep(0, 3))
-        forward.jacobian(f, x, cfg, diffresult = out)
+        forward_jacobian(f, x, cfg, diffresult = out)
         expect_equal(out$value, v)
         expect_equal(out$jacobian, j)
     }
 
-    cfgx <- forward.jacobian.config(sin, x)
-    expect_error(forward.jacobian(f, x, cfg = cfgx))
-    expect_identical(forward.jacobian(f, x, cfg = cfgx, check = FALSE),
-                     forward.jacobian(f,x))
+    cfgx <- forward_jacobian_config(sin, x)
+    expect_error(forward_jacobian(f, x, cfg = cfgx))
+    expect_identical(forward_jacobian(f, x, cfg = cfgx, check = FALSE),
+                     forward_jacobian(f,x))
 
 })
 
@@ -67,28 +67,28 @@ test_that("test on ARRAY_TO_ARRAY_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         v <- f(X)
-        j <- forward.jacobian(f, X)
+        j <- forward_jacobian(f, X)
 
         JuliaCall::julia_assign("_f", f)
         JuliaCall::julia_assign("_X", X)
         expect_equal(j, JuliaCall::julia_eval("Calculus.jacobian(x -> vec(_f(x)), _X, :forward)"),
                      tolerance = 0.001)
 
-        cfg0 <- forward.jacobian.config(f, X)
-        expect_equal(j, forward.jacobian(f, X, cfg0))
+        cfg0 <- forward_jacobian_config(f, X)
+        expect_equal(j, forward_jacobian(f, X, cfg0))
 
         for (c in CHUNK_SIZES) {
 
             print(paste0("  ...testing ", n, " with chunk size = ", c))
 
-            cfg <- forward.jacobian.config(f, X, chunk_size = c)
+            cfg <- forward_jacobian_config(f, X, chunk_size = c)
 
-            out <- forward.jacobian(f, X, cfg)
+            out <- forward_jacobian(f, X, cfg)
 
             expect_equal(out, j)
 
             # out <- JacobianResult(X, v)
-            # forward.jacobian(f, X, cfg, diffresult = out)
+            # forward_jacobian(f, X, cfg, diffresult = out)
             # expect_equal(out$value, v)
             # expect_equal(out$jacobian, j)
         }

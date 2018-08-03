@@ -34,9 +34,9 @@
 #'   With the debug mode, users can have more informative error messages.
 #'   Without the debug mode, the wrapper functions will be more performant.
 #'
-#' @return `forward.deriv`, `forward.grad`, `forward.jacobian` and `forward.hessian` return
+#' @return `forward_deriv`, `forward_grad`, `forward_jacobian` and `forward_hessian` return
 #'   the derivative, gradient, jacobian and hessian of `f` correspondingly evaluated at `x`.
-#'   `forward.grad.config`, `forward.jacobian.config` and `forward.hessian.config`
+#'   `forward_grad_config`, `forward_jacobian_config` and `forward_hessian_config`
 #'   return Config instances based on `f`` and `x`,
 #'   which contain all the work buffers required to carry out the forward mode automatic differentiation.
 #' @md
@@ -46,7 +46,7 @@ NULL
 
 #' @rdname ForwardDiff
 #' @export
-forward.deriv <- function(f, x){
+forward_deriv <- function(f, x){
     ## ad_setup() is not necessary,
     ## unless you want to pass some arguments to it.
     ad_setup()
@@ -88,15 +88,15 @@ forward_config <- function(name){
 
 #' @rdname ForwardDiff
 #' @export
-forward.grad.config <- forward_config("GradientConfig")
+forward_grad_config <- forward_config("GradientConfig")
 
 #' @rdname ForwardDiff
 #' @export
-forward.jacobian.config <- forward_config("JacobianConfig")
+forward_jacobian_config <- forward_config("JacobianConfig")
 
 #' @rdname ForwardDiff
 #' @export
-forward.hessian.config <- forward_config("HessianConfig")
+forward_hessian_config <- forward_config("HessianConfig")
 
 ######### ForwardDiff
 
@@ -148,12 +148,12 @@ forward_diff <- function(name, config_method){
 
 #' @rdname ForwardDiff
 #' @export
-forward.grad <- forward_diff("gradient", forward.grad.config)
+forward_grad <- forward_diff("gradient", forward_grad_config)
 
 #' @rdname ForwardDiff
 #' @export
-forward.jacobian <- forward_diff("jacobian", forward.jacobian.config)
+forward_jacobian <- forward_diff("jacobian", forward_jacobian_config)
 
 #' @rdname ForwardDiff
 #' @export
-forward.hessian <- forward_diff("hessian", forward.hessian.config)
+forward_hessian <- forward_diff("hessian", forward_hessian_config)

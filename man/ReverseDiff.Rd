@@ -2,47 +2,47 @@
 % Please edit documentation in R/reverse.R
 \name{ReverseDiff}
 \alias{ReverseDiff}
-\alias{reverse.grad}
-\alias{reverse.jacobian}
-\alias{reverse.hessian}
-\alias{reverse.grad.config}
-\alias{reverse.jacobian.config}
-\alias{reverse.hessian.config}
-\alias{reverse.grad.tape}
-\alias{reverse.jacobian.tape}
-\alias{reverse.hessian.tape}
-\alias{reverse.compile}
+\alias{reverse_grad}
+\alias{reverse_jacobian}
+\alias{reverse_hessian}
+\alias{reverse_grad_config}
+\alias{reverse_jacobian_config}
+\alias{reverse_hessian_config}
+\alias{reverse_grad_tape}
+\alias{reverse_jacobian_tape}
+\alias{reverse_hessian_tape}
+\alias{reverse_compile}
 \title{Wrapper functions for API of \code{ReverseDiff.jl}.}
 \usage{
-reverse.grad(f_or_tape, input, cfg = NULL, diffresult = NULL,
+reverse_grad(f_or_tape, input, cfg = NULL, diffresult = NULL,
   debug = TRUE)
 
-reverse.jacobian(f_or_tape, input, cfg = NULL, diffresult = NULL,
+reverse_jacobian(f_or_tape, input, cfg = NULL, diffresult = NULL,
   debug = TRUE)
 
-reverse.hessian(f_or_tape, input, cfg = NULL, diffresult = NULL,
+reverse_hessian(f_or_tape, input, cfg = NULL, diffresult = NULL,
   debug = TRUE)
 
-reverse.grad.config(input, diffresult = NULL)
+reverse_grad_config(input, diffresult = NULL)
 
-reverse.jacobian.config(input, diffresult = NULL)
+reverse_jacobian_config(input, diffresult = NULL)
 
-reverse.hessian.config(input, diffresult = NULL)
+reverse_hessian_config(input, diffresult = NULL)
 
-reverse.grad.tape(f, input, cfg = NULL)
+reverse_grad_tape(f, input, cfg = NULL)
 
-reverse.jacobian.tape(f, input, cfg = NULL)
+reverse_jacobian_tape(f, input, cfg = NULL)
 
-reverse.hessian.tape(f, input, cfg = NULL)
+reverse_hessian_tape(f, input, cfg = NULL)
 
-reverse.compile(tape)
+reverse_compile(tape)
 }
 \arguments{
 \item{f_or_tape}{the target function \code{f} or the tape recording execution trace of \code{f}.}
 
 \item{input}{the point where you take the gradient, jacobian and hessian.
 Note that it should be a a vector of length greater than 1.
-If you want to calulate the derivative of a function, you can considering using \code{forward.deriv}.}
+If you want to calulate the derivative of a function, you can considering using \code{forward_deriv}.}
 
 \item{cfg}{Config objects which contains the preallocated tape and work buffers
 used by reverse mode automatic differentiation.
@@ -70,12 +70,12 @@ If the target functions contain control flow based on the input values, be caref
 use tape-related APIs.}
 }
 \value{
-\code{reverse.grad}, \code{reverse.jacobian} and \code{reverse.hessian} return
+\code{reverse_grad}, \code{reverse_jacobian} and \code{reverse_hessian} return
 the gradient, jacobian and hessian of \code{f} or \code{tape} correspondingly evaluated at \code{input}.
-\code{reverse.grad.config}, \code{reverse.jacobian.config} and \code{reverse.hessian.config}
+\code{reverse_grad_config}, \code{reverse_jacobian_config} and \code{reverse_hessian_config}
 return Config instances containing the preallocated tape and work buffers used by
 reverse mode automatic differentiation.
-\code{reverse.grad.tape}, \code{reverse.jacobian.tape} and \code{reverse.hessian.tape}
+\code{reverse_grad_tape}, \code{reverse_jacobian_tape} and \code{reverse_hessian_tape}
 return Tape instances containing the the execution trace of the target function
 with the given input values.
 }

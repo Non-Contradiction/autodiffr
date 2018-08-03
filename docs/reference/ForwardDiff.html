@@ -116,19 +116,19 @@ For more details, see <a href='http://www.juliadiff.org/ForwardDiff.jl/stable/us
     
     </div>
 
-    <pre class="usage"><span class='fu'>forward.deriv</span>(<span class='no'>f</span>, <span class='no'>x</span>)
+    <pre class="usage"><span class='fu'>forward_deriv</span>(<span class='no'>f</span>, <span class='no'>x</span>)
 
-<span class='fu'>forward.grad.config</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>forward_grad_config</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>forward.jacobian.config</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>forward_jacobian_config</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>forward.hessian.config</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>forward_hessian_config</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>forward.grad</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>forward_grad</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>forward.jacobian</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>forward_jacobian</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
-<span class='fu'>forward.hessian</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+<span class='fu'>forward_hessian</span>(<span class='no'>f</span>, <span class='no'>x</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>check</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,9 +179,9 @@ This can lead to perturbation confusion, so should be used with care.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>forward.deriv</code>, <code>forward.grad</code>, <code>forward.jacobian</code> and <code>forward.hessian</code> return
+    <p><code>forward_deriv</code>, <code>forward_grad</code>, <code>forward_jacobian</code> and <code>forward_hessian</code> return
 the derivative, gradient, jacobian and hessian of <code>f</code> correspondingly evaluated at <code>x</code>.
-<code>forward.grad.config</code>, <code>forward.jacobian.config</code> and <code>forward.hessian.config</code>
+<code>forward_grad_config</code>, <code>forward_jacobian_config</code> and <code>forward_hessian_config</code>
 return Config instances based on <code>f`` and</code>x`,
 which contain all the work buffers required to carry out the forward mode automatic differentiation.</p>
     

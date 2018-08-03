@@ -17,33 +17,33 @@ test_that("test on rosenbrock function", {
     v <- f(x)
     g <- c(-9.4, 15.6, 52.0)
 
-    expect_equal(g, forward.grad(f, x))
-    cfg0 <- forward.grad.config(f, x)
-    expect_equal(g, forward.grad(f, x, cfg0))
+    expect_equal(g, forward_grad(f, x))
+    cfg0 <- forward_grad_config(f, x)
+    expect_equal(g, forward_grad(f, x, cfg0))
 
     for (c in 1:3) {
 
         print(paste0("  ...running hardcoded test with chunk size = ", c))
 
-        cfg <- forward.grad.config(f, x, chunk_size = c)
+        cfg <- forward_grad_config(f, x, chunk_size = c)
 
-        expect_equal(g, forward.grad(f, x, cfg))
+        expect_equal(g, forward_grad(f, x, cfg))
 
         out <- GradientResult(x)
-        forward.grad(f, x, cfg, diffresult = out)
+        forward_grad(f, x, cfg, diffresult = out)
         expect_equal(out$value, v)
         expect_equal(out$grad, g)
 
         out <- GradientResult(x)
-        forward.grad(f, x, diffresult = out)
+        forward_grad(f, x, diffresult = out)
         expect_equal(out$value, v)
         expect_equal(out$grad, g)
     }
 
-    cfgx <- forward.grad.config(sin, x)
-    expect_error(forward.grad(f, x, cfg = cfgx))
-    expect_identical(forward.grad(f, x, cfg = cfgx, check = FALSE),
-                     forward.grad(f,x))
+    cfgx <- forward_grad_config(sin, x)
+    expect_error(forward_grad(f, x, cfg = cfgx))
+    expect_identical(forward_grad(f, x, cfg = cfgx, check = FALSE),
+                     forward_grad(f,x))
 
 })
 
@@ -62,22 +62,22 @@ test_that("test on VECTOR_TO_NUMBER_FUNCS", {
         f <- funcs[[i]]
         n <- names(funcs)[i]
         v <- f(X)
-        g <- forward.grad(f, X)
+        g <- forward_grad(f, X)
         expect_equal(g, JuliaCall::julia_call("Calculus.derivative", f, X))
 
-        cfg0 <- forward.grad.config(f, X)
-        expect_equal(g, forward.grad(f, X, cfg = cfg0))
+        cfg0 <- forward_grad_config(f, X)
+        expect_equal(g, forward_grad(f, X, cfg = cfg0))
 
         for (c in CHUNK_SIZES) {
 
             print(paste0("  ...testing ", n, " with chunk size = ", c))
 
-            cfg <- forward.grad.config(f, X, chunk_size = c)
+            cfg <- forward_grad_config(f, X, chunk_size = c)
 
-            expect_equal(g, forward.grad(f, X, cfg))
+            expect_equal(g, forward_grad(f, X, cfg))
 
             out <- GradientResult(X)
-            forward.grad(f, X, cfg, diffresult = out)
+            forward_grad(f, X, cfg, diffresult = out)
             expect_equal(out$value, v)
             expect_equal(out$grad, g)
         }

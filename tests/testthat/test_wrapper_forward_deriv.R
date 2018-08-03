@@ -21,7 +21,7 @@ test_that("test on NUMBER_TO_NUMBER_FUNCS", {
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         v <- f(x)
-        d <- forward.deriv(f, x)
+        d <- forward_deriv(f, x)
         expect_equal(d, JuliaCall::julia_call("Calculus.derivative", f, x))
     }
 })
@@ -40,7 +40,7 @@ test_that("test on NUMBER_TO_ARRAY_FUNCS", {
         n <- names(funcs)[i]
         print(paste0("  ...testing ", n))
         v <- f(x)
-        d <- forward.deriv(f, x)
+        d <- forward_deriv(f, x)
         expect_equal(d, JuliaCall::julia_call("Calculus.derivative", f, x))
     }
 })
