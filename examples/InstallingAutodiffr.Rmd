@@ -307,7 +307,7 @@ Install Julia.
 
 Install R
 
-Need Rtools.
+Need Rtools. 
 
 Install `devtools` and use it to `install_github()`
 `JuliaCall` and `autodiffr`.
@@ -332,6 +332,8 @@ Installed R-3.5.1, devtools.
 Tried to install_github("Non-contradiction/Julia_Call") -- FAILED
 
 Needs Rtools. Installed Rtools35.exe. But when tried R said this version NOT compatible.
+(In Win10 found Rtools34.exe worked. However, in Win10, was able to install autodiff and devtools
+WITHOUT Rtools. Possibly don't need the underscore.)
 
 Following is partial record of some things tried. Apologies for messiness.
 

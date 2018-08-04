@@ -851,6 +851,40 @@ sol1
 
 ?? Do we want to try discontinuity at solution? Discontinuous function value?
 
+## Beware: R constructs that do not work well in Julia and autodiffr
+
+```{r}
+require(autodiffr)
+f1 <- function(x){ sum(x^2)^2}
+f2 <- function(x){as.numeric(crossprod(crossprod(x)))}
+f3 <- function(x){ as.numeric((t(x) %*% x)^2)}
+x0 <- (1:4)
+print(x0)
+print(f1(x0))
+print(f2(x0))
+print(f3(x0))
+## Now try gradients
+g1 <- makeGradFunc(f1)
+print(g1(x0))
+## But these do not work
+g2 <- makeGradFunc(f2)
+print(try(g2(x0)))
+g3 <- makeGradFunc(f3)
+print(try(g3(x0)))
+```
+
+```{r}
+## ad_variant gets a little further, but still fails
+f2v <- ad_variant(f2)
+print(f2v(x0))
+f3v <- ad_variant(f3)
+print(f3v(x0))
+g2v <- makeGradFunc(f2v)
+print(try(g2v(x0)))
+g3v <- makeGradFunc(f3v)
+print(try(g3v(x0)))
+
+```
 
 
 ## Bibliography
