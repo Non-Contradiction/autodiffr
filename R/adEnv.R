@@ -39,6 +39,16 @@ Japply <- function(X, MARGIN, FUN){
     }
 }
 
+original_assign <- .Primitive("[<-")
+
+Jassign <- function(x, i, j, ..., value){
+    if (inherits(value, "JuliaObject")) {
+        x <- JuliaCall::JuliaObject(x)
+    }
+    if (missing(j)) original_assign(x, i, value = value)
+    else original_assign(x, i, j, ..., value = value)
+}
+
 decorate <- function(parentEnv){
     newEnv <- new.env(parent = parentEnv)
 
@@ -60,6 +70,8 @@ decorate <- function(parentEnv){
     newEnv$matrix <- Jmatrix
 
     newEnv$apply <- Japply
+
+    newEnv[["[<-"]] <- Jassign
 
     newEnv
 }
