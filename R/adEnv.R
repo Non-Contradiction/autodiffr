@@ -33,9 +33,15 @@ Jmatrix <- function(data, nrow = 1, ncol = 1){
     array(data, dim = c(nrow, ncol))
 }
 
-Japply <- function(X, MARGIN, FUN){
-    if (MARGIN == 1) {
+Japply <- function(X, MARGIN, FUN, ...){
+    if (!inherits(X, "JuliaObject")) return(apply(X, MARGIN, FUN, ...))
 
+    if (MARGIN == 1) {
+        as.vector(JuliaCall::julia_call("mapslices", FUN, X, 2L))
+    }
+    else {
+        if (MARGIN == 2) JuliaCall::julia_call("mapslices", FUN, X, 1L)
+        else stop("autodiffr doesn't know how to deal with apply with MARGIN != 1,2 currently.")
     }
 }
 
