@@ -13,6 +13,8 @@ Jtcrossprod <- function(x, y = NULL){
 }
 
 Jdiag <- function(x = 1, nrow, ncol, names = TRUE){
+    if (!inherits(x, "JuliaObject")) return(diag(x))
+
     if (is.vector(x)) {
         return(diagm(x))
     }
@@ -20,10 +22,14 @@ Jdiag <- function(x = 1, nrow, ncol, names = TRUE){
 }
 
 Jsapply <- function(X, FUN){
+    if (!inherits(X, "JuliaObject")) return(sapply(X, FUN))
+
     map(FUN, X)
 }
 
 Jmatrix <- function(data, nrow = 1, ncol = 1){
+    if (!inherits(data, "JuliaObject")) return(matrix(data, nrow, ncol))
+
     if (missing(ncol)) {
         if (!missing(nrow)) {
             ncol <- if (length(data) < nrow) 1 else length(data) / nrow}
