@@ -106,11 +106,9 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
                          which redefines some R functions to be compatible with autodiffr.
                          Please use it with care.")
 
-    if (is.null(.AD$env)) {
-        .AD$env <- decorate(environment(f))
-    }
+    newEnv <- decorate(environment(f))
     orig_f <- f
-    environment(f) <- .AD$env
+    environment(f) <- newEnv
 
     if (!is.null(checkArgs)) {
         if (is.list(checkArgs)) {
