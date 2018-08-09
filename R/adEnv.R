@@ -104,7 +104,7 @@ decorate <- function(parentEnv){
 #' @param f the original function.
 #' @param checkArgs if given, then the original function and the new version will be checked on the argument(s).
 #'   If it's a list, then it will be regarded as a list of arguments; otherwise it will be regarded as the only argument.
-#' @param whether to silence the message printed by `ad_variant`.
+#' @param silent whether to silence the message printed by `ad_variant`.
 #'
 #' @md
 #' @export
