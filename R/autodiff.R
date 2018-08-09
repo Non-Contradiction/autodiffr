@@ -1,5 +1,3 @@
-.AD <- new.env(parent = emptyenv())
-
 #' Do initial setup for package autodiffr.
 #'
 #' \code{ad_setup} does the initial setup for package autodiffr.
