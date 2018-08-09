@@ -151,7 +151,11 @@ traceOne <- function(func, func_names = NULL, msg = NULL){
     if (!is.null(func_names)) {
         msg <- paste0(func_names$old, " has been replaced with ", func_names$new, ".")
     }
-    trace(func, function() message(msg), print = FALSE,
+
+    force(msg)
+    msg_func <- function() message(msg)
+
+    trace(func, msg_func, print = FALSE,
           where = parent.env(.AD),
           exit = function() untrace(func, where = parent.env(.AD)))
 }
