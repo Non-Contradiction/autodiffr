@@ -13,7 +13,7 @@ Jtcrossprod <- function(x, y = NULL){
 }
 
 Jdiag <- function(x = 1, nrow, ncol, names = TRUE){
-    if (!inherits(x, "JuliaObject")) return(diag(x))
+    # if (!inherits(x, "JuliaObject")) return(diag(x))
 
     if (is.vector(x)) {
         return(diagm(x))
@@ -22,13 +22,13 @@ Jdiag <- function(x = 1, nrow, ncol, names = TRUE){
 }
 
 Jsapply <- function(X, FUN){
-    if (!inherits(X, "JuliaObject")) return(sapply(X, FUN))
+    # if (!inherits(X, "JuliaObject")) return(sapply(X, FUN))
 
     map(FUN, X)
 }
 
 Jmatrix <- function(data, nrow = 1, ncol = 1){
-    if (!inherits(data, "JuliaObject")) return(matrix(data, nrow, ncol))
+    # if (!inherits(data, "JuliaObject")) return(matrix(data, nrow, ncol))
 
     if (missing(ncol)) {
         if (!missing(nrow)) {
@@ -40,7 +40,7 @@ Jmatrix <- function(data, nrow = 1, ncol = 1){
 }
 
 Japply <- function(X, MARGIN, FUN, ...){
-    if (!inherits(X, "JuliaObject")) return(apply(X, MARGIN, FUN, ...))
+    # if (!inherits(X, "JuliaObject")) return(apply(X, MARGIN, FUN, ...))
 
     if (MARGIN == 1) {
         as.vector(JuliaCall::julia_call("mapslices", FUN, X, 2L))
@@ -54,9 +54,11 @@ Japply <- function(X, MARGIN, FUN, ...){
 original_assign <- .Primitive("[<-")
 
 Jassign <- function(x, i, j, ..., value){
-    if (inherits(value, "JuliaObject")) {
-        x <- JuliaCall::JuliaObject(x)
-    }
+    # if (inherits(value, "JuliaObject")) {
+    #     x <- JuliaCall::JuliaObject(x)
+    # }
+    x <- JuliaCall::JuliaObject(x)
+
     if (missing(j)) original_assign(x, i, value = value)
     else original_assign(x, i, j, ..., value = value)
 }
