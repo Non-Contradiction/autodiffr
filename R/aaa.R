@@ -1,1 +1,1 @@
-.AD <- new.env(parent = emptyenv())
+.AD <- new.env()
