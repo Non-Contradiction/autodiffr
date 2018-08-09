@@ -1,3 +1,10 @@
+JcolSums <- function(...) cSums(...)
+JcolMeans <- function(...) cMeans(...)
+JrowSums <- function(...) rSums(...)
+JrowMeans <- function(...) rMeans(...)
+Jmatmult <- function(...) `%m%`(...)
+Jmapply <- function(...) map(...)
+
 Jcrossprod <- function(x, y = NULL){
     if (is.null(y)) {
         return(t(x) %m% x)
@@ -66,18 +73,18 @@ Jassign <- function(x, i, j, ..., value){
 decorate <- function(parentEnv){
     newEnv <- new.env(parent = parentEnv)
 
-    newEnv$colSums <- cSums
-    newEnv$colMeans <- cMeans
-    newEnv$rowSums <- rSums
-    newEnv$rowMeans <- rMeans
-    newEnv$`%*%` <- `%m%`
+    newEnv$colSums <- JcolSums
+    newEnv$colMeans <- JcolMeans
+    newEnv$rowSums <- JrowSums
+    newEnv$rowMeans <- JrowMeans
+    newEnv$`%*%` <- Jmatmult
 
     newEnv$crossprod <- Jcrossprod
     newEnv$tcrossprod <- Jtcrossprod
 
     newEnv$diag <- Jdiag
 
-    newEnv$mapply <- map
+    newEnv$mapply <- Jmapply
 
     newEnv$sapply <- Jsapply
 
@@ -117,7 +124,12 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
         }
         else {
             orig_result <- as.vector(orig_f(checkArgs))
+
+            if (!silent) traceAll()
+
             new_result <- as.vector(f(checkArgs))
+
+            detraceAll()
         }
         if (!all.equal(orig_result, new_result, tolerance = 1e-6)) {
             stop("New function doesn't give same result with original function.
@@ -131,4 +143,56 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
     }
 
     f
+}
+
+traceOne <- function(func, func_names = NULL, msg = NULL){
+    if (!is.null(func_names)) {
+        msg <- paste0(func_names$old, " has been replaced with ", func_names$new, ".")
+    }
+    trace(func, function() message(msg), print = FALSE, exit = function() untrace(func))
+}
+
+traceAll <- function(){
+    traceOne(JcolSums, list(old = "colSums", new = "cSums"))
+    traceOne(JcolMeans, list(old = "colMeans", new = "cMeans"))
+    traceOne(JrowSums, list(old = "rowSums", new = "rSums"))
+    traceOne(JrowMeans, list(old = "rowMeans", new = "rMeans"))
+    traceOne(Jmatmult, list(old = "Matrix multiplication %*%", new = "%m%"))
+
+    traceOne(Jcrossprod, msg = "crossprod has been replaced by t(x) %m% y.")
+    traceOne(Jtcrossprod, msg = "tcrossprod has been replaced by x %m% t(y).")
+
+    traceOne(Jdiag, msg = "Use of diag on vector to create a diagonal matrix has been replaced by diagm.")
+
+    traceOne(Jmapply, msg = "mapply has been replaced by map.")
+
+    traceOne(Jsapply, msg = "Use of sapply has been replaced by map.")
+
+    traceOne(Jmatrix, msg = "matrix has been replaced by array.")
+
+    traceOne(Japply, msg = "apply has been replaced to take care with arrays in Julia.")
+
+    traceOne(Jassign, msg = "assignment in arrays has been replaced to take care with arrays in Julia.")
+}
+
+detraceAll <- function(){
+    untrace(JcolSums)
+    untrace(JcolMeans)
+    untrace(JrowSums)
+    untrace(JrowMeans)
+    untrace(Jmatmult)
+
+    untrace(Jcrossprod)
+    untrace(Jtcrossprod)
+
+    untrace(Jdiag)
+
+    untrace(Jsapply)
+    untrace(Jmapply)
+
+    untrace(Jmatrix)
+
+    untrace(Japply)
+
+    untrace(Jassign)
 }
