@@ -146,7 +146,9 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
 }
 
 traceOne <- function(func, func_names = NULL, msg = NULL){
-    get(func, parent.env(.AD))
+    env <- parent.env(.AD)
+
+    get(func, env)
 
     if (!is.null(func_names)) {
         msg <- paste0(func_names$old, " has been replaced with ", func_names$new, ".")
@@ -156,8 +158,8 @@ traceOne <- function(func, func_names = NULL, msg = NULL){
     msg_func <- function() message(msg)
 
     trace(func, msg_func, print = FALSE,
-          where = parent.env(.AD),
-          exit = function() untrace(func, where = parent.env(.AD)))
+          where = env,
+          exit = function() untrace(func, where = env))
 }
 
 untraceOne <- function(func){
