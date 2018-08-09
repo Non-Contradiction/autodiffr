@@ -95,12 +95,42 @@ decorate <- function(parentEnv){
 #'  `ad_variant` is a helper function which creates variant functions more suitable for automatic differentiation.
 #'
 #' @param f the original function.
+#' @param checkArgs if given, then the original function and the new version will be checked on the argument(s).
+#'   If it's a list, then it will be regarded as a list of arguments; otherwise it will be regarded as the only argument.
+#' @param whether to silence the message printed by `ad_variant`.
+#'
 #' @md
 #' @export
-ad_variant <- function(f){
+ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
+    if (!silent) message("ad_variant will try to wrap your function in a special environment,
+                         which redefines some R functions to be compatible with autodiffr.
+                         Please use it with care.")
+
     if (is.null(.AD$env)) {
         .AD$env <- decorate(environment(f))
     }
+    orig_f <- f
     environment(f) <- .AD$env
+
+    if (!is.null(checkArgs)) {
+        if (is.list(checkArgs)) {
+            orig_result <- as.vector(do.call(orig_f, checkArgs))
+            new_result <- as.vector(do.call(f, checkArgs))
+        }
+        else {
+            orig_result <- as.vector(orig_f(checkArgs))
+            new_result <- as.vector(f(checkArgs))
+        }
+        if (!all.equal(orig_result, new_result, tolerance = 1e-6)) {
+            stop("New function doesn't give same result with original function.
+                 Please report an issue to autodiffr with the function and argument(s) at
+                 https://github.com/Non-Contradiction/autodiffr")
+        }
+        else {
+            if (!silent) message("New function gives the same result as the original function at the given arguments.
+                                 Still need to use it with care.")
+        }
+    }
+
     f
 }
