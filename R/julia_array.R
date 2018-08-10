@@ -1,6 +1,6 @@
 #' Create Julia Arrays
 #'
-#'  `JuliaArray` is a helper function to create Julia arrays including vectors, matrices and etc.
+#'  `julia_array` is a helper function to create Julia arrays including vectors, matrices and etc.
 #'  And it can be used in functions to facilitate automatic differentiation.
 #'
 #' @param data the data to create the array.
@@ -14,15 +14,15 @@
 #' @examples
 #'
 #' \donttest{ ## setup is quite time consuming
-#'   JuliaArray(0, 3) ## will return a Julia vector with length 3 and filled with 0
-#'   JuliaArray(0, 3, 4) ## will return a Julia matrix of 3x4 and filled with 0
-#'   JuliaArray(matrix(1, 2, 2)) ## dimension is not given, will return a Julia matrix
-#'   JuliaArray(matrix(1, 2, 2), 4) ## dimension is given, will return a Julia vector
+#'   julia_array(0, 3) ## will return a Julia vector with length 3 and filled with 0
+#'   julia_array(0, 3, 4) ## will return a Julia matrix of 3x4 and filled with 0
+#'   julia_array(matrix(1, 2, 2)) ## dimension is not given, will return a Julia matrix
+#'   julia_array(matrix(1, 2, 2), 4) ## dimension is given, will return a Julia vector
 #' }
 #'
 #' @md
 #' @export
-JuliaArray <- function(data, n1, n2, ...){
+julia_array <- function(data, n1, n2, ...){
     ## if n1 is missing, then ignore all the dimensions (even if given),
     ## then just use JuliaObject to wrap the data
     if (missing(n1)) {
