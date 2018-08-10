@@ -2,7 +2,7 @@
 % Please edit documentation in R/julia_array.R
 \name{julia_array}
 \alias{julia_array}
-\title{Create Julia Arrays}
+\title{Create Julia Arrays.}
 \usage{
 julia_array(data, n1, n2, ...)
 }

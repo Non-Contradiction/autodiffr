@@ -148,15 +148,13 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
     f
 }
 
-traceOne <- function(func, env, func_names = NULL, msg = NULL){
+traceOne <- function(func, env, old = func, new = NULL, msg = NULL){
     get(func, env, inherits = FALSE)
 
-    if (!is.null(func_names)) {
-        msg <- paste0(func_names$old, " has been replaced with ", func_names$new, ".")
+    if (is.null(msg)) {
+        msg <- paste0(old, " has been replaced with ", new, ".")
     }
 
-    # force(msg)
-    # msg_func <- function() message(msg)
     tracer <- call("message", msg)
 
     suppressMessages(
@@ -173,26 +171,26 @@ untraceOne <- function(func, env){
 }
 
 traceAll <- function(env){
-    traceOne("colSums", env, list(old = "colSums", new = "cSums"))
-    traceOne("colMeans", env, list(old = "colMeans", new = "cMeans"))
-    traceOne("rowSums", env, list(old = "rowSums", new = "rSums"))
-    traceOne("rowMeans", env, list(old = "rowMeans", new = "rMeans"))
-    traceOne("%*%", env, list(old = "Matrix multiplication %*%", new = "%m%"))
+    traceOne("colSums", env, new = "cSums")
+    traceOne("colMeans", env, new = "cMeans")
+    traceOne("rowSums", env, new = "rSums")
+    traceOne("rowMeans", env, new = "rMeans")
+    traceOne("%*%", env, old = "Matrix multiplication %*%", new = "%m%")
 
-    traceOne("crossprod", env, msg = "crossprod has been replaced by t(x) %m% y.")
-    traceOne("tcrossprod", env, msg = "tcrossprod has been replaced by x %m% t(y).")
+    traceOne("crossprod", env, new = "t(x) %m% y")
+    traceOne("tcrossprod", env, new = "x %m% t(y)")
 
     traceOne("diag", env, msg = "Use of diag on vector to create a diagonal matrix has been replaced by diagm.")
 
-    traceOne("mapply", env, msg = "mapply has been replaced by map.")
+    traceOne("mapply", env, new = "map")
 
     traceOne("sapply", env, msg = "Use of sapply has been replaced by map.")
 
-    traceOne("matrix", env, msg = "matrix has been replaced by array.")
+    traceOne("matrix", env, new = "array")
 
-    traceOne("apply", env, msg = "apply has been replaced to take care with arrays in Julia.")
+    traceOne("apply", env, msg = "apply has been replaced to be compatible with arrays in Julia.")
 
-    traceOne("[<-", env, msg = "assignment in arrays has been replaced to take care with arrays in Julia.")
+    traceOne("[<-", env, msg = "assignment in arrays has been replaced to be compatible with arrays in Julia.")
 }
 
 detraceAll <- function(env){

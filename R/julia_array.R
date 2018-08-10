@@ -1,4 +1,4 @@
-#' Create Julia Arrays
+#' Create Julia Arrays.
 #'
 #'  `julia_array` is a helper function to create Julia arrays including vectors, matrices and etc.
 #'  And it can be used in functions to facilitate automatic differentiation.
