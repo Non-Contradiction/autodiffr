@@ -385,3 +385,15 @@
 * Release the new version of `JuliaCall` on CRAN, and have `autodiffr` depend on it.
 * Rename `ad.variant` to `ad_variant`.
 * Rename wrapper functions for `ForwardDiff.jl` and `ReverseDiff.jl`.
+
+## August 2 - August 4
+
+* Rename `grad` to `ad_grad`, `jacobian` to `ad_jacobian` and etc,
+  change all the documentations accordingly.
+
+## August 4 - August 10
+
+* Deal with more functions in `ad_variant`, like `apply` and assignment.
+* Add new functionality in `ad_variant`, now it is able to use `checkArgs` to do some checking.
+* Add `julia_array` helper function to create arrays in `Julia`.
+* Add vignette.

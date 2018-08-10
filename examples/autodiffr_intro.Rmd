@@ -1,0 +1,16 @@
+---
+title: "Automatic Differentiation in R by autodiffr"
+author: "Changcheng Li, John Nash"
+date: "2018/8/10"
+output: rmarkdown::github_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Package `autodiffr` provides an `R` wrapper for `Julia` packages [`ForwardDiff.jl`](https://github.com/JuliaDiff/ForwardDiff.jl) and [`ReverseDiff.jl`](https://github.com/JuliaDiff/ReverseDiff.jl) through [`JuliaCall`](https://github.com/Non-Contradiction/JuliaCall) to do **automatic differentiation** for native `R` functions
+and some `Rcpp` functions.

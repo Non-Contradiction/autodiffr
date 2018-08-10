@@ -142,7 +142,7 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
             if (!silent) message("New function gives the same result as the original function at the given arguments. Still need to use it with care.")
         }
 
-        if (!silent) message("Checking finished...")
+        if (!silent) message("Checking finished.")
     }
 
     f
