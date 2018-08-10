@@ -127,7 +127,7 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
         else {
             orig_result <- as.vector(orig_f(checkArgs))
 
-            if (!silent) traceAll()
+            if (!silent) traceAll(newEnv)
 
             new_result <- as.vector(f(checkArgs))
 
@@ -147,9 +147,7 @@ ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
     f
 }
 
-traceOne <- function(func, func_names = NULL, msg = NULL){
-    env <- parent.env(.AD)
-
+traceOne <- function(func, env, func_names = NULL, msg = NULL){
     get(func, env)
 
     .AD$trace_list <- append(.AD$trace_list, list(list(func = func, env = env)))
@@ -158,10 +156,11 @@ traceOne <- function(func, func_names = NULL, msg = NULL){
         msg <- paste0(func_names$old, " has been replaced with ", func_names$new, ".")
     }
 
-    force(msg)
-    msg_func <- function() message(msg)
+    # force(msg)
+    # msg_func <- function() message(msg)
+    tracer <- call("message", msg)
 
-    trace(func, msg_func, print = FALSE,
+    trace(func, tracer, print = FALSE,
           where = env,
           exit = function() untrace(func, where = env))
 }
@@ -172,27 +171,27 @@ untraceOne <- function(func, env){
     untrace(func, where = env)
 }
 
-traceAll <- function(){
-    traceOne("JcolSums", list(old = "colSums", new = "cSums"))
-    traceOne("JcolMeans", list(old = "colMeans", new = "cMeans"))
-    traceOne("JrowSums", list(old = "rowSums", new = "rSums"))
-    traceOne("JrowMeans", list(old = "rowMeans", new = "rMeans"))
-    traceOne("Jmatmult", list(old = "Matrix multiplication %*%", new = "%m%"))
+traceAll <- function(env){
+    traceOne("colSums", env, list(old = "colSums", new = "cSums"))
+    traceOne("colMeans", env, list(old = "colMeans", new = "cMeans"))
+    traceOne("rowSums", env, list(old = "rowSums", new = "rSums"))
+    traceOne("rowMeans", env, list(old = "rowMeans", new = "rMeans"))
+    traceOne("%*%", env, list(old = "Matrix multiplication %*%", new = "%m%"))
 
-    traceOne("Jcrossprod", msg = "crossprod has been replaced by t(x) %m% y.")
-    traceOne("Jtcrossprod", msg = "tcrossprod has been replaced by x %m% t(y).")
+    traceOne("crossprod", env, msg = "crossprod has been replaced by t(x) %m% y.")
+    traceOne("tcrossprod", env, msg = "tcrossprod has been replaced by x %m% t(y).")
 
-    traceOne("Jdiag", msg = "Use of diag on vector to create a diagonal matrix has been replaced by diagm.")
+    traceOne("diag", env, msg = "Use of diag on vector to create a diagonal matrix has been replaced by diagm.")
 
-    traceOne("Jmapply", msg = "mapply has been replaced by map.")
+    traceOne("mapply", env, msg = "mapply has been replaced by map.")
 
-    traceOne("Jsapply", msg = "Use of sapply has been replaced by map.")
+    traceOne("sapply", env, msg = "Use of sapply has been replaced by map.")
 
-    traceOne("Jmatrix", msg = "matrix has been replaced by array.")
+    traceOne("matrix", env, msg = "matrix has been replaced by array.")
 
-    traceOne("Japply", msg = "apply has been replaced to take care with arrays in Julia.")
+    traceOne("apply", env, msg = "apply has been replaced to take care with arrays in Julia.")
 
-    traceOne("Jassign", msg = "assignment in arrays has been replaced to take care with arrays in Julia.")
+    traceOne("[<-", env, msg = "assignment in arrays has been replaced to take care with arrays in Julia.")
 }
 
 detraceAll <- function(){
