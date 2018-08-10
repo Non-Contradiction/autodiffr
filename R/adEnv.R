@@ -1,3 +1,5 @@
+.AD$trace_list <- list()
+
 JcolSums <- function(...) cSums(...)
 JcolMeans <- function(...) cMeans(...)
 JrowSums <- function(...) rSums(...)
@@ -150,6 +152,8 @@ traceOne <- function(func, func_names = NULL, msg = NULL){
 
     get(func, env)
 
+    .AD$trace_list <- append(.AD$trace_list, list(list(func = func, env = env)))
+
     if (!is.null(func_names)) {
         msg <- paste0(func_names$old, " has been replaced with ", func_names$new, ".")
     }
@@ -162,10 +166,10 @@ traceOne <- function(func, func_names = NULL, msg = NULL){
           exit = function() untrace(func, where = env))
 }
 
-untraceOne <- function(func){
-    get(func, parent.env(.AD))
+untraceOne <- function(func, env){
+    get(func, env)
 
-    untrace(func, where = parent.env(.AD))
+    untrace(func, where = env)
 }
 
 traceAll <- function(){
@@ -192,23 +196,7 @@ traceAll <- function(){
 }
 
 detraceAll <- function(){
-    untraceOne("JcolSums")
-    untraceOne("JcolMeans")
-    untraceOne("JrowSums")
-    untraceOne("JrowMeans")
-    untraceOne("Jmatmult")
-
-    untraceOne("Jcrossprod")
-    untraceOne("Jtcrossprod")
-
-    untraceOne("Jdiag")
-
-    untraceOne("Jsapply")
-    untraceOne("Jmapply")
-
-    untraceOne("Jmatrix")
-
-    untraceOne("Japply")
-
-    untraceOne("Jassign")
+    for (fe in .AD$trace_list) {
+        untraceOne(fe$func, fe$env)
+    }
 }
