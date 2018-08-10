@@ -160,15 +160,17 @@ traceOne <- function(func, env, func_names = NULL, msg = NULL){
     # msg_func <- function() message(msg)
     tracer <- call("message", msg)
 
+    suppressMessages(
     trace(func, tracer, print = FALSE,
           where = env,
-          exit = function() untrace(func, where = env))
+          exit = function() suppressMessages(untrace(func, where = env)))
+    )
 }
 
 untraceOne <- function(func, env){
     get(func, env)
 
-    untrace(func, where = env)
+    suppressMessages(untrace(func, where = env))
 }
 
 traceAll <- function(env){
