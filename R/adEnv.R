@@ -1,4 +1,6 @@
-.AD$trace_list <- list()
+.AD$trace_list <- list("colSums", "colMeans", "rowSums", "rowMeans",
+                       "%*%", "crossprod", "tcrossprod", "diag",
+                       "mapply", "sapply", "matrix", "apply", "[<-")
 
 JcolSums <- function(...) cSums(...)
 JcolMeans <- function(...) cMeans(...)
@@ -111,46 +113,43 @@ decorate <- function(parentEnv){
 #' @md
 #' @export
 ad_variant <- function(f, checkArgs = NULL, silent = FALSE){
-    if (!silent) message("ad_variant will try to wrap your function in a special environment,
-                         which redefines some R functions to be compatible with autodiffr.
-                         Please use it with care.")
+    if (!silent) message("ad_variant will try to wrap your function in a special environment, which redefines some R functions to be compatible with autodiffr. Please use it with care.")
 
     newEnv <- decorate(environment(f))
     orig_f <- f
     environment(f) <- newEnv
 
     if (!is.null(checkArgs)) {
+        if (!silent) message("Start checking...")
+
+        if (!silent) traceAll(newEnv)
+
         if (is.list(checkArgs)) {
             orig_result <- as.vector(do.call(orig_f, checkArgs))
             new_result <- as.vector(do.call(f, checkArgs))
         }
         else {
             orig_result <- as.vector(orig_f(checkArgs))
-
-            if (!silent) traceAll(newEnv)
-
             new_result <- as.vector(f(checkArgs))
-
-            detraceAll()
         }
+
+        detraceAll(newEnv)
+
         if (!all.equal(orig_result, new_result, tolerance = 1e-6)) {
-            stop("New function doesn't give same result with original function.
-                 Please report an issue to autodiffr with the function and argument(s) at
-                 https://github.com/Non-Contradiction/autodiffr")
+            stop("New function doesn't give same result with original function. Please report an issue to autodiffr with the function and argument(s) at https://github.com/Non-Contradiction/autodiffr")
         }
         else {
-            if (!silent) message("New function gives the same result as the original function at the given arguments.
-                                 Still need to use it with care.")
+            if (!silent) message("New function gives the same result as the original function at the given arguments. Still need to use it with care.")
         }
+
+        if (!silent) message("Checking finished...")
     }
 
     f
 }
 
 traceOne <- function(func, env, func_names = NULL, msg = NULL){
-    get(func, env)
-
-    .AD$trace_list <- append(.AD$trace_list, list(list(func = func, env = env)))
+    get(func, env, inherits = FALSE)
 
     if (!is.null(func_names)) {
         msg <- paste0(func_names$old, " has been replaced with ", func_names$new, ".")
@@ -168,7 +167,7 @@ traceOne <- function(func, env, func_names = NULL, msg = NULL){
 }
 
 untraceOne <- function(func, env){
-    get(func, env)
+    get(func, env, inherits = FALSE)
 
     suppressMessages(untrace(func, where = env))
 }
@@ -196,8 +195,8 @@ traceAll <- function(env){
     traceOne("[<-", env, msg = "assignment in arrays has been replaced to take care with arrays in Julia.")
 }
 
-detraceAll <- function(){
-    for (fe in .AD$trace_list) {
-        untraceOne(fe$func, fe$env)
+detraceAll <- function(env){
+    for (f in .AD$trace_list) {
+        untraceOne(f, env)
     }
 }
