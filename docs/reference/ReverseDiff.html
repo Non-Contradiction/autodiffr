@@ -65,7 +65,7 @@ For more details, see http://www.juliadiff.org/ReverseDiff.jl/api/." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">autodiffr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
       </span>
     </div>
 
@@ -79,6 +79,18 @@ For more details, see http://www.juliadiff.org/ReverseDiff.jl/api/." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/autodiffr_intro.html">Automatic Differentiation in R by autodiffr</a>
+    </li>
+  </ul>
 </li>
       </ul>
       
@@ -116,11 +128,14 @@ For more details, see <a href='http://www.juliadiff.org/ReverseDiff.jl/api/'>htt
     
     </div>
 
-    <pre class="usage"><span class='fu'>reverse_grad</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+    <pre class="usage"><span class='fu'>reverse_grad</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>reverse_jacobian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_jacobian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>reverse_hessian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
+<span class='fu'>reverse_hessian</span>(<span class='no'>f_or_tape</span>, <span class='no'>input</span>, <span class='kw'>cfg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='fu'>reverse_grad_config</span>(<span class='no'>input</span>, <span class='kw'>diffresult</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)
 
@@ -159,6 +174,12 @@ but you can preallocate them yourself and reuse them for subsequent calls to red
     <tr>
       <th>diffresult</th>
       <td><p>Optional DiffResult object to store the derivative information.</p></td>
+    </tr>
+    <tr>
+      <th>debug</th>
+      <td><p>Whether to use the wrapper functions under debug mode.
+With the debug mode, users can have more informative error messages.
+Without the debug mode, the wrapper functions will be more performant.</p></td>
     </tr>
     <tr>
       <th>f</th>

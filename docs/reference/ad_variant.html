@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Do initial setup for package autodiffr. — ad_setup • autodiffr</title>
+<title>Create Variant Functions (more) Suitable for AD. — ad_variant • autodiffr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Do initial setup for package autodiffr. — ad_setup" />
+<meta property="og:title" content="Create Variant Functions (more) Suitable for AD. — ad_variant" />
 
-<meta property="og:description" content="ad_setup does the initial setup for package autodiffr." />
+<meta property="og:description" content="ad_variant is a helper function which creates variant functions more suitable for automatic differentiation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -109,58 +109,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Do initial setup for package autodiffr.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Non-Contradiction/autodiffr/blob/master/R/autodiff.R'><code>R/autodiff.R</code></a></small>
-    <div class="hidden name"><code>ad_setup.Rd</code></div>
+    <h1>Create Variant Functions (more) Suitable for AD.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Non-Contradiction/autodiffr/blob/master/R/adEnv.R'><code>R/adEnv.R</code></a></small>
+    <div class="hidden name"><code>ad_variant.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p><code>ad_setup</code> does the initial setup for package autodiffr.</p>
+    <p><code>ad_variant</code> is a helper function which creates variant functions more suitable for automatic differentiation.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ad_setup</span>(<span class='kw'>JULIA_HOME</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reverse</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>forward</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>ad_variant</span>(<span class='no'>f</span>, <span class='kw'>checkArgs</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>silent</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>JULIA_HOME</th>
-      <td><p>the file folder which contains julia binary,
-if not set, it will try to look at global option JULIA_HOME,
-if the global option is not set,
-it will then look at the environmental variable JULIA_HOME,
-if still not found, julia in path will be used.</p></td>
+      <th>f</th>
+      <td><p>the original function.</p></td>
     </tr>
     <tr>
-      <th>reverse</th>
-      <td><p>whether to use load reverse mode automatic differentiation.</p></td>
+      <th>checkArgs</th>
+      <td><p>if given, then the original function and the new version will be checked on the argument(s).
+If it's a list, then it will be regarded as a list of arguments; otherwise it will be regarded as the only argument.</p></td>
     </tr>
     <tr>
-      <th>forward</th>
-      <td><p>whether to use forward mode automatic differentiation.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>arguments passed to <code><a href='http://www.rdocumentation.org/packages/JuliaCall/topics/julia_setup'>JuliaCall::julia_setup</a></code>.</p></td>
+      <th>silent</th>
+      <td><p>whether to silence the message printed by <code>ad_variant</code>.</p></td>
     </tr>
     </table>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>ad_setup</span>()
-<span class='co'># }</span><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+                </ul>
 
   </div>
 </div>

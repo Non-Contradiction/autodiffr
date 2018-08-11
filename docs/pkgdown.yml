@@ -1,7 +1,8 @@
 pandoc: 2.1.1
 pkgdown: 1.1.0
 pkgdown_sha: ~
-articles: []
+articles:
+  autodiffr_intro: autodiffr_intro.html
 urls:
   reference: https://non-contradiction.github.io/JuliaCall//reference
   article: https://non-contradiction.github.io/JuliaCall//articles

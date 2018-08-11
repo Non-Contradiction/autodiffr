@@ -58,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">autodiffr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
       </span>
     </div>
 
@@ -72,6 +72,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/autodiffr_intro.html">Automatic Differentiation in R by autodiffr</a>
+    </li>
+  </ul>
 </li>
       </ul>
       
@@ -139,21 +151,27 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="ad_variant.html">ad_variant()</a></code> </p>
-        </td>
-        <td><p>Create Variant Functions (more) Suitable for AD.</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="ad_setup.html">ad_setup()</a></code> </p>
         </td>
         <td><p>Do initial setup for package autodiffr.</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="autodiff.html">jacobian()</a></code> <code><a href="autodiff.html">hessian()</a></code> <code><a href="autodiff.html">grad()</a></code> <code><a href="autodiff.html">deriv()</a></code> </p>
+          <p><code><a href="ad_variant.html">ad_variant()</a></code> </p>
+        </td>
+        <td><p>Create Variant Functions (more) Suitable for AD.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="autodiff.html">ad_jacobian()</a></code> <code><a href="autodiff.html">ad_hessian()</a></code> <code><a href="autodiff.html">ad_grad()</a></code> <code><a href="autodiff.html">ad_deriv()</a></code> </p>
         </td>
         <td><p>Calculate Gradient, Jacobian and Hessian using Automatic Differentiation.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="autodifffunc.html">makeJacobianFunc()</a></code> <code><a href="autodifffunc.html">makeHessianFunc()</a></code> <code><a href="autodifffunc.html">makeGradFunc()</a></code> <code><a href="autodifffunc.html">makeDerivFunc()</a></code> </p>
+        </td>
+        <td><p>Create (Optimized) Gradient, Jacobian and Hessian Functions using Automatic Differentiation.</p></td>
       </tr><tr>
         
         <td>
@@ -178,6 +196,12 @@
           <p><code><a href="grapes-m-grapes.html">`%m%`</a></code> </p>
         </td>
         <td><p>Matrix Multiplication Compatable with JuliaObject.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="julia_array.html">julia_array()</a></code> </p>
+        </td>
+        <td><p>Create Julia Arrays.</p></td>
       </tr><tr>
         
         <td>

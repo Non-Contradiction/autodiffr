@@ -61,7 +61,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">autodiffr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
       </span>
     </div>
 
@@ -75,6 +75,18 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/autodiffr_intro.html">Automatic Differentiation in R by autodiffr</a>
+    </li>
+  </ul>
 </li>
       </ul>
       
@@ -108,17 +120,13 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>jacobian</span>(<span class='no'>func</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>xsize</span> <span class='kw'>=</span> <span class='no'>x</span>,
-  <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_tape</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>compiled</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+    <pre class="usage"><span class='fu'>ad_jacobian</span>(<span class='no'>func</span>, <span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>hessian</span>(<span class='no'>func</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>xsize</span> <span class='kw'>=</span> <span class='no'>x</span>,
-  <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_tape</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>compiled</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>ad_hessian</span>(<span class='no'>func</span>, <span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>grad</span>(<span class='no'>func</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>xsize</span> <span class='kw'>=</span> <span class='no'>x</span>,
-  <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_tape</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>compiled</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='fu'>ad_grad</span>(<span class='no'>func</span>, <span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-<span class='fu'>deriv</span>(<span class='no'>func</span>, <span class='kw'>x</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>xsize</span> <span class='kw'>=</span> <span class='no'>x</span>,
-  <span class='kw'>chunk_size</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>use_tape</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>compiled</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+<span class='fu'>ad_deriv</span>(<span class='no'>func</span>, <span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>mode</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"reverse"</span>, <span class='st'>"forward"</span>), <span class='kw'>debug</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -140,29 +148,10 @@
       <td><p>whether to use forward or reverse mode automatic differentiation.</p></td>
     </tr>
     <tr>
-      <th>xsize</th>
-      <td><p>If <code>x</code> is not given and <code>xsize</code> is given, then the returning functiopn
-will be optimized w.r.t. the input(s) of the same size with <code>x</code>.
-Note that if <code>xsize</code> is not given, then all the following parameters will be ignored.</p></td>
-    </tr>
-    <tr>
-      <th>chunk_size</th>
-      <td><p>the chunk size to use in forward mode automatic differentiation.
-Note that this parameter is only effective when <code>mode = "forward"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>use_tape</th>
-      <td><p>whether or not to use tape for reverse mode automatic differentiation.
-Note that although <code>use_tape</code> can greatly improve the performance sometime,
-it can only calculate the derivatives w.r.t a certain branching,
-so it may not give the correct result for functions containing things like <code>if</code>.
-And this parameter is only effective when <code>mode = "reverse"</code>.</p></td>
-    </tr>
-    <tr>
-      <th>compiled</th>
-      <td><p>whether or not to use compiled tape for reverse mode automatic differentiation.
-Note that tape compiling can take a lot of time and
-this parameter is only effective when <code>use_tape = TRUE</code>.</p></td>
+      <th>debug</th>
+      <td><p>Whether to activate debug mode.
+With the debug mode, users can have more informative error messages.
+Without the debug mode, the functions will be more performant.</p></td>
     </tr>
     </table>
     

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Do initial setup for package autodiffr. — ad_setup • autodiffr</title>
+<title>Create Julia Arrays. — julia_array • autodiffr</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Do initial setup for package autodiffr. — ad_setup" />
+<meta property="og:title" content="Create Julia Arrays. — julia_array" />
 
-<meta property="og:description" content="ad_setup does the initial setup for package autodiffr." />
+<meta property="og:description" content="julia_array is a helper function to create Julia arrays including vectors, matrices and etc.
+And it can be used in functions to facilitate automatic differentiation." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -109,56 +110,54 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Do initial setup for package autodiffr.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Non-Contradiction/autodiffr/blob/master/R/autodiff.R'><code>R/autodiff.R</code></a></small>
-    <div class="hidden name"><code>ad_setup.Rd</code></div>
+    <h1>Create Julia Arrays.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Non-Contradiction/autodiffr/blob/master/R/julia_array.R'><code>R/julia_array.R</code></a></small>
+    <div class="hidden name"><code>julia_array.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p><code>ad_setup</code> does the initial setup for package autodiffr.</p>
+    <p><code>julia_array</code> is a helper function to create Julia arrays including vectors, matrices and etc.
+And it can be used in functions to facilitate automatic differentiation.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ad_setup</span>(<span class='kw'>JULIA_HOME</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>reverse</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>forward</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>julia_array</span>(<span class='no'>data</span>, <span class='no'>n1</span>, <span class='no'>n2</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>JULIA_HOME</th>
-      <td><p>the file folder which contains julia binary,
-if not set, it will try to look at global option JULIA_HOME,
-if the global option is not set,
-it will then look at the environmental variable JULIA_HOME,
-if still not found, julia in path will be used.</p></td>
+      <th>data</th>
+      <td><p>the data to create the array.</p></td>
     </tr>
     <tr>
-      <th>reverse</th>
-      <td><p>whether to use load reverse mode automatic differentiation.</p></td>
-    </tr>
-    <tr>
-      <th>forward</th>
-      <td><p>whether to use forward mode automatic differentiation.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>arguments passed to <code><a href='http://www.rdocumentation.org/packages/JuliaCall/topics/julia_setup'>JuliaCall::julia_setup</a></code>.</p></td>
+      <th>n1, n2, ...</th>
+      <td><p>the dimensions.</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>If n1 is missing, then all the dimensions will be ignored,
+and the result will be a Julia array coresponding to the data argument.
+If n1, n2, ... are given, they will determine the shape of the result,
+and data will be used for the content.</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='fu'>ad_setup</span>()
-<span class='co'># }</span><div class='input'>
+    <pre class="examples"><div class='input'>
+</div><div class='input'> <span class='co'>## setup is quite time consuming</span>
+  <span class='fu'>julia_array</span>(<span class='fl'>0</span>, <span class='fl'>3</span>) <span class='co'>## will return a Julia vector with length 3 and filled with 0</span></div><div class='output co'>#&gt; <span class='error'>Error in .julia$simple_call_(func, ...): 不适用于非函数</span></div><div class='input'>  <span class='fu'>julia_array</span>(<span class='fl'>0</span>, <span class='fl'>3</span>, <span class='fl'>4</span>) <span class='co'>## will return a Julia matrix of 3x4 and filled with 0</span></div><div class='output co'>#&gt; <span class='error'>Error in .julia$simple_call_(func, ...): 不适用于非函数</span></div><div class='input'>  <span class='fu'>julia_array</span>(<span class='fu'>matrix</span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>2</span>)) <span class='co'>## dimension is not given, will return a Julia matrix</span></div><div class='output co'>#&gt; <span class='error'>Error in .julia$simple_call_(func, ...): 不适用于非函数</span></div><div class='input'>  <span class='fu'>julia_array</span>(<span class='fu'>matrix</span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>2</span>), <span class='fl'>4</span>) <span class='co'>## dimension is given, will return a Julia vector</span></div><div class='output co'>#&gt; <span class='error'>Error in .julia$simple_call_(func, ...): 不适用于非函数</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#details">Details</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
