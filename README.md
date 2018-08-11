@@ -159,3 +159,9 @@ find `Julia` on PATH, and there are three ways for `autodiffr` to find
 reporting is welcome\! You may report it using the link:
 <https://github.com/Non-Contradiction/autodiffr/issues/new>. Or email me
 at <lch34677@gmail.com> or <cxl508@psu.edu>.
+
+## Acknowledgement
+
+The project `autodiffr` was a Google Summer of Code (GSoC) 2018 project
+for the “R Project for statistical computing” and with mentors John Nash
+and Hans W Borchers. Thanks a lot\!
