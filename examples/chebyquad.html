@@ -320,7 +320,7 @@ $(document).ready(function () {
 <pre class="r"><code>require(autodiffr)</code></pre>
 <pre><code>## Loading required package: autodiffr</code></pre>
 <pre class="r"><code>ad_setup()</code></pre>
-<pre><code>## Julia version 0.6.4 at location /Applications/Julia-0.6.app/Contents/Resources/julia/bin will be used.</code></pre>
+<pre><code>## Julia version 1.0.0 at location /Applications/Julia-1.0.app/Contents/Resources/julia/bin will be used.</code></pre>
 <pre><code>## Loading setup script for JuliaCall...</code></pre>
 <pre><code>## Finish loading setup script for JuliaCall.</code></pre>
 <pre class="r"><code>cyq.f &lt;- function (x) {
@@ -465,45 +465,45 @@ print(g2ag)</code></pre>
 <pre class="r"><code>tcyq.f &lt;- microbenchmark(cyq.f(x))
 tcyq.f</code></pre>
 <pre><code>## Unit: microseconds
-##      expr   min     lq     mean  median      uq     max neval
-##  cyq.f(x) 78.94 80.401 94.91698 81.2575 90.7945 383.215   100</code></pre>
+##      expr    min     lq     mean  median      uq    max neval
+##  cyq.f(x) 52.902 53.743 63.01033 55.2685 59.3735 236.54   100</code></pre>
 <pre class="r"><code>cat(&quot;cyq2.f timing:\n&quot;)</code></pre>
 <pre><code>## cyq2.f timing:</code></pre>
 <pre class="r"><code>tcyq2.f &lt;- microbenchmark(cyq2.f(x))
 tcyq2.f</code></pre>
 <pre><code>## Unit: microseconds
-##       expr   min     lq   mean median    uq    max neval
-##  cyq2.f(x) 4.777 4.8575 5.3605  4.951 5.077 34.681   100</code></pre>
+##       expr   min     lq    mean median     uq   max neval
+##  cyq2.f(x) 4.722 4.8285 5.24632 4.9035 5.0145 34.63   100</code></pre>
 <pre class="r"><code>tcyq.g &lt;- microbenchmark(cyq.g(x))
 tcyq.g</code></pre>
 <pre><code>## Unit: microseconds
-##      expr    min       lq     mean median      uq      max neval
-##  cyq.g(x) 106.64 108.3795 169.3994 110.94 141.671 3895.285   100</code></pre>
+##      expr    min     lq     mean median     uq     max neval
+##  cyq.g(x) 78.653 79.824 113.3712 80.277 81.207 3255.04   100</code></pre>
 <pre class="r"><code>tcyq.g &lt;- microbenchmark(cyq.g(x))
 tcyq.g</code></pre>
 <pre><code>## Unit: microseconds
-##      expr     min       lq     mean  median      uq     max neval
-##  cyq.g(x) 106.675 110.6395 163.6238 125.681 177.026 604.209   100</code></pre>
+##      expr    min      lq     mean median     uq     max neval
+##  cyq.g(x) 78.672 80.0115 87.59551 80.575 81.735 345.457   100</code></pre>
 <pre class="r"><code>cyq2.g &lt;- cheb$gr
 tcyq2.g &lt;- microbenchmark(cyq2.g(x), unit=&quot;us&quot; )
 # microseconds
 tcyq2.g</code></pre>
 <pre><code>## Unit: microseconds
-##       expr   min    lq     mean  median     uq   max neval
-##  cyq2.g(x) 9.135 9.566 10.62707 10.0625 10.649 41.74   100</code></pre>
+##       expr   min     lq    mean median    uq    max neval
+##  cyq2.g(x) 9.044 9.3135 9.92212  9.541 9.789 40.849   100</code></pre>
 <pre class="r"><code># These are very slow
 tcyq.ag &lt;- microbenchmark(cyq.ag(x), unit=&quot;us&quot; )
 # microseconds
 tcyq.ag</code></pre>
 <pre><code>## Unit: microseconds
-##       expr     min       lq     mean   median       uq      max neval
-##  cyq.ag(x) 10754.6 11396.52 13273.91 11947.08 13452.37 44991.17   100</code></pre>
+##       expr      min       lq     mean   median      uq      max neval
+##  cyq.ag(x) 10484.94 11249.62 13088.01 11978.12 13258.8 32998.17   100</code></pre>
 <pre class="r"><code>tcyq2.ag &lt;- microbenchmark(cyq2.ag(x), unit=&quot;us&quot; )
 # microseconds
 tcyq2.ag</code></pre>
 <pre><code>## Unit: microseconds
-##        expr      min       lq     mean   median       uq     max neval
-##  cyq2.ag(x) 2412.183 2590.049 3558.523 2961.521 3997.626 23083.4   100</code></pre>
+##        expr      min       lq     mean   median       uq      max neval
+##  cyq2.ag(x) 2281.392 2342.411 2825.026 2513.834 2807.108 18836.26   100</code></pre>
 <pre class="r"><code># These are quicker, but still slow
 cyq.optimized_ag &lt;- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE)
 cyq2.optimized_ag &lt;- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE)
@@ -511,16 +511,16 @@ tcyq.optimized_ag &lt;- microbenchmark(cyq.optimized_ag(x), unit=&quot;us&quot; 
 # microseconds
 tcyq.optimized_ag</code></pre>
 <pre><code>## Unit: microseconds
-##                 expr     min       lq     mean median      uq      max
-##  cyq.optimized_ag(x) 172.767 174.8065 4773.151 176.59 249.099 456603.6
+##                 expr     min      lq     mean   median     uq      max
+##  cyq.optimized_ag(x) 116.854 118.329 8266.756 118.9965 119.89 814450.8
 ##  neval
 ##    100</code></pre>
 <pre class="r"><code>tcyq2.optimized_ag &lt;- microbenchmark(cyq2.optimized_ag(x), unit=&quot;us&quot; )
 # microseconds
 tcyq2.optimized_ag</code></pre>
 <pre><code>## Unit: microseconds
-##                  expr     min      lq     mean   median       uq      max
-##  cyq2.optimized_ag(x) 151.296 154.557 2567.546 156.3805 174.7135 239460.5
+##                  expr     min     lq     mean   median       uq      max
+##  cyq2.optimized_ag(x) 101.593 103.28 1817.641 104.0825 105.8195 170660.5
 ##  neval
 ##    100</code></pre>
 <pre class="r"><code>## The slowness of the optimized method is partly because the overhead of the JuliaCall and autodiffr package.
@@ -532,8 +532,8 @@ foobar.ag &lt;- autodiffr::makeGradFunc(foobar, x = runif(length(x)), use_tape =
 tfoobar.ag &lt;- microbenchmark(foobar.ag(x), unit=&quot;us&quot; )
 tfoobar.ag</code></pre>
 <pre><code>## Unit: microseconds
-##          expr     min       lq     mean   median       uq     max neval
-##  foobar.ag(x) 140.356 142.2625 177.4276 151.7065 162.7135 421.394   100</code></pre>
+##          expr    min      lq     mean  median     uq    max neval
+##  foobar.ag(x) 92.516 94.0245 110.9202 95.3995 98.938 364.99   100</code></pre>
 <pre class="r"><code>## Suppose we are dealing with input of larger size, the overhead stays roughly the same,
 ## so the overhead should matters not that much as in the case n = 4.
 ## For example, if n = 25, the diffrence of performance in ratio is not that much.
@@ -547,14 +547,14 @@ x&lt;-x/(n+1.0) # Initial value suggested by Fletcher
 tcyq.g &lt;- microbenchmark(cyq.g(x), unit = &quot;us&quot;)
 tcyq.g</code></pre>
 <pre><code>## Unit: microseconds
-##      expr      min       lq     mean   median       uq     max neval
-##  cyq.g(x) 4794.777 5214.765 6127.238 5995.643 6607.931 11178.3   100</code></pre>
+##      expr      min       lq     mean   median       uq      max neval
+##  cyq.g(x) 4826.656 5032.594 5858.686 5364.431 5901.648 12041.84   100</code></pre>
 <pre class="r"><code>tcyq2.g &lt;- microbenchmark(cyq2.g(x), unit=&quot;us&quot; )
 # microseconds
 tcyq2.g</code></pre>
 <pre><code>## Unit: microseconds
-##       expr    min      lq     mean  median      uq     max neval
-##  cyq2.g(x) 63.342 65.1205 80.67358 69.4375 89.7285 227.549   100</code></pre>
+##       expr    min      lq     mean median      uq     max neval
+##  cyq2.g(x) 66.061 67.1685 86.29661 89.578 91.4025 193.974   100</code></pre>
 <pre class="r"><code>## The bad thing is that if the input size changes, we need to make an optimized gradient again.
 cyq.optimized_ag &lt;- autodiffr::makeGradFunc(cyq.f, x = runif(length(x)), use_tape = TRUE)
 cyq2.optimized_ag &lt;- autodiffr::makeGradFunc(cyq2.f, x = runif(length(x)), use_tape = TRUE)
@@ -562,16 +562,16 @@ tcyq.optimized_ag &lt;- microbenchmark(cyq.optimized_ag(x), unit=&quot;us&quot; 
 # microseconds
 tcyq.optimized_ag</code></pre>
 <pre><code>## Unit: microseconds
-##                 expr      min       lq     mean   median       uq      max
-##  cyq.optimized_ag(x) 11800.74 13266.59 14134.39 14026.54 14924.28 16551.54
+##                 expr     min       lq    mean   median       uq      max
+##  cyq.optimized_ag(x) 8638.28 10445.33 11087.4 10849.34 11660.22 14324.84
 ##  neval
 ##    100</code></pre>
 <pre class="r"><code>tcyq2.optimized_ag &lt;- microbenchmark(cyq2.optimized_ag(x), unit=&quot;us&quot; )
 # microseconds
 tcyq2.optimized_ag</code></pre>
 <pre><code>## Unit: microseconds
-##                  expr     min       lq     mean  median      uq     max
-##  cyq2.optimized_ag(x) 196.236 199.3705 286.7711 210.873 343.774 957.217
+##                  expr     min       lq     mean  median       uq     max
+##  cyq2.optimized_ag(x) 142.442 144.0955 156.1401 145.207 147.1995 352.217
 ##  neval
 ##    100</code></pre>
 <pre class="r"><code>## Some benchmarking based on the new debug argument.
@@ -581,18 +581,18 @@ tcyq.optimized_ag_debugoff &lt;- microbenchmark(cyq.optimized_ag_debugoff(x), un
 # microseconds
 tcyq.optimized_ag_debugoff</code></pre>
 <pre><code>## Unit: microseconds
-##                          expr     min       lq     mean   median       uq
-##  cyq.optimized_ag_debugoff(x) 11981.9 13730.75 15439.98 14664.95 15937.85
+##                          expr      min       lq     mean   median       uq
+##  cyq.optimized_ag_debugoff(x) 8551.185 10051.72 10693.86 10547.92 11130.85
 ##       max neval
-##  26828.26   100</code></pre>
+##  15001.22   100</code></pre>
 <pre class="r"><code>tcyq2.optimized_ag_debugoff &lt;- microbenchmark(cyq2.optimized_ag_debugoff(x), unit=&quot;us&quot; )
 # microseconds
 tcyq2.optimized_ag_debugoff</code></pre>
 <pre><code>## Unit: microseconds
-##                           expr     min       lq     mean   median       uq
-##  cyq2.optimized_ag_debugoff(x) 154.446 156.8805 180.4326 158.4365 175.1945
+##                           expr     min     lq     mean  median       uq
+##  cyq2.optimized_ag_debugoff(x) 127.158 128.79 146.0449 129.649 140.2275
 ##      max neval
-##  464.218   100</code></pre>
+##  430.761   100</code></pre>
 <pre class="r"><code>## Also note it is better to check the correctness when generating optimized gradient,
 all.equal(cyq.g(x), cyq.optimized_ag(x))</code></pre>
 <pre><code>## [1] TRUE</code></pre>
@@ -606,15 +606,15 @@ all.equal(cyq.g(x), cyq.optimized_ag(x))</code></pre>
 tape1 &lt;- reverse_grad_tape(cyq.f, runif(length(x)))
 microbenchmark(reverse_grad(tape1, x), unit=&quot;us&quot; )</code></pre>
 <pre><code>## Unit: microseconds
-##                    expr     min       lq     mean   median       uq
-##  reverse_grad(tape1, x) 11984.9 13482.79 14753.16 14109.75 14944.77
+##                    expr      min       lq     mean   median       uq
+##  reverse_grad(tape1, x) 8412.034 10304.76 10946.01 10785.07 11452.19
 ##       max neval
-##  55082.37   100</code></pre>
+##  14388.25   100</code></pre>
 <pre class="r"><code>tape2 &lt;- reverse_grad_tape(cyq2.f, runif(length(x)))
 microbenchmark(reverse_grad(tape2, x), unit=&quot;us&quot; )</code></pre>
 <pre><code>## Unit: microseconds
-##                    expr     min       lq     mean  median      uq      max
-##  reverse_grad(tape2, x) 195.833 213.4855 289.6573 217.254 305.404 1528.402
+##                    expr     min       lq     mean  median     uq    max
+##  reverse_grad(tape2, x) 137.352 138.8305 162.4228 142.622 156.56 370.13
 ##  neval
 ##    100</code></pre>
 <pre class="r"><code>## Benchmarking times without autodiffr wrappers
@@ -623,16 +623,16 @@ tape1 &lt;- reverse_grad_tape(cyq.f, runif(length(x)))
 microbenchmark(JuliaCall::julia_call(&quot;ReverseDiff.gradient!&quot;, tape1, x), unit=&quot;us&quot; )</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                      expr      min
-##  JuliaCall::julia_call(&quot;ReverseDiff.gradient!&quot;, tape1, x) 12812.07
-##        lq  mean  median       uq      max neval
-##  14223.73 15151 15018.9 15860.66 18627.36   100</code></pre>
+##  JuliaCall::julia_call(&quot;ReverseDiff.gradient!&quot;, tape1, x) 9484.508
+##        lq     mean   median      uq      max neval
+##  11023.29 11715.87 11671.46 12196.7 14484.67   100</code></pre>
 <pre class="r"><code>tape2 &lt;- reverse_grad_tape(cyq2.f, runif(length(x)))
 microbenchmark(JuliaCall::julia_call(&quot;ReverseDiff.gradient!&quot;, tape2, x), unit=&quot;us&quot; )</code></pre>
 <pre><code>## Unit: microseconds
-##                                                      expr     min     lq
-##  JuliaCall::julia_call(&quot;ReverseDiff.gradient!&quot;, tape2, x) 126.482 127.99
+##                                                      expr    min     lq
+##  JuliaCall::julia_call(&quot;ReverseDiff.gradient!&quot;, tape2, x) 89.424 90.775
 ##      mean  median      uq     max neval
-##  146.8908 129.266 137.979 554.914   100</code></pre>
+##  97.43929 91.5875 92.5105 287.264   100</code></pre>
 </div>
 
 
