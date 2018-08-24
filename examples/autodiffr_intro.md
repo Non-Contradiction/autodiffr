@@ -10,6 +10,26 @@ R package [`JuliaCall`](https://github.com/Non-Contradiction/JuliaCall)
 to do **automatic differentiation** for native R functions. This
 vignette will walk you through several examples in using `autodiffr`.
 
+## Installation
+
+[`Julia`](https://julialang.org/) is needed to use `autodiffr`. You can
+download a generic `Julia` binary from
+<https://julialang.org/downloads/> and add it to the path. Pakcage
+`autodiffr` is not on CRAN yet. You can get the development version of
+`autodiffr` by
+
+``` r
+devtools::install_github("Non-Contradiction/autodiffr")
+```
+
+**Important**: Note that currently `Julia` v0.6.x, v0.7.0 and v1.0 are
+all supported by `autodiffr`, but to use `autodiffr` with `Julia`
+v0.7/1.0, you need to get the development version of `JuliaCall` by:
+
+``` r
+devtools::install_github("Non-Contradiction/JuliaCall")
+```
+
 ## Basic usage
 
 When loading the library `autodiffr` it is still necessary to create a
@@ -22,7 +42,7 @@ minutes (the first time it is called).
     library(autodiffr)
     
     ad_setup()
-    ## Julia version 0.6.4 at location [...]/julia/bin will be used.
+    ## Julia version 1.0.0 at location [...]/julia/bin will be used.
     ## Loading setup script for JuliaCall...
     Finish loading setup script for JuliaCall.
     INFO: Precompiling module DiffResults.
@@ -120,8 +140,8 @@ with `autodiffr`:
     : ‘x’ must be numeric”.
   - `%*%`: this function can’t be handled with R’s S3 system, so
     `autodiffr` provides `%m%` to use instead. Example error message is
-    like “Error in x %\*% y : requires numeric/complex matrix/vector
-    arguments“.
+    like "Error in x %\*% y : requires numeric/complex matrix/vector
+    arguments".
   - `crossprod`, `tcrossprod`: these functions are also implemented in
     R’s internal C code, users may use `t(x) %m% y` or `x %m% t(y)`
     instead, or find some other more effective alternatives. Example
@@ -185,13 +205,7 @@ fun1 <- function(x) {
     det(y)
 }
 
-print(try(ad_grad(fun1, x0)))
-#> [1] "Error : Error happens in Julia.\nREvalError: \n"
-#> attr(,"class")
-#> [1] "try-error"
-#> attr(,"condition")
-#> <simpleError: Error happens in Julia.
-#> REvalError: >
+try(ad_grad(fun1, x0))
 
 ## and then we have another error, 
 ## from the error message 
@@ -357,10 +371,9 @@ only effective when mode = “reverse”.
 
 **Important** And also pay attention that for the optimization to have
 any effect, `x` must be given and must have the same shape of the
-potential input(s).
-
-And we can see that the optimized gradient function also gives the
-correct result.
+potential input(s). **Important** And also pay attention to the
+correctness of the optimized gradient function. Here we can see that the
+optimized gradient function also gives the correct result.
 
 And then we can use package `microbenchmark` to check the effect of
 `use_tape` and also compare it with the numeric approximation from
@@ -375,31 +388,33 @@ cat("cyq.f timing:\n")
 tcyq.f <- microbenchmark(cyq.f(x))
 tcyq.f
 #> Unit: microseconds
-#>      expr    min      lq     mean median     uq    max neval
-#>  cyq.f(x) 13.049 13.4505 14.34149 13.793 14.237 49.492   100
+#>      expr    min      lq     mean  median      uq    max neval
+#>  cyq.f(x) 10.505 10.7675 11.25659 10.8595 11.0695 41.397   100
 
 tcyq.ag <- microbenchmark(cyq.ag(x), unit="us" )
 
 tcyq.ag
 #> Unit: microseconds
-#>       expr      min       lq     mean   median      uq      max neval
-#>  cyq.ag(x) 6732.641 7387.361 9566.946 8249.006 10046.3 37423.42   100
+#>       expr      min       lq     mean   median       uq      max neval
+#>  cyq.ag(x) 5384.953 5771.823 6952.028 6038.078 6816.669 27676.09   100
 
 tcyq.ag_with_tape <- microbenchmark(cyq.ag_with_tape(x), unit="us" )
 
 tcyq.ag_with_tape
 #> Unit: microseconds
-#>                 expr    min      lq     mean  median      uq     max neval
-#>  cyq.ag_with_tape(x) 154.09 156.065 178.1127 157.494 162.701 605.363   100
+#>                 expr     min      lq     mean   median       uq     max
+#>  cyq.ag_with_tape(x) 117.252 119.487 136.8331 120.5385 124.5735 386.252
+#>  neval
+#>    100
 
 tcyq.ng <- microbenchmark(numDeriv::grad(cyq.f, x), unit="us" )
 
 tcyq.ng
 #> Unit: microseconds
 #>                      expr      min       lq     mean   median       uq
-#>  numDeriv::grad(cyq.f, x) 1957.673 2167.925 2851.527 2552.967 3307.834
+#>  numDeriv::grad(cyq.f, x) 1573.643 1613.349 1935.169 1699.395 1934.216
 #>       max neval
-#>  6314.212   100
+#>  6291.453   100
 ```
 
 From the time comparison, we can see that the `use_tape` is very
@@ -413,7 +428,7 @@ the numeric approximation provided by `numDeriv` in this case.
 <div id="ref-Fletcher65">
 
 Fletcher, R. 1965. “Function Minimization Without Calculating
-Derivatives – a Review.” *Computer Journal* 8:33–41.
+Derivatives – a Review.” *Computer Journal* 8: 33–41.
 
 </div>
 
