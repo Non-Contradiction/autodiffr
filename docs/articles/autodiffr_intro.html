@@ -29,7 +29,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">autodiffr</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.0.9000</span>
       </span>
     </div>
 
@@ -89,6 +89,14 @@
     
     
 <p>Package <code>autodiffr</code> provides an R wrapper for Julia packages <a href="https://github.com/JuliaDiff/ForwardDiff.jl"><code>ForwardDiff.jl</code></a> and <a href="https://github.com/JuliaDiff/ReverseDiff.jl"><code>ReverseDiff.jl</code></a> through R package <a href="https://github.com/Non-Contradiction/JuliaCall"><code>JuliaCall</code></a> to do <strong>automatic differentiation</strong> for native R functions. This vignette will walk you through several examples in using <code>autodiffr</code>.</p>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p><a href="https://julialang.org/"><code>Julia</code></a> is needed to use <code>autodiffr</code>. You can download a generic <code>Julia</code> binary from <a href="https://julialang.org/downloads/" class="uri">https://julialang.org/downloads/</a> and add it to the path. Pakcage <code>autodiffr</code> is not on CRAN yet. You can get the development version of <code>autodiffr</code> by</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Non-Contradiction/autodiffr"</span>)</a></code></pre></div>
+<p><strong>Important</strong>: Note that currently <code>Julia</code> v0.6.x, v0.7.0 and v1.0 are all supported by <code>autodiffr</code>, but to use <code>autodiffr</code> with <code>Julia</code> v0.7/1.0, you need to get the development version of <code>JuliaCall</code> by:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"Non-Contradiction/JuliaCall"</span>)</a></code></pre></div>
+</div>
 <div id="basic-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basic-usage" class="anchor"></a>Basic usage</h2>
@@ -96,7 +104,7 @@
 <pre><code>library(autodiffr)
 
 ad_setup()
-## Julia version 0.6.4 at location [...]/julia/bin will be used.
+## Julia version 1.0.0 at location [...]/julia/bin will be used.
 ## Loading setup script for JuliaCall...
 Finish loading setup script for JuliaCall.
 INFO: Precompiling module DiffResults.
@@ -104,52 +112,52 @@ INFO: Precompiling module ForwardDiff.
 INFO: Precompiling module ReverseDiff.</code></pre>
 <p>The first time <code><a href="../reference/ad_setup.html">ad_setup()</a></code> is called on your system, these three Julia modules / packages are being precompiled, later on this will not happen again, except when the julia packages get installed anew (e.g., a new version has appeared). Please note that <code>ad_setup</code> is required whenever you load the <code>autodiffr</code> package into R. And if Julia is not in the path, then <code>autodiffr</code> may fail to locate Julia. In this case, use <code><a href="../reference/ad_setup.html">ad_setup(JULIA_HOME = "the file folder contains the julia binary")</a></code>.</p>
 <p>Now automatic differentiation is ready to get applied. <code>autodiffr</code> has <code>ad_grad</code>, <code>ad_jacobian</code> and <code>ad_hessian</code> to calculate gradient, jacobian and hessian, and has <code>makeGradFunc</code>, <code>makeJacobianFunc</code> and <code>makeHessianFunc</code> to create gradient, jacobian and hessian functions respectively. We can see the basic usage below:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">## Define a target function with vector input and scalar output</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">f &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">sum</span>(x<span class="op">^</span>2L)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">## Calculate gradient of f at [2,3] by</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(f, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>)) ## deriv(f, c(2, 3))</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; [1] 4 6</span></a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">## Get a gradient function g</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">g &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeGradFunc</a></span>(f)</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">## Evaluate the gradient function g at [2,3]</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="kw">g</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; [1] 4 6</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15">## Calculate hessian of f at [2,3] by</a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="kw"><a href="../reference/autodiff.html">ad_hessian</a></span>(f, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt;      [,1] [,2]</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; [1,]    2    0</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt; [2,]    0    2</span></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb2-21" data-line-number="21">## Get a hessian function h</a>
-<a class="sourceLine" id="cb2-22" data-line-number="22">h &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeHessianFunc</a></span>(f)</a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24">## Evaluate the hessian function h at [2,3]</a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="kw">h</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt;      [,1] [,2]</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#&gt; [1,]    2    0</span></a>
-<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co">#&gt; [2,]    0    2</span></a>
-<a class="sourceLine" id="cb2-29" data-line-number="29"></a>
-<a class="sourceLine" id="cb2-30" data-line-number="30">## Define a target function with vector input and vector output</a>
-<a class="sourceLine" id="cb2-31" data-line-number="31">f &lt;-<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">^</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb2-32" data-line-number="32"></a>
-<a class="sourceLine" id="cb2-33" data-line-number="33">## Calculate jacobian of f at [2,3] by</a>
-<a class="sourceLine" id="cb2-34" data-line-number="34"><span class="kw"><a href="../reference/autodiff.html">ad_jacobian</a></span>(f, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb2-35" data-line-number="35"><span class="co">#&gt;      [,1] [,2]</span></a>
-<a class="sourceLine" id="cb2-36" data-line-number="36"><span class="co">#&gt; [1,]    4    0</span></a>
-<a class="sourceLine" id="cb2-37" data-line-number="37"><span class="co">#&gt; [2,]    0    6</span></a>
-<a class="sourceLine" id="cb2-38" data-line-number="38"></a>
-<a class="sourceLine" id="cb2-39" data-line-number="39">## Get a jacobian function j</a>
-<a class="sourceLine" id="cb2-40" data-line-number="40">j &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeJacobianFunc</a></span>(f)</a>
-<a class="sourceLine" id="cb2-41" data-line-number="41"></a>
-<a class="sourceLine" id="cb2-42" data-line-number="42">## Evaluate the gradient function j at [2,3]</a>
-<a class="sourceLine" id="cb2-43" data-line-number="43"><span class="kw">j</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb2-44" data-line-number="44"><span class="co">#&gt;      [,1] [,2]</span></a>
-<a class="sourceLine" id="cb2-45" data-line-number="45"><span class="co">#&gt; [1,]    4    0</span></a>
-<a class="sourceLine" id="cb2-46" data-line-number="46"><span class="co">#&gt; [2,]    0    6</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">## Define a target function with vector input and scalar output</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">f &lt;-<span class="st"> </span><span class="cf">function</span>(x) <span class="kw">sum</span>(x<span class="op">^</span>2L)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">## Calculate gradient of f at [2,3] by</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(f, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>)) <span class="co">## deriv(f, c(2, 3))</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; [1] 4 6</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">## Get a gradient function g</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">g &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeGradFunc</a></span>(f)</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">## Evaluate the gradient function g at [2,3]</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="kw">g</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt; [1] 4 6</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">## Calculate hessian of f at [2,3] by</span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="kw"><a href="../reference/autodiff.html">ad_hessian</a></span>(f, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="co">#&gt;      [,1] [,2]</span></a>
+<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#&gt; [1,]    2    0</span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"><span class="co">#&gt; [2,]    0    2</span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co">## Get a hessian function h</span></a>
+<a class="sourceLine" id="cb4-22" data-line-number="22">h &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeHessianFunc</a></span>(f)</a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co">## Evaluate the hessian function h at [2,3]</span></a>
+<a class="sourceLine" id="cb4-25" data-line-number="25"><span class="kw">h</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="co">#&gt;      [,1] [,2]</span></a>
+<a class="sourceLine" id="cb4-27" data-line-number="27"><span class="co">#&gt; [1,]    2    0</span></a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co">#&gt; [2,]    0    2</span></a>
+<a class="sourceLine" id="cb4-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb4-30" data-line-number="30"><span class="co">## Define a target function with vector input and vector output</span></a>
+<a class="sourceLine" id="cb4-31" data-line-number="31">f &lt;-<span class="st"> </span><span class="cf">function</span>(x) x<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb4-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb4-33" data-line-number="33"><span class="co">## Calculate jacobian of f at [2,3] by</span></a>
+<a class="sourceLine" id="cb4-34" data-line-number="34"><span class="kw"><a href="../reference/autodiff.html">ad_jacobian</a></span>(f, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb4-35" data-line-number="35"><span class="co">#&gt;      [,1] [,2]</span></a>
+<a class="sourceLine" id="cb4-36" data-line-number="36"><span class="co">#&gt; [1,]    4    0</span></a>
+<a class="sourceLine" id="cb4-37" data-line-number="37"><span class="co">#&gt; [2,]    0    6</span></a>
+<a class="sourceLine" id="cb4-38" data-line-number="38"></a>
+<a class="sourceLine" id="cb4-39" data-line-number="39"><span class="co">## Get a jacobian function j</span></a>
+<a class="sourceLine" id="cb4-40" data-line-number="40">j &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeJacobianFunc</a></span>(f)</a>
+<a class="sourceLine" id="cb4-41" data-line-number="41"></a>
+<a class="sourceLine" id="cb4-42" data-line-number="42"><span class="co">## Evaluate the gradient function j at [2,3]</span></a>
+<a class="sourceLine" id="cb4-43" data-line-number="43"><span class="kw">j</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb4-44" data-line-number="44"><span class="co">#&gt;      [,1] [,2]</span></a>
+<a class="sourceLine" id="cb4-45" data-line-number="45"><span class="co">#&gt; [1,]    4    0</span></a>
+<a class="sourceLine" id="cb4-46" data-line-number="46"><span class="co">#&gt; [2,]    0    6</span></a></code></pre></div>
 </div>
 <div id="what-to-do-if-autodiffr-cannot-handle-your-function" class="section level2">
 <h2 class="hasAnchor">
@@ -163,7 +171,7 @@ INFO: Precompiling module ReverseDiff.</code></pre>
 <li>
 <code>colSums</code>, <code>colMeans</code>, <code>rowSums</code>, <code>rowMeans</code>: These common functions are all implemented in R’s internal C code. And <code>autodiffr</code> provides helper functions <code>cSums</code>, <code>cMeans</code>, <code>rSums</code> and <code>rMeans</code> to substitute them. Example error message is like “Error in colSums(…) : ‘x’ must be numeric”.</li>
 <li>
-<code>%*%</code>: this function can’t be handled with R’s S3 system, so <code>autodiffr</code> provides <code>%m%</code> to use instead. Example error message is like “Error in x %*% y : requires numeric/complex matrix/vector arguments“.</li>
+<code>%*%</code>: this function can’t be handled with R’s S3 system, so <code>autodiffr</code> provides <code>%m%</code> to use instead. Example error message is like “Error in x %*% y : requires numeric/complex matrix/vector arguments”.</li>
 <li>
 <code>crossprod</code>, <code>tcrossprod</code>: these functions are also implemented in R’s internal C code, users may use <code>t(x) %m% y</code> or <code>x %m% t(y)</code> instead, or find some other more effective alternatives. Example error message is like “Error in crossprod(x, y) : requires numeric/complex matrix/vector arguments”.</li>
 <li>
@@ -178,87 +186,87 @@ INFO: Precompiling module ReverseDiff.</code></pre>
 <h3 class="hasAnchor">
 <a href="#a-little-example-to-demonstrate-issues" class="anchor"></a>A little example to demonstrate issues</h3>
 <p>Let us first define a makeup function to show some of the aforementioned issues:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">fun &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="cf">if</span> (<span class="kw">length</span>(x) <span class="op">!=</span><span class="st"> </span>4L) <span class="kw">stop</span>(<span class="st">"'x' must be a vector of 4 elements."</span>)</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">    y &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">    y[<span class="dv">1</span>] &lt;-<span class="st"> </span>x[<span class="dv">1</span>]; y[<span class="dv">2</span>] &lt;-<span class="st"> </span>x[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">    y[<span class="dv">3</span>] &lt;-<span class="st"> </span>x[<span class="dv">3</span>]; y[<span class="dv">4</span>] &lt;-<span class="st"> </span>x[<span class="dv">4</span>]<span class="op">^</span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">    y &lt;-<span class="st"> </span><span class="kw">matrix</span>(y, <span class="dv">2</span>, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">    <span class="kw">det</span>(y)</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">}</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">fun &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">    <span class="cf">if</span> (<span class="kw">length</span>(x) <span class="op">!=</span><span class="st"> </span>4L) <span class="kw">stop</span>(<span class="st">"'x' must be a vector of 4 elements."</span>)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">    y &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">    y[<span class="dv">1</span>] &lt;-<span class="st"> </span>x[<span class="dv">1</span>]; y[<span class="dv">2</span>] &lt;-<span class="st"> </span>x[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">    y[<span class="dv">3</span>] &lt;-<span class="st"> </span>x[<span class="dv">3</span>]; y[<span class="dv">4</span>] &lt;-<span class="st"> </span>x[<span class="dv">4</span>]<span class="op">^</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">    y &lt;-<span class="st"> </span><span class="kw">matrix</span>(y, <span class="dv">2</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">    <span class="kw">det</span>(y)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">}</a></code></pre></div>
 <p>If we directly use <code>autodiffr</code> to deal with <code>fun</code>, we will have:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">x0 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.2</span>, <span class="fl">1.4</span>, <span class="fl">1.6</span>, <span class="fl">1.8</span>)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw">try</span>(<span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(fun, x0))</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">## from the error message</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">## Error in y[1] &lt;- x[1] : </a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">##  incompatible types (from environment to double) in subassignment type fix</a>
-<a class="sourceLine" id="cb4-8" data-line-number="8">## and the error list in the previous subsection, we can know the problem is from assignment, </a>
-<a class="sourceLine" id="cb4-9" data-line-number="9">## and we can come up with the solution which deal with the issue:</a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11">fun1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb4-12" data-line-number="12">    <span class="cf">if</span> (<span class="kw">length</span>(x) <span class="op">!=</span><span class="st"> </span>4L) <span class="kw">stop</span>(<span class="st">"'x' must be a vector of 4 elements."</span>)</a>
-<a class="sourceLine" id="cb4-13" data-line-number="13">    y &lt;-<span class="st"> </span><span class="kw"><a href="../reference/julia_array.html">julia_array</a></span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)) </a>
-<a class="sourceLine" id="cb4-14" data-line-number="14">    ## we need to use julia_array to wrap the vector</a>
-<a class="sourceLine" id="cb4-15" data-line-number="15">    ## or we can do y &lt;- julia_array(0, 4) which is more elegant.</a>
-<a class="sourceLine" id="cb4-16" data-line-number="16">    y[<span class="dv">1</span>] &lt;-<span class="st"> </span>x[<span class="dv">1</span>]; y[<span class="dv">2</span>] &lt;-<span class="st"> </span>x[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb4-17" data-line-number="17">    y[<span class="dv">3</span>] &lt;-<span class="st"> </span>x[<span class="dv">3</span>]; y[<span class="dv">4</span>] &lt;-<span class="st"> </span>x[<span class="dv">4</span>]<span class="op">^</span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb4-18" data-line-number="18">    y &lt;-<span class="st"> </span><span class="kw">matrix</span>(y, <span class="dv">2</span>, <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb4-19" data-line-number="19">    <span class="kw">det</span>(y)</a>
-<a class="sourceLine" id="cb4-20" data-line-number="20">}</a>
-<a class="sourceLine" id="cb4-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="kw">try</span>(<span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(fun1, x0))</a>
-<a class="sourceLine" id="cb4-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb4-24" data-line-number="24">## and then we have another error, </a>
-<a class="sourceLine" id="cb4-25" data-line-number="25">## from the error message </a>
-<a class="sourceLine" id="cb4-26" data-line-number="26">## Error in matrix(y, 2, 2) : </a>
-<a class="sourceLine" id="cb4-27" data-line-number="27">##   'data' must be of a vector type, was 'environment'</a>
-<a class="sourceLine" id="cb4-28" data-line-number="28">## and the error list in the previous subsection, we can know the problem is from </a>
-<a class="sourceLine" id="cb4-29" data-line-number="29">## using matrix to reshape the vector y, </a>
-<a class="sourceLine" id="cb4-30" data-line-number="30">## and we can come up with the solution which deal with the issue:</a>
-<a class="sourceLine" id="cb4-31" data-line-number="31"></a>
-<a class="sourceLine" id="cb4-32" data-line-number="32">fun2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
-<a class="sourceLine" id="cb4-33" data-line-number="33">    <span class="cf">if</span> (<span class="kw">length</span>(x) <span class="op">!=</span><span class="st"> </span>4L) <span class="kw">stop</span>(<span class="st">"'x' must be a vector of 4 elements."</span>)</a>
-<a class="sourceLine" id="cb4-34" data-line-number="34">    ## we need to use julia_array to wrap the vector</a>
-<a class="sourceLine" id="cb4-35" data-line-number="35">    ## or we can do y &lt;- julia_array(0, 4) which is more elegant.</a>
-<a class="sourceLine" id="cb4-36" data-line-number="36">    y &lt;-<span class="st"> </span><span class="kw"><a href="../reference/julia_array.html">julia_array</a></span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)) </a>
-<a class="sourceLine" id="cb4-37" data-line-number="37">    y[<span class="dv">1</span>] &lt;-<span class="st"> </span>x[<span class="dv">1</span>]; y[<span class="dv">2</span>] &lt;-<span class="st"> </span>x[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span></a>
-<a class="sourceLine" id="cb4-38" data-line-number="38">    y[<span class="dv">3</span>] &lt;-<span class="st"> </span>x[<span class="dv">3</span>]; y[<span class="dv">4</span>] &lt;-<span class="st"> </span>x[<span class="dv">4</span>]<span class="op">^</span><span class="dv">3</span></a>
-<a class="sourceLine" id="cb4-39" data-line-number="39">    ## we need to use array to reshape the vector,</a>
-<a class="sourceLine" id="cb4-40" data-line-number="40">    ## or we can do y &lt;- julia_array(y, 2, 2).</a>
-<a class="sourceLine" id="cb4-41" data-line-number="41">    y &lt;-<span class="st"> </span><span class="kw">array</span>(y, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</a>
-<a class="sourceLine" id="cb4-42" data-line-number="42">    <span class="kw">det</span>(y)</a>
-<a class="sourceLine" id="cb4-43" data-line-number="43">}</a>
-<a class="sourceLine" id="cb4-44" data-line-number="44"></a>
-<a class="sourceLine" id="cb4-45" data-line-number="45">## This time we will have the correct solution</a>
-<a class="sourceLine" id="cb4-46" data-line-number="46"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(fun2, x0)</a>
-<a class="sourceLine" id="cb4-47" data-line-number="47"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a>
-<a class="sourceLine" id="cb4-48" data-line-number="48"></a>
-<a class="sourceLine" id="cb4-49" data-line-number="49">## and we can use numeric approximation to check our result:</a>
-<a class="sourceLine" id="cb4-50" data-line-number="50">numDeriv<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/numDeriv/topics/grad">grad</a></span>(fun2, x0)</a>
-<a class="sourceLine" id="cb4-51" data-line-number="51"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">x0 &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.2</span>, <span class="fl">1.4</span>, <span class="fl">1.6</span>, <span class="fl">1.8</span>)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="kw">try</span>(<span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(fun, x0))</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">## from the error message</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">## Error in y[1] &lt;- x[1] : </span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">##  incompatible types (from environment to double) in subassignment type fix</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">## and the error list in the previous subsection, we can know the problem is from assignment, </span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">## and we can come up with the solution which deal with the issue:</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">fun1 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">    <span class="cf">if</span> (<span class="kw">length</span>(x) <span class="op">!=</span><span class="st"> </span>4L) <span class="kw">stop</span>(<span class="st">"'x' must be a vector of 4 elements."</span>)</a>
+<a class="sourceLine" id="cb6-13" data-line-number="13">    y &lt;-<span class="st"> </span><span class="kw"><a href="../reference/julia_array.html">julia_array</a></span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)) </a>
+<a class="sourceLine" id="cb6-14" data-line-number="14">    <span class="co">## we need to use julia_array to wrap the vector</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15">    <span class="co">## or we can do y &lt;- julia_array(0, 4) which is more elegant.</span></a>
+<a class="sourceLine" id="cb6-16" data-line-number="16">    y[<span class="dv">1</span>] &lt;-<span class="st"> </span>x[<span class="dv">1</span>]; y[<span class="dv">2</span>] &lt;-<span class="st"> </span>x[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb6-17" data-line-number="17">    y[<span class="dv">3</span>] &lt;-<span class="st"> </span>x[<span class="dv">3</span>]; y[<span class="dv">4</span>] &lt;-<span class="st"> </span>x[<span class="dv">4</span>]<span class="op">^</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb6-18" data-line-number="18">    y &lt;-<span class="st"> </span><span class="kw">matrix</span>(y, <span class="dv">2</span>, <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb6-19" data-line-number="19">    <span class="kw">det</span>(y)</a>
+<a class="sourceLine" id="cb6-20" data-line-number="20">}</a>
+<a class="sourceLine" id="cb6-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb6-22" data-line-number="22"><span class="kw">try</span>(<span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(fun1, x0))</a>
+<a class="sourceLine" id="cb6-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb6-24" data-line-number="24"><span class="co">## and then we have another error, </span></a>
+<a class="sourceLine" id="cb6-25" data-line-number="25"><span class="co">## from the error message </span></a>
+<a class="sourceLine" id="cb6-26" data-line-number="26"><span class="co">## Error in matrix(y, 2, 2) : </span></a>
+<a class="sourceLine" id="cb6-27" data-line-number="27"><span class="co">##   'data' must be of a vector type, was 'environment'</span></a>
+<a class="sourceLine" id="cb6-28" data-line-number="28"><span class="co">## and the error list in the previous subsection, we can know the problem is from </span></a>
+<a class="sourceLine" id="cb6-29" data-line-number="29"><span class="co">## using matrix to reshape the vector y, </span></a>
+<a class="sourceLine" id="cb6-30" data-line-number="30"><span class="co">## and we can come up with the solution which deal with the issue:</span></a>
+<a class="sourceLine" id="cb6-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb6-32" data-line-number="32">fun2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb6-33" data-line-number="33">    <span class="cf">if</span> (<span class="kw">length</span>(x) <span class="op">!=</span><span class="st"> </span>4L) <span class="kw">stop</span>(<span class="st">"'x' must be a vector of 4 elements."</span>)</a>
+<a class="sourceLine" id="cb6-34" data-line-number="34">    <span class="co">## we need to use julia_array to wrap the vector</span></a>
+<a class="sourceLine" id="cb6-35" data-line-number="35">    <span class="co">## or we can do y &lt;- julia_array(0, 4) which is more elegant.</span></a>
+<a class="sourceLine" id="cb6-36" data-line-number="36">    y &lt;-<span class="st"> </span><span class="kw"><a href="../reference/julia_array.html">julia_array</a></span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>)) </a>
+<a class="sourceLine" id="cb6-37" data-line-number="37">    y[<span class="dv">1</span>] &lt;-<span class="st"> </span>x[<span class="dv">1</span>]; y[<span class="dv">2</span>] &lt;-<span class="st"> </span>x[<span class="dv">2</span>]<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb6-38" data-line-number="38">    y[<span class="dv">3</span>] &lt;-<span class="st"> </span>x[<span class="dv">3</span>]; y[<span class="dv">4</span>] &lt;-<span class="st"> </span>x[<span class="dv">4</span>]<span class="op">^</span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb6-39" data-line-number="39">    <span class="co">## we need to use array to reshape the vector,</span></a>
+<a class="sourceLine" id="cb6-40" data-line-number="40">    <span class="co">## or we can do y &lt;- julia_array(y, 2, 2).</span></a>
+<a class="sourceLine" id="cb6-41" data-line-number="41">    y &lt;-<span class="st"> </span><span class="kw">array</span>(y, <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb6-42" data-line-number="42">    <span class="kw">det</span>(y)</a>
+<a class="sourceLine" id="cb6-43" data-line-number="43">}</a>
+<a class="sourceLine" id="cb6-44" data-line-number="44"></a>
+<a class="sourceLine" id="cb6-45" data-line-number="45"><span class="co">## This time we will have the correct solution</span></a>
+<a class="sourceLine" id="cb6-46" data-line-number="46"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(fun2, x0)</a>
+<a class="sourceLine" id="cb6-47" data-line-number="47"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a>
+<a class="sourceLine" id="cb6-48" data-line-number="48"></a>
+<a class="sourceLine" id="cb6-49" data-line-number="49"><span class="co">## and we can use numeric approximation to check our result:</span></a>
+<a class="sourceLine" id="cb6-50" data-line-number="50">numDeriv<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/numDeriv/topics/grad">grad</a></span>(fun2, x0)</a>
+<a class="sourceLine" id="cb6-51" data-line-number="51"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a></code></pre></div>
 </div>
 <div id="use-ad_variant-to-deal-with-these-issues-automatically" class="section level3">
 <h3 class="hasAnchor">
 <a href="#use-ad_variant-to-deal-with-these-issues-automatically" class="anchor"></a>Use <code>ad_variant</code> to deal with these issues “automatically”</h3>
 <p>The above process is a little tedious. Helpfully, <code>autodiffr</code> provides a helper function <code>ad_variant</code> to deal with these problems simutaneously. And the usage is quite simple and self-explanotory:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">funvariant &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ad_variant.html">ad_variant</a></span>(fun)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; ad_variant will try to wrap your function in a special environment, which redefines some R functions to be compatible with autodiffr. Please use it with care.</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(funvariant, x0)</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">funvariant1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ad_variant.html">ad_variant</a></span>(fun, <span class="dt">checkArgs =</span> x0)</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; ad_variant will try to wrap your function in a special environment, which redefines some R functions to be compatible with autodiffr. Please use it with care.</span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; Start checking...</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; assignment in arrays has been replaced to be compatible with arrays in Julia.</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; matrix has been replaced with array.</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; New function gives the same result as the original function at the given arguments. Still need to use it with care.</span></a>
-<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co">#&gt; Checking finished.</span></a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(funvariant1, x0)</a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">funvariant &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ad_variant.html">ad_variant</a></span>(fun)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt; ad_variant will try to wrap your function in a special environment, which redefines some R functions to be compatible with autodiffr. Please use it with care.</span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(funvariant, x0)</a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">funvariant1 &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ad_variant.html">ad_variant</a></span>(fun, <span class="dt">checkArgs =</span> x0)</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; ad_variant will try to wrap your function in a special environment, which redefines some R functions to be compatible with autodiffr. Please use it with care.</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; Start checking...</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; assignment in arrays has been replaced to be compatible with arrays in Julia.</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt; matrix has been replaced with array.</span></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; New function gives the same result as the original function at the given arguments. Still need to use it with care.</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; Checking finished.</span></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="kw"><a href="../reference/autodiff.html">ad_grad</a></span>(funvariant1, x0)</a>
+<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; [1]  5.832 -4.480 -1.960 11.664</span></a></code></pre></div>
 </div>
 </div>
 <div id="a-more-complex-example-chebyquad-function" class="section level2">
@@ -266,107 +274,108 @@ INFO: Precompiling module ReverseDiff.</code></pre>
 <a href="#a-more-complex-example-chebyquad-function" class="anchor"></a>A more complex example: Chebyquad function</h2>
 <p>This problem was given prominence in the optimization literature by Fletcher (1965).</p>
 <p>First let us have our Chebyquad function. Note that this is for the <strong>vector</strong> x. This function is taken from the package <a href="https://github.com/jlmelville/funconstrain"><code>funconstrain</code></a>.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">cyq.f &lt;-<span class="st"> </span><span class="cf">function</span> (par) </a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">{</a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">    n &lt;-<span class="st"> </span><span class="kw">length</span>(par)</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">    <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>) {</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">        <span class="kw">stop</span>(<span class="st">"Chebyquad: n must be positive"</span>)</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">    }</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">    y &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>par <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">    t0 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>, n)</a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">    t1 &lt;-<span class="st"> </span>y</a>
-<a class="sourceLine" id="cb6-10" data-line-number="10">    ti &lt;-<span class="st"> </span>t1</a>
-<a class="sourceLine" id="cb6-11" data-line-number="11">    fsum &lt;-<span class="st"> </span><span class="dv">0</span></a>
-<a class="sourceLine" id="cb6-12" data-line-number="12">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n) {</a>
-<a class="sourceLine" id="cb6-13" data-line-number="13">        <span class="cf">if</span> (i <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>) {</a>
-<a class="sourceLine" id="cb6-14" data-line-number="14">            ti &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>t1 <span class="op">-</span><span class="st"> </span>t0</a>
-<a class="sourceLine" id="cb6-15" data-line-number="15">            t0 &lt;-<span class="st"> </span>t1</a>
-<a class="sourceLine" id="cb6-16" data-line-number="16">            t1 &lt;-<span class="st"> </span>ti</a>
-<a class="sourceLine" id="cb6-17" data-line-number="17">        }</a>
-<a class="sourceLine" id="cb6-18" data-line-number="18">        fi &lt;-<span class="st"> </span><span class="kw">sum</span>(ti)<span class="op">/</span>n</a>
-<a class="sourceLine" id="cb6-19" data-line-number="19">        <span class="cf">if</span> (i<span class="op">%%</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb6-20" data-line-number="20">            fi &lt;-<span class="st"> </span>fi <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(i <span class="op">*</span><span class="st"> </span>i <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb6-21" data-line-number="21">        }</a>
-<a class="sourceLine" id="cb6-22" data-line-number="22">        fsum &lt;-<span class="st"> </span>fsum <span class="op">+</span><span class="st"> </span>fi <span class="op">*</span><span class="st"> </span>fi</a>
-<a class="sourceLine" id="cb6-23" data-line-number="23">    }</a>
-<a class="sourceLine" id="cb6-24" data-line-number="24">    fsum</a>
-<a class="sourceLine" id="cb6-25" data-line-number="25">}</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">cyq.f &lt;-<span class="st"> </span><span class="cf">function</span> (par) </a>
+<a class="sourceLine" id="cb8-2" data-line-number="2">{</a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">    n &lt;-<span class="st"> </span><span class="kw">length</span>(par)</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">    <span class="cf">if</span> (n <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">        <span class="kw">stop</span>(<span class="st">"Chebyquad: n must be positive"</span>)</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">    }</a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">    y &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>par <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8">    t0 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>, n)</a>
+<a class="sourceLine" id="cb8-9" data-line-number="9">    t1 &lt;-<span class="st"> </span>y</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">    ti &lt;-<span class="st"> </span>t1</a>
+<a class="sourceLine" id="cb8-11" data-line-number="11">    fsum &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb8-12" data-line-number="12">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n) {</a>
+<a class="sourceLine" id="cb8-13" data-line-number="13">        <span class="cf">if</span> (i <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb8-14" data-line-number="14">            ti &lt;-<span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>y <span class="op">*</span><span class="st"> </span>t1 <span class="op">-</span><span class="st"> </span>t0</a>
+<a class="sourceLine" id="cb8-15" data-line-number="15">            t0 &lt;-<span class="st"> </span>t1</a>
+<a class="sourceLine" id="cb8-16" data-line-number="16">            t1 &lt;-<span class="st"> </span>ti</a>
+<a class="sourceLine" id="cb8-17" data-line-number="17">        }</a>
+<a class="sourceLine" id="cb8-18" data-line-number="18">        fi &lt;-<span class="st"> </span><span class="kw">sum</span>(ti)<span class="op">/</span>n</a>
+<a class="sourceLine" id="cb8-19" data-line-number="19">        <span class="cf">if</span> (i<span class="op">%%</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb8-20" data-line-number="20">            fi &lt;-<span class="st"> </span>fi <span class="op">+</span><span class="st"> </span><span class="dv">1</span><span class="op">/</span>(i <span class="op">*</span><span class="st"> </span>i <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb8-21" data-line-number="21">        }</a>
+<a class="sourceLine" id="cb8-22" data-line-number="22">        fsum &lt;-<span class="st"> </span>fsum <span class="op">+</span><span class="st"> </span>fi <span class="op">*</span><span class="st"> </span>fi</a>
+<a class="sourceLine" id="cb8-23" data-line-number="23">    }</a>
+<a class="sourceLine" id="cb8-24" data-line-number="24">    fsum</a>
+<a class="sourceLine" id="cb8-25" data-line-number="25">}</a></code></pre></div>
 <p>Let us choose a single value for the number of parameters, and for illustration use <span class="math inline">\(n = 10\)</span>.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">## cyq.setup</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">10</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3">x&lt;-<span class="dv">1</span><span class="op">:</span>n</a>
-<a class="sourceLine" id="cb7-4" data-line-number="4">x&lt;-x<span class="op">/</span>(n<span class="fl">+1.0</span>) <span class="co"># Initial value suggested by Fletcher</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">## cyq.setup</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">n &lt;-<span class="st"> </span><span class="dv">10</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">x&lt;-<span class="dv">1</span><span class="op">:</span>n</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">x&lt;-x<span class="op">/</span>(n<span class="fl">+1.0</span>) <span class="co"># Initial value suggested by Fletcher</span></a></code></pre></div>
 <p>For safety, let us check the function and a numerical approximation to the gradient.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">require</span>(numDeriv)</a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; Loading required package: numDeriv</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="kw">cat</span>(<span class="st">"Initial parameters:"</span>)</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; Initial parameters:</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">x</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt;  [1] 0.09090909 0.18181818 0.27272727 0.36363636 0.45454545 0.54545455</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt;  [7] 0.63636364 0.72727273 0.81818182 0.90909091</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="kw">cat</span>(<span class="st">"Initial value of the function is "</span>,<span class="kw">cyq.f</span>(x),<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</a>
-<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt; Initial value of the function is  0.03376327</span></a>
-<a class="sourceLine" id="cb8-10" data-line-number="10">gn &lt;-<span class="st"> </span>numDeriv<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/numDeriv/topics/grad">grad</a></span>(cyq.f, x) <span class="co"># using numDeriv</span></a>
-<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="kw">cat</span>(<span class="st">"Approximation to gradient at initial point:"</span>)</a>
-<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="co">#&gt; Approximation to gradient at initial point:</span></a>
-<a class="sourceLine" id="cb8-13" data-line-number="13">gn</a>
-<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="co">#&gt;  [1]  0.7446191 -0.4248347  0.3221248 -0.0246995 -0.2126736  0.2126736</span></a>
-<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="co">#&gt;  [7]  0.0246995 -0.3221248  0.4248347 -0.7446191</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">require</span>(numDeriv)</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; Loading required package: numDeriv</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw">cat</span>(<span class="st">"Initial parameters:"</span>)</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; Initial parameters:</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">x</a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt;  [1] 0.09090909 0.18181818 0.27272727 0.36363636 0.45454545 0.54545455</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt;  [7] 0.63636364 0.72727273 0.81818182 0.90909091</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="kw">cat</span>(<span class="st">"Initial value of the function is "</span>,<span class="kw">cyq.f</span>(x),<span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; Initial value of the function is  0.03376327</span></a>
+<a class="sourceLine" id="cb10-10" data-line-number="10">gn &lt;-<span class="st"> </span>numDeriv<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/numDeriv/topics/grad">grad</a></span>(cyq.f, x) <span class="co"># using numDeriv</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="kw">cat</span>(<span class="st">"Approximation to gradient at initial point:"</span>)</a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt; Approximation to gradient at initial point:</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13">gn</a>
+<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#&gt;  [1]  0.7446191 -0.4248347  0.3221248 -0.0246995 -0.2126736  0.2126736</span></a>
+<a class="sourceLine" id="cb10-15" data-line-number="15"><span class="co">#&gt;  [7]  0.0246995 -0.3221248  0.4248347 -0.7446191</span></a></code></pre></div>
 <p>And then we can use <code>autodiffr</code> to get the gradient:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">cyq.ag &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeGradFunc</a></span>(cyq.f) <span class="co"># Need autodiffr:: specified for knitr</span></a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="kw">cat</span>(<span class="st">"Gradient at x"</span>)</a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Gradient at x</span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="kw">cyq.ag</span>(x)</a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt;  [1]  0.7446191 -0.4248347  0.3221248 -0.0246995 -0.2126736  0.2126736</span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt;  [7]  0.0246995 -0.3221248  0.4248347 -0.7446191</span></a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">cyq.ag &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeGradFunc</a></span>(cyq.f) <span class="co"># Need autodiffr:: specified for knitr</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="kw">cat</span>(<span class="st">"Gradient at x"</span>)</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co">#&gt; Gradient at x</span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw">cyq.ag</span>(x)</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#&gt;  [1]  0.7446191 -0.4248347  0.3221248 -0.0246995 -0.2126736  0.2126736</span></a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt;  [7]  0.0246995 -0.3221248  0.4248347 -0.7446191</span></a></code></pre></div>
 <p>And we can see that the result is very similar, which means that <code>autodiffr</code> gives the correct result.</p>
 <div id="create-optimized-gradientjacobianhessian-functions-with-autodiffr" class="section level3">
 <h3 class="hasAnchor">
 <a href="#create-optimized-gradientjacobianhessian-functions-with-autodiffr" class="anchor"></a>Create optimized gradient/jacobian/hessian functions with autodiffr</h3>
 <p><code>autodiffr</code> also provides some ways to generate a more optimized version of gradient/jacobian/hessian functions. See <code><a href="../reference/autodifffunc.html">?autodifffunc</a></code>.</p>
 <p>Here we will give a simple example for one possible way (and maybe the most effective one) to generate optimized gradient function by <code>use_tape = TRUE</code> using the Chebyquad function:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">cyq.ag_with_tape &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeGradFunc</a></span>(cyq.f, <span class="dt">x =</span> <span class="kw">runif</span>(<span class="kw">length</span>(x)), <span class="dt">use_tape =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw">cyq.ag_with_tape</span>(x)</a>
-<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt;  [1]  0.7446191 -0.4248347  0.3221248 -0.0246995 -0.2126736  0.2126736</span></a>
-<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt;  [7]  0.0246995 -0.3221248  0.4248347 -0.7446191</span></a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">cyq.ag_with_tape &lt;-<span class="st"> </span><span class="kw"><a href="../reference/autodifffunc.html">makeGradFunc</a></span>(cyq.f, <span class="dt">x =</span> <span class="kw">runif</span>(<span class="kw">length</span>(x)), <span class="dt">use_tape =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw">cyq.ag_with_tape</span>(x)</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt;  [1]  0.7446191 -0.4248347  0.3221248 -0.0246995 -0.2126736  0.2126736</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt;  [7]  0.0246995 -0.3221248  0.4248347 -0.7446191</span></a></code></pre></div>
 <p>From the documentation: <code>use_tape</code> is whether or not to use tape for reverse mode automatic differentiation. Note that although use_tape can greatly improve the performance sometime, it can only calculate the derivatives w.r.t a certain branching, so it may not give the correct result for functions containing things like if. And this parameter is only effective when mode = “reverse”.</p>
-<p><strong>Important</strong> And also pay attention that for the optimization to have any effect, <code>x</code> must be given and must have the same shape of the potential input(s).</p>
-<p>And we can see that the optimized gradient function also gives the correct result.</p>
+<p><strong>Important</strong> And also pay attention that for the optimization to have any effect, <code>x</code> must be given and must have the same shape of the potential input(s). <strong>Important</strong> And also pay attention to the correctness of the optimized gradient function. Here we can see that the optimized gradient function also gives the correct result.</p>
 <p>And then we can use package <code>microbenchmark</code> to check the effect of <code>use_tape</code> and also compare it with the numeric approximation from <code>numDeriv</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">require</span>(microbenchmark)</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">#&gt; Loading required package: microbenchmark</span></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw">cat</span>(<span class="st">"cyq.f timing:</span><span class="ch">\n</span><span class="st">"</span>)</a>
-<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="co">#&gt; cyq.f timing:</span></a>
-<a class="sourceLine" id="cb11-6" data-line-number="6">tcyq.f &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(<span class="kw">cyq.f</span>(x))</a>
-<a class="sourceLine" id="cb11-7" data-line-number="7">tcyq.f</a>
-<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt;      expr    min      lq     mean median     uq    max neval</span></a>
-<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#&gt;  cyq.f(x) 13.049 13.4505 14.34149 13.793 14.237 49.492   100</span></a>
-<a class="sourceLine" id="cb11-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb11-12" data-line-number="12">tcyq.ag &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(<span class="kw">cyq.ag</span>(x), <span class="dt">unit=</span><span class="st">"us"</span> )</a>
-<a class="sourceLine" id="cb11-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb11-14" data-line-number="14">tcyq.ag</a>
-<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb11-16" data-line-number="16"><span class="co">#&gt;       expr      min       lq     mean   median      uq      max neval</span></a>
-<a class="sourceLine" id="cb11-17" data-line-number="17"><span class="co">#&gt;  cyq.ag(x) 6732.641 7387.361 9566.946 8249.006 10046.3 37423.42   100</span></a>
-<a class="sourceLine" id="cb11-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb11-19" data-line-number="19">tcyq.ag_with_tape &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(<span class="kw">cyq.ag_with_tape</span>(x), <span class="dt">unit=</span><span class="st">"us"</span> )</a>
-<a class="sourceLine" id="cb11-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb11-21" data-line-number="21">tcyq.ag_with_tape</a>
-<a class="sourceLine" id="cb11-22" data-line-number="22"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb11-23" data-line-number="23"><span class="co">#&gt;                 expr    min      lq     mean  median      uq     max neval</span></a>
-<a class="sourceLine" id="cb11-24" data-line-number="24"><span class="co">#&gt;  cyq.ag_with_tape(x) 154.09 156.065 178.1127 157.494 162.701 605.363   100</span></a>
-<a class="sourceLine" id="cb11-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb11-26" data-line-number="26">tcyq.ng &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(numDeriv<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/numDeriv/topics/grad">grad</a></span>(cyq.f, x), <span class="dt">unit=</span><span class="st">"us"</span> )</a>
-<a class="sourceLine" id="cb11-27" data-line-number="27"></a>
-<a class="sourceLine" id="cb11-28" data-line-number="28">tcyq.ng</a>
-<a class="sourceLine" id="cb11-29" data-line-number="29"><span class="co">#&gt; Unit: microseconds</span></a>
-<a class="sourceLine" id="cb11-30" data-line-number="30"><span class="co">#&gt;                      expr      min       lq     mean   median       uq</span></a>
-<a class="sourceLine" id="cb11-31" data-line-number="31"><span class="co">#&gt;  numDeriv::grad(cyq.f, x) 1957.673 2167.925 2851.527 2552.967 3307.834</span></a>
-<a class="sourceLine" id="cb11-32" data-line-number="32"><span class="co">#&gt;       max neval</span></a>
-<a class="sourceLine" id="cb11-33" data-line-number="33"><span class="co">#&gt;  6314.212   100</span></a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">require</span>(microbenchmark)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="co">#&gt; Loading required package: microbenchmark</span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="kw">cat</span>(<span class="st">"cyq.f timing:</span><span class="ch">\n</span><span class="st">"</span>)</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="co">#&gt; cyq.f timing:</span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">tcyq.f &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(<span class="kw">cyq.f</span>(x))</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">tcyq.f</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#&gt; Unit: microseconds</span></a>
+<a class="sourceLine" id="cb13-9" data-line-number="9"><span class="co">#&gt;      expr    min      lq     mean  median      uq    max neval</span></a>
+<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="co">#&gt;  cyq.f(x) 10.505 10.7675 11.25659 10.8595 11.0695 41.397   100</span></a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12">tcyq.ag &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(<span class="kw">cyq.ag</span>(x), <span class="dt">unit=</span><span class="st">"us"</span> )</a>
+<a class="sourceLine" id="cb13-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb13-14" data-line-number="14">tcyq.ag</a>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#&gt; Unit: microseconds</span></a>
+<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="co">#&gt;       expr      min       lq     mean   median       uq      max neval</span></a>
+<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt;  cyq.ag(x) 5384.953 5771.823 6952.028 6038.078 6816.669 27676.09   100</span></a>
+<a class="sourceLine" id="cb13-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb13-19" data-line-number="19">tcyq.ag_with_tape &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(<span class="kw">cyq.ag_with_tape</span>(x), <span class="dt">unit=</span><span class="st">"us"</span> )</a>
+<a class="sourceLine" id="cb13-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb13-21" data-line-number="21">tcyq.ag_with_tape</a>
+<a class="sourceLine" id="cb13-22" data-line-number="22"><span class="co">#&gt; Unit: microseconds</span></a>
+<a class="sourceLine" id="cb13-23" data-line-number="23"><span class="co">#&gt;                 expr     min      lq     mean   median       uq     max</span></a>
+<a class="sourceLine" id="cb13-24" data-line-number="24"><span class="co">#&gt;  cyq.ag_with_tape(x) 117.252 119.487 136.8331 120.5385 124.5735 386.252</span></a>
+<a class="sourceLine" id="cb13-25" data-line-number="25"><span class="co">#&gt;  neval</span></a>
+<a class="sourceLine" id="cb13-26" data-line-number="26"><span class="co">#&gt;    100</span></a>
+<a class="sourceLine" id="cb13-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb13-28" data-line-number="28">tcyq.ng &lt;-<span class="st"> </span><span class="kw"><a href="http://www.rdocumentation.org/packages/microbenchmark/topics/microbenchmark">microbenchmark</a></span>(numDeriv<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/numDeriv/topics/grad">grad</a></span>(cyq.f, x), <span class="dt">unit=</span><span class="st">"us"</span> )</a>
+<a class="sourceLine" id="cb13-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb13-30" data-line-number="30">tcyq.ng</a>
+<a class="sourceLine" id="cb13-31" data-line-number="31"><span class="co">#&gt; Unit: microseconds</span></a>
+<a class="sourceLine" id="cb13-32" data-line-number="32"><span class="co">#&gt;                      expr      min       lq     mean   median       uq</span></a>
+<a class="sourceLine" id="cb13-33" data-line-number="33"><span class="co">#&gt;  numDeriv::grad(cyq.f, x) 1573.643 1613.349 1935.169 1699.395 1934.216</span></a>
+<a class="sourceLine" id="cb13-34" data-line-number="34"><span class="co">#&gt;       max neval</span></a>
+<a class="sourceLine" id="cb13-35" data-line-number="35"><span class="co">#&gt;  6291.453   100</span></a></code></pre></div>
 <p>From the time comparison, we can see that the <code>use_tape</code> is very effective and the optimized gradient function performs much better than the numeric approximation provided by <code>numDeriv</code> in this case.</p>
 </div>
 </div>
@@ -375,7 +384,7 @@ INFO: Precompiling module ReverseDiff.</code></pre>
 <a href="#bibliography" class="anchor"></a>Bibliography</h2>
 <div id="refs" class="references">
 <div id="ref-Fletcher65">
-<p>Fletcher, R. 1965. “Function Minimization Without Calculating Derivatives – a Review.” <em>Computer Journal</em> 8:33–41.</p>
+<p>Fletcher, R. 1965. “Function Minimization Without Calculating Derivatives – a Review.” <em>Computer Journal</em> 8: 33–41.</p>
 </div>
 </div>
 </div>
@@ -386,7 +395,8 @@ INFO: Precompiling module ReverseDiff.</code></pre>
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#basic-usage">Basic usage</a></li>
+<li><a href="#installation">Installation</a></li>
+      <li><a href="#basic-usage">Basic usage</a></li>
       <li><a href="#what-to-do-if-autodiffr-cannot-handle-your-function">What to do if autodiffr cannot handle your function?</a></li>
       <li><a href="#a-more-complex-example-chebyquad-function">A more complex example: Chebyquad function</a></li>
       <li><a href="#bibliography">Bibliography</a></li>
