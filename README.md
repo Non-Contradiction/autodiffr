@@ -17,16 +17,26 @@ Package `autodiffr` provides an `R` wrapper for `Julia` packages
 [`ForwardDiff.jl`](https://github.com/JuliaDiff/ForwardDiff.jl) and
 [`ReverseDiff.jl`](https://github.com/JuliaDiff/ReverseDiff.jl) through
 [`JuliaCall`](https://github.com/Non-Contradiction/JuliaCall) to do
-**automatic differentiation** for native `R` functions and some `Rcpp`
-functions.
+**automatic differentiation** for native `R` functions.
 
 ## Installation
 
-Pakcage `autodiffr` is not on CRAN yet. You can get the development
-version of `autodiffr` by
+[`Julia`](https://julialang.org/) is needed to use `autodiffr`. You can
+download a generic `Julia` binary from
+<https://julialang.org/downloads/> and add it to the path. Pakcage
+`autodiffr` is not on CRAN yet. You can get the development version of
+`autodiffr` by
 
 ``` r
 devtools::install_github("Non-Contradiction/autodiffr")
+```
+
+**Important**: Note that currently `Julia` v0.6.x, v0.7.0 and v1.0 are
+all supported by `autodiffr`, but to use `autodiffr` with `Julia`
+v0.7/1.0, you need to get the development version of `JuliaCall` by:
+
+``` r
+devtools::install_github("Non-Contradiction/JuliaCall")
 ```
 
 ## Basic Usage
@@ -37,7 +47,7 @@ library(autodiffr)
 ## Do initial setup
 
 ad_setup()
-#> Julia version 0.6.4 at location /Applications/Julia-0.6.app/Contents/Resources/julia/bin will be used.
+#> Julia version 1.0.0 at location /Applications/Julia-1.0.app/Contents/Resources/julia/bin will be used.
 #> Loading setup script for JuliaCall...
 #> Finish loading setup script for JuliaCall.
 
