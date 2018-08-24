@@ -1,8 +1,8 @@
 Package: autodiffr
 Type: Package
 Title: Automatic Differentiation in R through 'Julia'
-Version: 0.1.0
-Date: 2018-8-10
+Version: 0.1.0.9000
+Date: 2018-8-24
 Authors@R: c(
     person("Changcheng", "Li", email = "cxl508@psu.edu", role = c("aut", "cre")),
     person(c("Hans", "W."), "Borchers", role = "ctb"),
