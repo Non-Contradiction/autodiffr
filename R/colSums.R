@@ -9,18 +9,30 @@
 #' @name colSums
 NULL
 
-#' @rdname colSums
-#' @export
-rSums <- function(x) as.vector(JuliaCall::julia_call("sum", x, 2L))
+juliasum <- function(x, dims){
+    if (.AD$julia07) r <- JuliaCall::julia_call("sum", x, dims = as.interger(dims))
+    else r <- JuliaCall::julia_call("sum", x, as.integer(dims))
+    as.vector(r)
+}
+
+juliamean <- function(x, dims){
+    if (.AD$julia07) r <- JuliaCall::julia_call("mean", x, dims = as.interger(dims))
+    else r <- JuliaCall::julia_call("mean", x, as.integer(dims))
+    as.vector(r)
+}
 
 #' @rdname colSums
 #' @export
-rMeans <- function(x) as.vector(JuliaCall::julia_call("mean", x, 2L))
+rSums <- function(x) juliasum(x, dims = 2L)
 
 #' @rdname colSums
 #' @export
-cSums <- function(x) as.vector(JuliaCall::julia_call("sum", x, 1L))
+rMeans <- function(x) juliamean(x, dims = 2L)
 
 #' @rdname colSums
 #' @export
-cMeans <- function(x) as.vector(JuliaCall::julia_call("mean", x, 1L))
+cSums <- function(x) juliasum(x, dims = 1L)
+
+#' @rdname colSums
+#' @export
+cMeans <- function(x) juliamean(x, dims = 1L)
