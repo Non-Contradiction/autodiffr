@@ -10,13 +10,13 @@
 NULL
 
 juliasum <- function(x, dims){
-    if (.AD$julia07) r <- JuliaCall::julia_call("sum", x, dims = as.interger(dims))
+    if (.AD$julia07) r <- JuliaCall::julia_call("sum", x, dims = as.integer(dims))
     else r <- JuliaCall::julia_call("sum", x, as.integer(dims))
     as.vector(r)
 }
 
 juliamean <- function(x, dims){
-    if (.AD$julia07) r <- JuliaCall::julia_call("mean", x, dims = as.interger(dims))
+    if (.AD$julia07) r <- JuliaCall::julia_call("mean", x, as.integer(dims))
     else r <- JuliaCall::julia_call("mean", x, as.integer(dims))
     as.vector(r)
 }
