@@ -55,6 +55,8 @@ ad_setup <- function(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, ...) {
 
         apiFuncs(reverse = reverse, forward = forward)
 
+        .AD$julia07 <- JuliaCall::julia_eval('VERSION > v"0.6.5"')
+
         .AD$inited <- TRUE
     }
 }
