@@ -29,11 +29,11 @@ ad_setup <- function(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, ...) {
             .AD$julia$library("ReverseDiff")
 
             ## Need to define is_tape function for ReverseDiff
-            JuliaCall::julia_command("function is_tape(x) issubtype(typeof(x), ReverseDiff.AbstractTape) end;")
+            JuliaCall::julia_command("function is_tape(x) typeof(x) <: ReverseDiff.AbstractTape end;")
 
             JuliaCall::julia_command("import Base.float")
             JuliaCall::julia_command("using Suppressor")
-            JuliaCall::julia_command("@suppress begin function Base.float{V,D,O}(t::ReverseDiff.TrackedReal{V,D,O}) t end end")
+            JuliaCall::julia_command("@suppress begin function Base.float(t::ReverseDiff.TrackedReal{V,D,O}) where {V,D,O} t end end")
 
         }
 
