@@ -13,7 +13,7 @@ test_that("Grad and Hessian for Rosenbrock function", {
 
     JuliaCall::julia_eval("function rosenjl(x) n = length(x);
                           x1 = x[2:n]; x2 = x[1:(n - 1)];
-                          sum(100 * (x1 - x2.^2).^2 + (1 - x2).^2) end")
+                          sum(100 * (x1 - x2.^2).^2 + (1 .- x2).^2) end")
 
     autodiffr:::expect_grad(fnRosenbrock, rep(1,3), jf_str = "rosenjl")
     autodiffr:::expect_grad(fnRosenbrock, c(1,2,3), jf_str = "rosenjl")
