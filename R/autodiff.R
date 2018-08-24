@@ -35,6 +35,7 @@ ad_setup <- function(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, ...) {
             JuliaCall::julia_command("using Suppressor")
             JuliaCall::julia_command("@suppress begin function Base.float(t::ReverseDiff.TrackedReal{V,D,O}) where {V,D,O} t end end")
 
+            JuliaCall::julia_command("(::Type{ReverseDiff.TrackedReal{V,D,O}})(t::ReverseDiff.TrackedReal{V,D,O}) where {V,D,O} = t")
         }
 
         if (forward) {
