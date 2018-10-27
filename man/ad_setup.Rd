@@ -18,6 +18,8 @@ if still not found, julia in path will be used.}
 
 \item{forward}{whether to use forward mode automatic differentiation.}
 
+\item{verbose}{whether to print package startup messages.}
+
 \item{...}{arguments passed to \code{JuliaCall::julia_setup}.}
 }
 \description{

@@ -9,6 +9,7 @@
 #'     if the global option is not set,
 #'     it will then look at the environmental variable JULIA_HOME,
 #'     if still not found, julia in path will be used.
+#' @param verbose whether to print package startup messages.
 #' @param ... arguments passed to \code{JuliaCall::julia_setup}.
 #'
 #' @examples
@@ -19,7 +20,7 @@
 #' @export
 ad_setup <- function(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, verbose = TRUE, ...) {
     if (!isTRUE(.AD$inited)) {
-        JuliaCall::julia_setup(JULIA_HOME = JULIA_HOME, verbose = TRUE, ...)
+        JuliaCall::julia_setup(JULIA_HOME = JULIA_HOME, verbose = verbose, ...)
 
         JuliaCall::julia_source(system.file("/julia/autodiffr.jl", package = "autodiffr"))
         # .AD$julia$install_package_if_needed("DiffResults")
