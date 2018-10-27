@@ -7,9 +7,9 @@ env:
   - JULIA="06"
   - JULIA="07"
   - JULIA="10"
-matrix:
-  allow_failures:
-    - os: linux
+# matrix:
+#   allow_failures:
+#     - os: linux
 
 addons:
   apt:
