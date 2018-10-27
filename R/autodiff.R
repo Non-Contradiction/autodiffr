@@ -19,7 +19,7 @@
 #' @export
 ad_setup <- function(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, verbose = TRUE, ...) {
     if (!isTRUE(.AD$inited)) {
-        .AD$julia <- JuliaCall::julia_setup(JULIA_HOME = JULIA_HOME, verbose = TRUE, ...)
+        JuliaCall::julia_setup(JULIA_HOME = JULIA_HOME, verbose = TRUE, ...)
 
         JuliaCall::julia_source(system.file("/julia/autodiffr.jl", package = "autodiffr"))
         # .AD$julia$install_package_if_needed("DiffResults")
@@ -29,6 +29,7 @@ ad_setup <- function(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, verbose 
             if (verbose) message("Loading ReverseDiff...")
 
             JuliaCall::julia_source(system.file("/julia/reverse.jl", package = "autodiffr"))
+
             # .AD$julia$install_package_if_needed("ReverseDiff")
             # .AD$julia$library("ReverseDiff")
             #

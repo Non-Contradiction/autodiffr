@@ -1,8 +1,8 @@
 try
-    using ReverseDiff
+    using ReverseDiff;
 catch e
-    Pkg.add("ReverseDiff")
-    using ReverseDiff
+    Pkg.add("ReverseDiff");
+    using ReverseDiff;
 end
 
 function is_tape(x)
@@ -10,10 +10,6 @@ function is_tape(x)
 end
 
 import Base.float
-using Suppressor
+function Base.float(t::ReverseDiff.TrackedReal{V,D,O}) where {V,D,O} t end;
 
-@suppress begin
-    function Base.float(t::ReverseDiff.TrackedReal{V,D,O}) where {V,D,O} t end
-end
-
-(::Type{ReverseDiff.TrackedReal{V,D,O}})(t::ReverseDiff.TrackedReal{V,D,O}) where {V,D,O} = t
+(::Type{ReverseDiff.TrackedReal{V,D,O}})(t::ReverseDiff.TrackedReal{V,D,O}) where {V,D,O} = t;

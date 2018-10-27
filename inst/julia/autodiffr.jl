@@ -1,6 +1,8 @@
+using Suppressor
+
 try
-    using DiffResults
-catch e
-    Pkg.add("DiffResults")
-    using DiffResults
-end
+    using DiffResults;
+catch e;
+    Pkg.add("DiffResults");
+    using DiffResults;
+end;
