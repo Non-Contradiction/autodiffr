@@ -4,7 +4,8 @@
 \alias{ad_setup}
 \title{Do initial setup for package autodiffr.}
 \usage{
-ad_setup(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE, ...)
+ad_setup(JULIA_HOME = NULL, reverse = TRUE, forward = TRUE,
+  verbose = TRUE, ...)
 }
 \arguments{
 \item{JULIA_HOME}{the file folder which contains julia binary,

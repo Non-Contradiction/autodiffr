@@ -67,7 +67,7 @@ Without the debug mode, the wrapper functions will be more performant.}
 \code{forward_deriv}, \code{forward_grad}, \code{forward_jacobian} and \code{forward_hessian} return
 the derivative, gradient, jacobian and hessian of \code{f} correspondingly evaluated at \code{x}.
 \code{forward_grad_config}, \code{forward_jacobian_config} and \code{forward_hessian_config}
-return Config instances based on \code{f`` and}x`,
+return Config instances based on \code{f`` and }x`,
 which contain all the work buffers required to carry out the forward mode automatic differentiation.
 }
 \description{
