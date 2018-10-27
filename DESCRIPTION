@@ -21,6 +21,6 @@ SystemRequirements: Julia >= 0.6.0, ForwardDiff.jl, ReverseDiff.jl
 Suggests: testthat,
     knitr,
     rmarkdown
-Imports: JuliaCall (>= 0.15.0)
+Imports: JuliaCall (>= 0.16.1)
 RoxygenNote: 6.1.0
 VignetteBuilder: knitr
