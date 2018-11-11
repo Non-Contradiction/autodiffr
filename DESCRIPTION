@@ -22,5 +22,5 @@ Suggests: testthat,
     knitr,
     rmarkdown
 Imports: JuliaCall (>= 0.16.1)
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
